@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_restaurant_card"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="14dp">
+
+        <ImageView
+            android:id="@+id/item_restaurant_image"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_restaurant_default"
+            app:layout_constraintCircleRadius="8dp"/>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/item_restaurant_name"
+        style="@style/Theme.Go4Lunch.TitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nom"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_distance"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_restaurant_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="100m"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_card"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_restaurant_type_and_adress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:text="French - 1 rue Adresse"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_people"
+        app:layout_constraintTop_toBottomOf="@id/item_restaurant_name"
+        app:layout_constraintBottom_toTopOf="@id/item_restaurant_closure"/>
+
+    <ImageView
+        style="@style/Theme.Go4Lunch.ImageView"
+        android:id="@+id/item_restaurant_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_nb_people"
+        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_type_and_adress"
+        android:src="@drawable/ic_people"/>
+
+    <TextView
+        android:id="@+id/item_restaurant_nb_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="(2)"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_card"
+        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_people"/>
+
+    <TextView
+        android:id="@+id/item_restaurant_closure"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Ferme à 14h30"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_restaurant_rate"
+        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_card" />
+
+    <RatingBar
+        android:id="@+id/item_restaurant_rate"
+        style="?android:attr/ratingBarStyleSmall"
+        android:progressTint="@color/quantum_yellowA700"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:numStars="3"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="horizontal"
+        android:stepSize="1"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_card"
+        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_closure" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
