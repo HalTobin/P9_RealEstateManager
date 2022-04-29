@@ -1,10 +1,10 @@
-package com.openclassrooms.realestatemanager
+package com.openclassrooms.realestatemanager.activity
 
-import android.net.wifi.WifiManager
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
 import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.Utils
 
 class MainActivity : AppCompatActivity() {
     private var textViewMain: TextView? = null
@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         configureTextViewMain()
         configureTextViewQuantity()
+
     }
 
     private fun configureTextViewMain() {
@@ -30,4 +31,8 @@ class MainActivity : AppCompatActivity() {
         textViewQuantity!!.textSize = 20f
         textViewQuantity!!.text = quantity.toString()
     }
+
+    /*private fun showSnackBar(txt: String) {
+        Snackbar.make(mBinding.getRoot(), txt, Snackbar.LENGTH_LONG).show()
+    }*/
 }
