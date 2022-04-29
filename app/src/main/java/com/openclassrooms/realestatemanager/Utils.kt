@@ -1,14 +1,12 @@
 package com.openclassrooms.realestatemanager
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
-import android.os.Bundle
-import com.openclassrooms.realestatemanager.R
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -21,7 +19,11 @@ object Utils {
      * @return
      */
     fun convertDollarToEuro(dollars: Int): Int {
-        return Math.round(dollars * 0.812).toInt()
+        return Math.round(dollars * 0.95).toInt()
+    }
+
+    fun convertEuroToDollar(euros: Int): Int {
+        return Math.round(euros * 1.05).toInt()
     }
 
     /**
@@ -31,7 +33,7 @@ object Utils {
      */
     val todayDate: String
         get() {
-            val dateFormat: DateFormat = SimpleDateFormat("yyyy/MM/dd")
+            val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
             return dateFormat.format(Date())
         }
 
@@ -42,7 +44,10 @@ object Utils {
      * @return
      */
     fun isInternetAvailable(context: Context): Boolean {
-        val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        return wifi.isWifiEnabled
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting
+
+        /*val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return wifi.isWifiEnabled*/
     }
 }
