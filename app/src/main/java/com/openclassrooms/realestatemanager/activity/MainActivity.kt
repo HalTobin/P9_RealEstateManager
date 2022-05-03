@@ -1,35 +1,32 @@
 package com.openclassrooms.realestatemanager.activity
 
+import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.Utils
+import com.openclassrooms.realestatemanager.base.BaseActivity
+import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    private var textViewMain: TextView? = null
-    private var textViewQuantity: TextView? = null
+class MainActivity : BaseActivity<ActivityMainBinding>() {
+
+    var context: Context? = null
+
+    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        textViewMain = findViewById(R.id.activity_main_activity_text_view_main)
-        textViewQuantity = findViewById(R.id.activity_main_activity_text_view_quantity)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
 
-        configureTextViewMain()
-        configureTextViewQuantity()
-
+        this.context = this
     }
 
-    private fun configureTextViewMain() {
-        textViewMain!!.textSize = 15f
-        textViewMain!!.text = "Le premier bien immobilier enregistré vaut "
-    }
-
-    private fun configureTextViewQuantity() {
-        val quantity = Utils.convertDollarToEuro(100)
-        textViewQuantity!!.textSize = 20f
-        textViewQuantity!!.text = quantity.toString()
+    // Setup fragment
+    fun setFragment(fragment: Fragment?) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_fragment, fragment!!)
+        fragmentTransaction.commit()
     }
 
     /*private fun showSnackBar(txt: String) {
