@@ -10,14 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.util.ArrayList
 
 
-class MapFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
-    private var mBinding: FragmentEstateListBinding? = null
+class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent {
+    private var mBinding: FragmentEstateMapBinding? = null
     private var mAdapter: ListEstatePagerAdapter? = null
 
     private val mainViewModel: MainViewModel by sharedViewModel<MainViewModel>()
@@ -26,7 +26,7 @@ class MapFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
         super.onCreate(savedInstanceState)
 
         mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
-
+            //TODO
         }
     }
 
@@ -35,18 +35,10 @@ class MapFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = FragmentEstateListBinding.inflate(
+        mBinding = FragmentEstateMapBinding.inflate(
             layoutInflater
         )
-        mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext())
-        mBinding!!.fragmentRestaurantList.layoutManager = LinearLayoutManager(this.context)
-        mBinding!!.fragmentRestaurantList.addItemDecoration(
-            DividerItemDecoration(
-                this.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        mBinding!!.fragmentRestaurantList.adapter = mAdapter
+
         return mBinding!!.root
     }
 
