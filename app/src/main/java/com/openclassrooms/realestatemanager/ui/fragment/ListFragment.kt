@@ -1,7 +1,7 @@
-package com.openclassrooms.realestatemanager.activity.fragment
+package com.openclassrooms.realestatemanager.ui.fragment
 
 import com.openclassrooms.realestatemanager.base.BaseFragment
-import com.openclassrooms.realestatemanager.activity.adapter.ListEstateAdapter
+import com.openclassrooms.realestatemanager.ui.adapter.ListEstateAdapter
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import android.os.Bundle
 import com.openclassrooms.realestatemanager.model.Estate
@@ -11,15 +11,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.KoinComponent
 import java.util.ArrayList
 
 
-class ListFragment : BaseFragment<FragmentEstateListBinding?>() {
+class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstateAdapter? = null
 
-    private val mainViewModel: MainViewModel by viewModel<MainViewModel>()
+    private val mainViewModel: MainViewModel by sharedViewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

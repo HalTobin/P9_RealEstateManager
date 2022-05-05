@@ -7,6 +7,7 @@ import com.openclassrooms.realestatemanager.di.AppModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 
 class RealEstateManagerApp: MultiDexApplication() {
@@ -22,8 +23,9 @@ class RealEstateManagerApp: MultiDexApplication() {
         // Start Koin
         startKoin{
             androidLogger() // Use AndroidLogger as Koin Logger (default Level.INFO
-            androidContext(this@RealEstateManagerApp)
+            androidContext(this@RealEstateManagerApp) // Use Context From RealEstateManagerApp
             androidFileProperties() // Load properties from assets/koin.properties file
+            fragmentFactory() // Setup a KoinFragmentFactory instance
             koin.loadModules(
                 listOf(AppModule.applicationModule)
             )

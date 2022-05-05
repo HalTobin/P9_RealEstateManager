@@ -1,8 +1,6 @@
-package com.openclassrooms.realestatemanager.activity
+package com.openclassrooms.realestatemanager.ui
 
-import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
 import android.os.Bundle
 import com.openclassrooms.realestatemanager.R
 

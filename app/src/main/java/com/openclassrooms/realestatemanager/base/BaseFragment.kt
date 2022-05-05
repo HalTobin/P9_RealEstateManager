@@ -6,12 +6,24 @@ import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.openclassrooms.realestatemanager.di.AppModule
+import org.koin.core.KoinComponent
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
+import org.koin.dsl.koinApplication
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.ParameterizedType
 
 // Use for binding of fragment
-open class BaseFragment<T : ViewBinding?> : Fragment() {
+abstract class BaseFragment<T : ViewBinding?> : Fragment() {
     protected var binding: T? = null
+
+    init{
+        // Making sure we do not get "module already loaded" error
+        unloadKoinModules(listOf(AppModule.applicationModule))
+        loadKoinModules(listOf(AppModule.applicationModule))
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,5 +46,10 @@ open class BaseFragment<T : ViewBinding?> : Fragment() {
             e.printStackTrace()
         }
         return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unloadKoinModules(listOf(AppModule.applicationModule))
     }
 }

@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.activity.adapter
+package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
 import com.openclassrooms.realestatemanager.model.Estate
