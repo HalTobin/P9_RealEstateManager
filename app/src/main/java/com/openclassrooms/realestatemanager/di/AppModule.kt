@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.di
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.repository.EstateRepository
+import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,6 +22,10 @@ object AppModule {
             provideListFragment()
         }
 
+        fragment {
+            provideMapFragment()
+        }
+
         viewModel {
             provideMainViewModel(get())
         }
@@ -32,5 +37,7 @@ object AppModule {
     fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel = MainViewModel()
 
     fun provideListFragment(): ListFragment = ListFragment()
+
+    fun provideMapFragment(): MapFragment = MapFragment()
 
 }

@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import java.util.ArrayList
 
-class ListEstateAdapter(items: List<Estate>?, context: Context) :
-    RecyclerView.Adapter<ListEstateAdapter.ViewHolder>() {
+class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
+    RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
     private val context: Context
     private var estates: List<Estate>? = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

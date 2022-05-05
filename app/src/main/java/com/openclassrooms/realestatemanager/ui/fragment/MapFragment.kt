@@ -16,7 +16,7 @@ import org.koin.core.KoinComponent
 import java.util.ArrayList
 
 
-class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
+class MapFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstatePagerAdapter? = null
 
@@ -26,8 +26,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
         super.onCreate(savedInstanceState)
 
         mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
-            initRecycler()
-            refreshRecycler(estates)
+
         }
     }
 
@@ -51,22 +50,13 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
         return mBinding!!.root
     }
 
-    private fun initRecycler() {
-        mBinding!!.fragmentRestaurantList.adapter = mAdapter
-    }
-
-    private fun refreshRecycler(myList: List<Estate>) {
-        mAdapter!!.updateList(myList)
-    }
-
     override fun onResume() {
         super.onResume()
-        initRecycler()
     }
 
     companion object {
-        fun newInstance(): ListFragment {
-            return ListFragment()
+        fun newInstance(): MapFragment {
+            return MapFragment()
         }
     }
 }
