@@ -45,6 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val tabsPagerAdapter = TabsPagerAdapter(supportFragmentManager, lifecycle)
         tabsPagerAdapter.addFragment(listFragment)
         tabsPagerAdapter.addFragment(mapFragment)
+
         val viewPager: ViewPager2 = binding!!.mainViewPager
 
         viewPager.adapter = tabsPagerAdapter

@@ -32,12 +32,12 @@ object AppModule {
 
     }
 
-    fun provideEstateRepository(): EstateRepository = EstateRepositoryImpl()
+    private fun provideEstateRepository(): EstateRepository = EstateRepositoryImpl()
 
-    fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel = MainViewModel()
+    private fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel = MainViewModel()
 
-    fun provideListFragment(): ListFragment = ListFragment()
+    private fun provideListFragment(): ListFragment = ListFragment()
 
-    fun provideMapFragment(): MapFragment = MapFragment()
+    private fun provideMapFragment(): MapFragment = MapFragment()
 
 }
