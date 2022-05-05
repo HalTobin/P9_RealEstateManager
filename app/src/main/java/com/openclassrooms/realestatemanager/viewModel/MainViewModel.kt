@@ -1,34 +1,31 @@
 package com.openclassrooms.realestatemanager.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.repository.EstateRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class MainViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
+class MainViewModel : ViewModel(), KoinComponent {
 
-    private val instance: MainViewModel? = null
-    private val estateLiveData: MutableLiveData<List<Estate>> = MutableLiveData()
+    private val estateRepository: EstateRepository by inject()
+    private val _estates: MutableLiveData<List<Estate>> by lazy(LazyThreadSafetyMode.NONE, initializer = {
+        MutableLiveData<List<Estate>>()
+    })
 
-    fun getInstance(): MainViewModel? {
-        val result: MainViewModel? =
-            instance
-        if (result != null) {
-            return result
-        }
-        synchronized(RestaurantRepository::class.java) {
-            if (com.example.go4lunch.viewModel.RestaurantViewModel.instance == null) {
-                com.example.go4lunch.viewModel.RestaurantViewModel.instance =
-                    com.example.go4lunch.viewModel.RestaurantViewModel()
-            }
-            return com.example.go4lunch.viewModel.RestaurantViewModel.instance
-        }
-    }
+    /*fun getEstates() {
+         getEstatesJob?.cancel()
+         getEstatesJob = estateRepository.getEstates().onEach {
+             estates -> _estates.value =
+         }.launchIn(viewModelScope)
+    }*/
 
     fun getEstates(): LiveData<List<Estate>> {
-        estateLiveData.value = Estate.fake_list
-        return estateLiveData
+        return estateRepository.getEstates().asLiveData()
     }
 
 }

@@ -6,10 +6,15 @@ import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
+import com.openclassrooms.realestatemanager.viewModel.MainViewModel
+import org.koin.androidx.viewmodel.compat.ScopeCompat.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     var context: Context? = null
+
+    private val mainViewModel: MainViewModel by viewModel<MainViewModel>()
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {

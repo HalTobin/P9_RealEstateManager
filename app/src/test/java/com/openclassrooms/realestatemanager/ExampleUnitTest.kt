@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager
 
+import com.openclassrooms.realestatemanager.util.Utils
 import org.junit.Assert
 import org.junit.Test
 import java.lang.Exception

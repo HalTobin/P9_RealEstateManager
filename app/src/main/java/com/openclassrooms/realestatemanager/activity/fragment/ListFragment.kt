@@ -11,18 +11,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.ArrayList
 
 
 class ListFragment : BaseFragment<FragmentEstateListBinding?>() {
     private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstateAdapter? = null
-    private var mainViewModel: MainViewModel? = null
+
+    private val mainViewModel: MainViewModel by viewModel<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = MainViewModel().getInstance();
 
-        mainViewModel!!.getEstates().observe(this) { estates: List<Estate> ->
+        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
             initRecycler()
             refreshRecycler(estates)
         }
