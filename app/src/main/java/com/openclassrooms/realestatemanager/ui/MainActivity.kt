@@ -1,11 +1,18 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
@@ -38,6 +45,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         this.context = this
 
+        checkAndAskPermission()
+
         initTab()
     }
 
@@ -56,17 +65,44 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 1 -> tabs.text = context?.getString(R.string.main_tab_estate_map)
             }
         }.attach()
+    }
 
-        //setFragment(listFragment)
+    private fun checkAndAskPermission() {
+        Dexter.withContext(this)
+            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
 
-        /*binding.mainTabs = ListEstatePagerAdapter(supportFragmentManager)
+                }
 
-        mPagerAdapter.addFragment(listFragment)
-        mPagerAdapter.addFragment(FavoriteFragment.newInstance())
-        mViewPager.setAdapter(mPagerAdapter)
+                override fun onPermissionDenied(response: PermissionDeniedResponse?) { /* ... */
+                }
 
-        mViewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayout))
-        mTabLayout.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mViewPager))*/
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest?,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            }).check()
+
+        Dexter.withContext(this)
+            .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+
+                }
+
+                override fun onPermissionDenied(response: PermissionDeniedResponse?) { /* ... */
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest?,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            }).check()
     }
 
     // Setup fragment

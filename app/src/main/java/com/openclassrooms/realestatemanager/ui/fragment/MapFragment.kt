@@ -13,6 +13,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 
 class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent {
@@ -40,16 +43,31 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent {
         mBinding!!.mapMapView.setUseDataConnection(true)
         mBinding!!.mapMapView.setTileSource(TileSourceFactory.MAPNIK)
         mBinding!!.mapMapView.setMultiTouchControls(true)
+        mBinding!!.mapMapView.setBuiltInZoomControls(true)
+
+        val startPoint = GeoPoint(43.65020, 7.00517)
 
         val mapController: IMapController
         mapController = mBinding!!.mapMapView.controller
+        mapController.setCenter(startPoint)
         mapController.setZoom(14.1)
+
+        val gpsMyLocationProvider = GpsMyLocationProvider(this.context)
+        val myLocationOverlay = MyLocationNewOverlay(gpsMyLocationProvider, mBinding!!.mapMapView)
+        myLocationOverlay.enableMyLocation()
+        myLocationOverlay.enableFollowLocation()
 
         return mBinding!!.root
     }
 
     override fun onResume() {
         super.onResume()
+        mBinding!!.mapMapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mBinding!!.mapMapView.onPause()
     }
 
     companion object {

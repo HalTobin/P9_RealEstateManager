@@ -2,11 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map_map_view"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/fragment_map_mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="79dp"
+        tools:layout_editor_absoluteY="79dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

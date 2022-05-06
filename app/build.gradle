@@ -54,8 +54,12 @@ dependencies {
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation "com.google.android.material:material:1.5.0"
 
-    // OpenStreetMap
-    implementation 'org.osmdroid:osmdroid-android:6.0.0'
+    // Dexter - To handle easily the authorisations requests
+    implementation 'com.karumi:dexter:6.2.2'
+
+    // Google Maps SDK
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
 
     // Multidex
     implementation "androidx.multidex:multidex:2.0.1"
