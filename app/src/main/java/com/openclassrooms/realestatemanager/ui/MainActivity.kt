@@ -4,9 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.navigation.NavigationBarView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -47,25 +45,47 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         checkAndAskPermission()
 
-        initTab()
+        setFragment(listFragment)
+        setUpTabAndNav()
+
+        //initTab()
     }
 
-    private fun initTab() {
+    // Allow navigation between fragments (List, Map)
+    private fun setUpTabAndNav() {
+        binding?.apply {
+            mainBottomNav.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.main_hub_menu_list -> {
+                        setFragment(listFragment)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.main_hub_menu_map -> {
+                        setFragment(mapFragment)
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> return@setOnItemSelectedListener false
+                }
+            }
+        }
+    }
+
+    /*private fun initTab() {
         val tabsPagerAdapter = TabsPagerAdapter(supportFragmentManager, lifecycle)
         tabsPagerAdapter.addFragment(listFragment)
         tabsPagerAdapter.addFragment(mapFragment)
 
-        val viewPager: ViewPager2 = binding!!.mainViewPager
+        //val viewPager: ViewPager2 = binding!!.mainViewPager
 
-        viewPager.adapter = tabsPagerAdapter
+        /*viewPager.adapter = tabsPagerAdapter
         val tabs: TabLayout = binding!!.mainTabs
         TabLayoutMediator(tabs, viewPager) { tabs, position ->
             when(position) {
                 0 -> tabs.text = context?.getString(R.string.main_tab_estate_list)
                 1 -> tabs.text = context?.getString(R.string.main_tab_estate_map)
             }
-        }.attach()
-    }
+        }.attach()*/
+    }*/
 
     private fun checkAndAskPermission() {
         Dexter.withContext(this)
@@ -107,9 +127,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     // Setup fragment
     private fun setFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_view_pager, fragment)
-            .commit()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_frame_layout, fragment)
+        fragmentTransaction.commit()
     }
 
     /*private fun showSnackBar(txt: String) {

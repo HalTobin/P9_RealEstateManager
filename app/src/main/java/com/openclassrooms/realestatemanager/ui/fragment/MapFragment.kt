@@ -1,13 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
 import android.Manifest
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -15,11 +19,9 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
-import com.openclassrooms.realestatemanager.base.BaseMapFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
-import org.koin.androidx.viewmodel.compat.SharedViewModelCompat.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
@@ -32,11 +34,13 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     private var myGoogleMap: GoogleMap? = null
     private var isPermissionGranted: Boolean = false
 
+    private val markers: MutableList<Marker> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
-            //TODO
+            refreshMarquers(estates)
         }
     }
 
@@ -48,8 +52,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         mBinding = FragmentEstateMapBinding.inflate(
             layoutInflater
         )
-
-        //parentFragmentManager.findFragmentById(R.id.map_map_fragment).getMapAsync(this)
 
         return mBinding!!.root
     }
@@ -89,14 +91,14 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
 
         // Depending on the phone's settings, dark mode is used for the map
         //TODO - define map style
-        /*var myMapStyleOptions = MapStyleOptions.loadRawResourceStyle(context!!, R.raw.map_style_day)
+        var myMapStyleOptions = MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style_day)
         val nightModeFlags =
-            context!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) myMapStyleOptions =
             MapStyleOptions.loadRawResourceStyle(
-                context!!, R.raw.map_style_night
-            )*/
-        //googleMap.setMapStyle(myMapStyleOptions)
+                requireContext(), R.raw.map_style_night
+            )
+        googleMap.setMapStyle(myMapStyleOptions)
 
         // Get and move the map to the location of the RestaurantViewModel
 
@@ -116,6 +118,28 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
                 .cameraPosition.target.longitude
             )*/
         } }
+    }
+
+    private fun refreshMarquers(estates: List<Estate>?) {
+        // Delete old markers
+        for (marker in markers) {
+            marker.remove()
+        }
+        if (myGoogleMap != null && estates != null) {
+            // Create new markers
+            for (estate in estates) {
+
+                if((estate.xCoordinate != null) && (estate.yCoordinate != null)) {
+                    println("NEW MARKER")
+                    myGoogleMap!!.addMarker(
+                        MarkerOptions()
+                            .position(LatLng(estate.xCoordinate!!, estate.yCoordinate!!))
+                            .title(estate.title)
+                    )?.let { markers.add(it) }
+                }
+
+            }
+        }
     }
 
     // Check if the user have allow the app to access his location
