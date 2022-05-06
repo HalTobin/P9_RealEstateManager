@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.di
 
+import com.google.android.gms.maps.SupportMapFragment
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.repository.EstateRepository
@@ -26,6 +27,10 @@ object AppModule {
             provideMapFragment()
         }
 
+        /*fragment {
+            provideSupportMapFragment()
+        }*/
+
         viewModel {
             provideMainViewModel(get())
         }
@@ -39,5 +44,7 @@ object AppModule {
     private fun provideListFragment(): ListFragment = ListFragment()
 
     private fun provideMapFragment(): MapFragment = MapFragment()
+
+    //private fun provideSupportMapFragment(): SupportMapFragment
 
 }

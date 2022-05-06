@@ -6,10 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.gms.maps.MapView
-        android:id="@+id/map_mapview"
+        android:id="@+id/map_map_view"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="79dp"
-        tools:layout_editor_absoluteY="79dp" />
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
