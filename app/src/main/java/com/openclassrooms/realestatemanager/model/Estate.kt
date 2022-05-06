@@ -1,9 +1,11 @@
 package com.openclassrooms.realestatemanager.model
 
+import java.util.*
+
 data class Estate(val id: Int,
                   var title: String,
                   var neighbor: String,
-                  //var address: String,
+                  var address: String,
                   var xCoordinate: Double? = null,
                   var yCoordinate: Double? = null,
                   var priceDollar: Int,
@@ -11,15 +13,27 @@ data class Estate(val id: Int,
                   var nbRooms: Int,
                   var nbBathrooms: Int,
                   var nbBedrooms: Int,
-                  var picturesLink: List<String>? = null) {
+                  var picturesLink: List<String>? = null,
+                  var nearbySchools:Boolean? = false,
+                  var nearbyShops:Boolean? = false,
+                  var nearbyParks:Boolean? = false,
+                  var status: Int? = 0,
+                  var entryDate: Date? = null,
+                  var soldDate: Date? = null,
+                  var agent: String? = null) {
 
     companion object {
+
+        const val AVAILABLE: Int = 0
+        const val STAND_BY: Int = 1
+        const val SOLD: Int = 2
+
         val fake_list = listOf(
-            Estate(1, "Maison Bagnolet", "Charonne", 48.863069, 2.422059,450000, 25, 3, 1, 1),
-            Estate(2, "Appartement Gambetta", "Gambetta", 48.864864, 2.397704,700000, 35, 4, 1, 2),
-            Estate(3, "Studio Nation", "Nation", 48.849617, 2.392734, 300000, 20, 1, 1, 0),
-            Estate(4, "Appartement Villette", "La Villette", 48.888561, 2.387255,750000, 45, 5, 1, 3),
-            Estate(5, "Studio Barbès", "Barbès", 48.884660, 2.348723, 250000, 20, 1, 1, 0),
+            Estate(id = 1, title = "Maison Bagnolet", neighbor = "Bagnolet", address = "2bis rue de Bagnolet, 93170 Bagnolet, France", priceDollar = 450000, surface = 25, nbRooms = 3, nbBathrooms = 1, nbBedrooms = 1),
+            Estate(id = 2, title = "Appartement Gambetta", neighbor = "Gambetta", address = "40 avenue Gambetta, 75020 Paris, France", priceDollar = 700000, surface = 35, nbRooms = 4, nbBathrooms = 1, nbBedrooms = 2),
+            Estate(id = 3, title = "Studio Nation", neighbor = "Nation", address = "11 rue des Immeubles Industriels, 75011 Paris, France", priceDollar = 450000, surface = 20, nbRooms = 1, nbBathrooms = 1, nbBedrooms = 0),
+            Estate(id = 4, title = "Appartement Villette", neighbor = "La Villette", address = "10 rue Delesseux, 75019 Paris, France", priceDollar = 750000, surface = 45, nbRooms = 5, nbBathrooms = 1, nbBedrooms = 3),
+            Estate(id = 5, title = "Studio Barbès", neighbor = "Barbès", address = "13 rue de Sofia, 75018 Paris, France", priceDollar = 250000, surface = 20, nbRooms = 1, nbBathrooms = 1, nbBedrooms = 0),
         )
     }
 
