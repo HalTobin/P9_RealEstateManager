@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
@@ -36,14 +37,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
 
     private val markers: MutableList<Marker> = ArrayList()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
-            refreshMarquers(estates)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,25 +62,8 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         //TODO - Set get localisation button
     }
 
-    override fun onStart() {
-        super.onStart()
-        mBinding?.apply { mapMapView.onStart() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mBinding?.apply { mapMapView.onResume() }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mBinding?.apply { mapMapView.onPause() }
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         myGoogleMap = googleMap
-
-        // Depending on the phone's settings, dark mode is used for the map
 
         // Depending on the phone's settings, dark mode is used for the map
         //TODO - define map style
@@ -100,46 +76,51 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
             )
         googleMap.setMapStyle(myMapStyleOptions)
 
-        // Get and move the map to the location of the RestaurantViewModel
-
-        // Get and move the map to the location of the RestaurantViewModel
-        /*this.restaurantViewModel.getFocusedLocation().observe(this) { myFocusedLocation ->
-            if (myGoogleMap != null) {
-                goToLocation(myFocusedLocation.getX(), myFocusedLocation.getY())
-            }
-        }*/
-
-        // Refresh the location used by the RestaurantViewModel when camera is idle
-
-        // Refresh the location used by the RestaurantViewModel when camera is idle
+        // Refresh the location used by the MainViewModel when camera is idle
         myGoogleMap?.apply { setOnCameraIdleListener {
             /*restaurantViewModel.setLocation(
                 cameraPosition.target.latitude,
                 .cameraPosition.target.longitude
             )*/
         } }
+
+        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
+            refreshMarkers(estates)
+        }
+
+        mainViewModel.findCurrentLocation(requireContext())
+
+        mainViewModel.getLocation().observe(this) { coordinates ->
+            navigateTo(coordinates.xCoordinate, coordinates.yCoordinate)
+        }
     }
 
-    private fun refreshMarquers(estates: List<Estate>?) {
+    private fun refreshMarkers(estates: List<Estate>?) {
         // Delete old markers
         for (marker in markers) {
             marker.remove()
         }
-        if (myGoogleMap != null && estates != null) {
+        if (estates != null) {
             // Create new markers
             for (estate in estates) {
-
                 if((estate.xCoordinate != null) && (estate.yCoordinate != null)) {
-                    println("NEW MARKER")
                     myGoogleMap!!.addMarker(
                         MarkerOptions()
                             .position(LatLng(estate.xCoordinate!!, estate.yCoordinate!!))
                             .title(estate.title)
                     )?.let { markers.add(it) }
                 }
-
             }
         }
+    }
+
+
+    // Move the map's camera to a location
+    private fun navigateTo(latitude: Double, longitude: Double) {
+        val myLatLng = LatLng(latitude, longitude)
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLatLng, 12f)
+        myGoogleMap!!.moveCamera(cameraUpdate)
+        myGoogleMap!!.mapType = GoogleMap.MAP_TYPE_NORMAL
     }
 
     // Check if the user have allow the app to access his location
@@ -154,7 +135,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
                 //TODO - Search user location
                 //restaurantViewModel.searchUserLocation(context)
             }
-
             override fun onPermissionRationaleShouldBeShown(
                 list: List<PermissionRequest>,
                 permissionToken: PermissionToken
@@ -163,5 +143,20 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
                 permissionToken.continuePermissionRequest()
             }
         }).check()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mBinding?.apply { mapMapView.onStart() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mBinding?.apply { mapMapView.onResume() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mBinding?.apply { mapMapView.onPause() }
     }
 }

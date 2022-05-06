@@ -6,10 +6,12 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
 import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
@@ -44,15 +46,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         this.context = this
 
         checkAndAskPermission()
-
-        setFragment(listFragment)
         setUpTabAndNav()
-
-        //initTab()
     }
 
     // Allow navigation between fragments (List, Map)
     private fun setUpTabAndNav() {
+        setFragment(listFragment)
         binding?.apply {
             mainBottomNav.setOnItemSelectedListener { item ->
                 when (item.itemId) {
@@ -70,59 +69,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
     }
 
-    /*private fun initTab() {
-        val tabsPagerAdapter = TabsPagerAdapter(supportFragmentManager, lifecycle)
-        tabsPagerAdapter.addFragment(listFragment)
-        tabsPagerAdapter.addFragment(mapFragment)
-
-        //val viewPager: ViewPager2 = binding!!.mainViewPager
-
-        /*viewPager.adapter = tabsPagerAdapter
-        val tabs: TabLayout = binding!!.mainTabs
-        TabLayoutMediator(tabs, viewPager) { tabs, position ->
-            when(position) {
-                0 -> tabs.text = context?.getString(R.string.main_tab_estate_list)
-                1 -> tabs.text = context?.getString(R.string.main_tab_estate_map)
-            }
-        }.attach()*/
-    }*/
-
+    //
     private fun checkAndAskPermission() {
-        Dexter.withContext(this)
-            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
 
-                }
+        Dexter.withContext(context).withPermissions(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ).withListener(object : MultiplePermissionsListener {
+            override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
+                println("Permission granted")
+            }
 
-                override fun onPermissionDenied(response: PermissionDeniedResponse?) { /* ... */
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            }).check()
-
-        Dexter.withContext(this)
-            .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-
-                }
-
-                override fun onPermissionDenied(response: PermissionDeniedResponse?) { /* ... */
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
-                }
-            }).check()
+            override fun onPermissionRationaleShouldBeShown(
+                list: List<PermissionRequest>,
+                permissionToken: PermissionToken
+            ) {
+                //isPermissionGranted = false
+                permissionToken.continuePermissionRequest()
+            }
+        }).check()
     }
 
     // Setup fragment
@@ -132,7 +99,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         fragmentTransaction.commit()
     }
 
-    /*private fun showSnackBar(txt: String) {
-        Snackbar.make(mBinding.getRoot(), txt, Snackbar.LENGTH_LONG).show()
-    }*/
 }
