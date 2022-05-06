@@ -84,15 +84,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
             )*/
         } }
 
-        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
-            refreshMarkers(estates)
-        }
-
-        mainViewModel.findCurrentLocation(requireContext())
-
-        mainViewModel.getLocation().observe(this) { coordinates ->
-            navigateTo(coordinates.xCoordinate, coordinates.yCoordinate)
-        }
+        setUpListenersAndObservers()
     }
 
     private fun refreshMarkers(estates: List<Estate>?) {
@@ -143,6 +135,24 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
                 permissionToken.continuePermissionRequest()
             }
         }).check()
+    }
+
+    // Setup listeners and observers of MapFragment
+    private fun setUpListenersAndObservers() {
+        // Set an observer to get Estate
+        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
+            refreshMarkers(estates)
+        }
+
+        // Set an observer to get current location
+        mainViewModel.getLocation().observe(this) { coordinates ->
+            navigateTo(coordinates.xCoordinate, coordinates.yCoordinate)
+        }
+
+        // Set a listener to refresh location
+        mBinding?.apply { mapBtLocate.setOnClickListener {
+            mainViewModel.findCurrentLocation(requireContext())
+        } }
     }
 
     override fun onStart() {

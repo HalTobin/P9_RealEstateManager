@@ -47,6 +47,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         checkAndAskPermission()
         setUpTabAndNav()
+        mainViewModel.findCurrentLocation(this)
     }
 
     // Allow navigation between fragments (List, Map)

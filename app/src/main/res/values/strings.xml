@@ -3,4 +3,6 @@
 
     <string name="main_tab_estate_list">Liste</string>
     <string name="main_tab_estate_map">Carte</string>
+
+    <string name="map_floating_ask_location_description">Demande de localisation</string>
 </resources>
