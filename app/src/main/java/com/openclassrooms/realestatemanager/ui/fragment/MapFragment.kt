@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,6 +24,9 @@ import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
@@ -36,6 +40,8 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     private var isPermissionGranted: Boolean = false
 
     private val markers: MutableList<Marker> = ArrayList()
+
+    private var getEstatesJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -143,6 +149,10 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
             refreshMarkers(estates)
         }
+        /*getEstatesJob?.cancel()
+        getEstatesJob = mainViewModel.getEstates().onEach {
+            refreshMarkers(it)
+        }.launchIn(mainViewModel.viewModelScope)*/
 
         // Set an observer to get current location
         mainViewModel.getLocation().observe(this) { coordinates ->

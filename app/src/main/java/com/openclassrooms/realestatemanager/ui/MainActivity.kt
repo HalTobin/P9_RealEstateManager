@@ -2,21 +2,18 @@ package com.openclassrooms.realestatemanager.ui
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.material.navigation.NavigationBarView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
-import com.openclassrooms.realestatemanager.ui.adapter.TabsPagerAdapter
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
@@ -37,6 +34,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Setup Koin Fragment Factory
         setupKoinFragmentFactory()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -47,6 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         checkAndAskPermission()
         setUpTabAndNav()
+        setApiKey()
         mainViewModel.findCurrentLocation(this)
     }
 
@@ -100,4 +99,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         fragmentTransaction.commit()
     }
 
+    private fun setApiKey() {
+        if(!mainViewModel.isPositionStackApiKeyDefined()) mainViewModel.setPositionStackApiKey(getString(R.string.position_stack_api_key))
+    }
 }
