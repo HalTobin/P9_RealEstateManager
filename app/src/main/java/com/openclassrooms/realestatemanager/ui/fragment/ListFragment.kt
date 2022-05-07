@@ -46,7 +46,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
 
         initRecycler()
 
-        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<Estate> ->
+        mainViewModel.getEstatesWithCoordinates().observe(viewLifecycleOwner) { estates: List<Estate> ->
             refreshRecycler(estates)
         }
 

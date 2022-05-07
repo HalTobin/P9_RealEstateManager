@@ -25,6 +25,32 @@ allprojects {
     }
 }
 
+subprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "11"
+            freeCompilerArgs += List.of(
+                    "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                    "-opt-in=kotlin.RequiresOptIn",
+                    "-Xopt-in=kotlinx.coroutines.FlowPreview",
+                    "-Xopt-in=kotlin.time.ExperimentalTime",
+                    "-Xopt-in=kotlin.ExperimentalStdlibApi",
+                    "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
+                    "-Xopt-in=androidx.compose.foundation.text.InternalFoundationTextApi",
+                    "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+                    "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                    "-Xopt-in=coil.annotation.ExperimentalCoilApi",
+                    "-Xopt-in=dev.chrisbanes.snapper.ExperimentalSnapperApi",
+                    "-Xopt-in=com.google.accompanist.insets.ExperimentalAnimatedInsets",
+                    "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
+                    "-Xopt-in=com.google.accompanist.permissions.ExperimentalPermissionsApi",
+                    "-Xopt-in=com.algolia.instantsearch.ExperimentalInstantSearch"
+            )
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

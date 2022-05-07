@@ -146,7 +146,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     // Setup listeners and observers of MapFragment
     private fun setUpListenersAndObservers() {
         // Set an observer to get Estate
-        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
+        mainViewModel.getEstatesWithCoordinates().observe(this) { estates: List<Estate> ->
             refreshMarkers(estates)
         }
         /*getEstatesJob?.cancel()

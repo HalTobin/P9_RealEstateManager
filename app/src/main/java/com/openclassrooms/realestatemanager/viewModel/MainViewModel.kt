@@ -47,20 +47,52 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
         }
     }*/
     private val estates: MutableLiveData<List<Estate>> by lazy { MutableLiveData<List<Estate>>() }
+    private val estatesWithCoordinates: MediatorLiveData<List<Estate>> by lazy { MediatorLiveData<List<Estate>>() }
     private val coordinates: MutableLiveData<Coordinates> by lazy { MutableLiveData<Coordinates>() }
 
     //fun getEstates(): Flow<List<Estate>> { return estates }
 
-    fun getEstates(): LiveData<List<Estate>> {
+    init {
+        getEstates()
+    }
+
+    private fun getEstates(): LiveData<List<Estate>> {
         val myList: ArrayList<Estate> = ArrayList()
-        estateRepository.getEstates().asLiveData().value?.forEach { myEstate ->
+
+        estatesWithCoordinates.addSource(estateRepository.getEstates().asLiveData()) { estateList ->
+            estateList.forEach { myEstate ->
+                print("GET_LIVE_DATA - " + myEstate.toString())
+
+
+                /*val temp = coordinatesRepository.getCoordinates(myEstate.address)
+                println("GET LIVE DATA - " + temp.toString())
+                if(temp!=null) {
+                    myEstate.xCoordinate = temp.xCoordinate
+                    myEstate.yCoordinate = temp.yCoordinate
+                }*/
+
+                coordinatesRepository.getCoordinates(myEstate.address).value.apply {
+                    println("GET LIVE DATA - " + this.toString())
+                    if(this != null) {
+                        myEstate.xCoordinate = xCoordinate
+                        myEstate.yCoordinate = yCoordinate
+                    }
+                }
+                myList.add(myEstate)
+
+            }
+        }
+
+        /*estateRepository.getEstates().asLiveData().value?.forEach { myEstate ->
+            print("GET_LIVE_DATA - " + myEstate.toString())
             coordinatesRepository.getCoordinates(myEstate.address).asLiveData().value?.apply {
                 myEstate.xCoordinate = xCoordinate
                 myEstate.yCoordinate = yCoordinate
                 myList.add(myEstate)
             }
-        }
-        estates.postValue(myList)
+        }*/
+        estatesWithCoordinates.value = myList
+        estatesWithCoordinates.postValue(myList)
 
         /*estateRepository.getEstates().collect {
             it.forEach { myEstate ->
@@ -82,7 +114,11 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
             estates.value = it
         }*/
 
-        return estates
+        return estateRepository.getEstates().asLiveData()
+    }
+
+    fun getEstatesWithCoordinates(): LiveData<List<Estate>> {
+        return estatesWithCoordinates
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
