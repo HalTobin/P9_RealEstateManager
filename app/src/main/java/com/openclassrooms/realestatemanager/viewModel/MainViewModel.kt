@@ -21,42 +21,14 @@ import org.koin.core.inject
 
 class MainViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
-    //private val estateRepository: EstateRepository by inject()
-    //private val coordinatesRepository: CoordinatesRepository by inject()
-
     private val _estates = MutableLiveData<List<Estate>>()
     val estates = _estates
 
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
 
-    init {
-
-        viewModelScope.launch {
-            getEstates()
-        }
-
-    }
-
-    private suspend fun getEstates() {
-
-        estateRepository.getEstates().collect { list ->
-            list.forEach { myEstate ->
-                coordinatesRepository.getCoordinates(myEstate.address).collect { xy ->
-                    xy?.apply {
-                        myEstate.xCoordinate = xCoordinate
-                        myEstate.yCoordinate = yCoordinate
-                        _estates.value = list
-                        _estates.postValue(list)
-                    }
-                }
-            }
-
-            //_estates.value = list
-            //_estates.postValue(list)
-        }
-
-        //return _estates
+    fun getEstates(): LiveData<List<Estate>> {
+        return estateRepository.getEstates().asLiveData()
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {

@@ -40,7 +40,6 @@ class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRep
                         else -> {}
                     }
                 }
-               // emit(result)
             }.flowOn(Dispatchers.IO)
     }
 

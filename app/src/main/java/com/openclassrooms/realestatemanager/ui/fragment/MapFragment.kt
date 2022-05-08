@@ -34,14 +34,12 @@ import org.koin.core.KoinComponent
 class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, OnMapReadyCallback {
 
     private var mBinding: FragmentEstateMapBinding? = null
-    private val mainViewModel: MainViewModel by sharedViewModel<MainViewModel>()
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     private var myGoogleMap: GoogleMap? = null
     private var isPermissionGranted: Boolean = false
 
     private val markers: MutableList<Marker> = ArrayList()
-
-    private var getEstatesJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -146,7 +144,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     // Setup listeners and observers of MapFragment
     private fun setUpListenersAndObservers() {
         // Set an observer to get Estate
-        mainViewModel.estates.observe(this) { estates: List<Estate> ->
+        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
             refreshMarkers(estates)
         }
         /*getEstatesJob?.cancel()

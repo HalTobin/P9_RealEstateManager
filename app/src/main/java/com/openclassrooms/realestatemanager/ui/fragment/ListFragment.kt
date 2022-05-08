@@ -8,13 +8,10 @@ import com.openclassrooms.realestatemanager.model.Estate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.util.ArrayList
@@ -23,9 +20,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstatePagerAdapter? = null
 
-    private val mainViewModel: MainViewModel by sharedViewModel<MainViewModel>()
-
-    private var getEstatesJob: Job? = null
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,14 +41,9 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
 
         initRecycler()
 
-        mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<Estate> ->
+        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<Estate> ->
             refreshRecycler(estates)
         }
-
-        /*getEstatesJob?.cancel()
-        getEstatesJob = mainViewModel.getEstates().onEach {
-            refreshRecycler(it)
-        }.launchIn(mainViewModel.viewModelScope)*/
 
         return mBinding!!.root
     }
