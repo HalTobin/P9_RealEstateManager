@@ -21,6 +21,6 @@
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_locate"
         app:borderWidth="0dp"
-        android:contentDescription="@string/map_floating_ask_location_description" />
+        android:contentDescription="@string/map_floating_ask_location_description_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

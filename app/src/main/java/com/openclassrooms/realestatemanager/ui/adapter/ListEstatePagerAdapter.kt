@@ -5,6 +5,7 @@ import com.openclassrooms.realestatemanager.model.Estate
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import java.util.ArrayList
 
@@ -21,12 +22,18 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
         val myEstate = estates!![position]
 
         holder.binding.itemEstateName.text = myEstate.title
-        holder.binding.itemEstateLocation.text = myEstate.neighbor
-        holder.binding.itemEstatePrice.text = myEstate.priceDollar.toString() + "€"
+        holder.binding.itemEstateLocation.text = myEstate.neighborhood
+        //TODO - Change currency dynamically
+        holder.binding.itemEstatePrice.text = myEstate.priceDollar.toString().plus("€")
 
-        //holder.binding.itemRestaurantName.setText(restaurant.getName());
+        if(myEstate.pictures != null) {
+            if(myEstate.pictures!!.isNotEmpty()) {
+                Glide.with(context)
+                    .load(myEstate.pictures!![0].imageUrl)
+                    .into(holder.binding.itemEstateImage)
+            }
+        }
 
-        //holder.binding.itemRestaurantTypeAndAdress.setText(restaurant.getAddress());
     }
 
     override fun getItemCount(): Int {
@@ -42,11 +49,8 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
         binding.root
     )
 
-    //private WorkmateViewModel workmateViewModel;
     init {
         estates = items
         this.context = context
-
-        //this.workmateViewModel = WorkmateViewModel.getInstance();
     }
 }

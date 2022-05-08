@@ -2,7 +2,7 @@ package com.openclassrooms.realestatemanager.model
 
 import java.util.*
 
-data class Estate(val id: Int,
+data class Estate(val id: Long,
                   var title: String,
                   var neighborhood: String,
                   var address: String,
@@ -16,7 +16,7 @@ data class Estate(val id: Int,
                   var nbRooms: Int,
                   var nbBathrooms: Int,
                   var nbBedrooms: Int,
-                  var picturesLink: List<String>? = null,
+                  var pictures: List<ImageWithDescription>? = ArrayList(),
                   var nearbySchools:Boolean? = false,
                   var nearbyShops:Boolean? = false,
                   var nearbyParks:Boolean? = false,

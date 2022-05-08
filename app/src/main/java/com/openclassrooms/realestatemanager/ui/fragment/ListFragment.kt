@@ -31,8 +31,8 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
             layoutInflater
         )
         mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext())
-        mBinding!!.fragmentRestaurantList.layoutManager = LinearLayoutManager(this.context)
-        mBinding!!.fragmentRestaurantList.addItemDecoration(
+        mBinding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
+        mBinding!!.listEstateRecycler.addItemDecoration(
             DividerItemDecoration(
                 this.context,
                 DividerItemDecoration.VERTICAL
@@ -49,7 +49,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     }
 
     private fun initRecycler() {
-        mBinding!!.fragmentRestaurantList.adapter = mAdapter
+        mBinding!!.listEstateRecycler.adapter = mAdapter
     }
 
     private fun refreshRecycler(myList: List<Estate>) {
