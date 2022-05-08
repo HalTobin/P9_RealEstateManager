@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.model
 
+import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import java.util.*
 
 data class Estate(val id: Long,
@@ -26,7 +27,8 @@ data class Estate(val id: Long,
                   var agent: String? = null) {
 
     fun getFullAddress(): String {
-        return address.plus(", ").plus(zipCode).plus(city).plus(", ").plus(country)
+        return fullAddress(address, zipCode, city, country)
+        //return address.plus(", ").plus(zipCode).plus(city).plus(", ").plus(country)
     }
 
     companion object {

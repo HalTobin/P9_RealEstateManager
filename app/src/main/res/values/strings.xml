@@ -18,8 +18,8 @@
     <string name="add_edit_estate_school">École</string>
     <string name="add_edit_estate_shop">Supermaché</string>
     <string name="add_edit_estate_agent">Agent</string>
+    <string name="add_edit_estate_save_description_content">Enregistrer le bien immobilier</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
-
 
 </resources>

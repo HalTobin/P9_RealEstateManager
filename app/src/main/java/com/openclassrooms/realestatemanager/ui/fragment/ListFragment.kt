@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
+import com.openclassrooms.realestatemanager.ui.MainActivity
 import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
@@ -30,6 +31,29 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
         mBinding = FragmentEstateListBinding.inflate(
             layoutInflater
         )
+
+        setUpAdapter()
+        setListenersAndObservers()
+
+        return mBinding!!.root
+    }
+
+    private fun setListenersAndObservers() {
+
+        // Setup listener to navigate to AddEditActivity
+        mBinding?.apply {
+            listBtAdd.setOnClickListener {
+                this@ListFragment.activity?.let { it1 -> MainActivity.navigateToAddEditActivity(it1) }
+            }
+        }
+
+        // Setup observer for list of estate
+        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<Estate> ->
+            refreshRecycler(estates)
+        }
+    }
+
+    private fun setUpAdapter() {
         mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext())
         mBinding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
         mBinding!!.listEstateRecycler.addItemDecoration(
@@ -38,14 +62,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
                 DividerItemDecoration.VERTICAL
             )
         )
-
         initRecycler()
-
-        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<Estate> ->
-            refreshRecycler(estates)
-        }
-
-        return mBinding!!.root
     }
 
     private fun initRecycler() {

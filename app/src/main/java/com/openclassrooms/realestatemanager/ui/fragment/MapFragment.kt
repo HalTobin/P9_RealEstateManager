@@ -23,6 +23,8 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
+import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -70,15 +72,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         myGoogleMap = googleMap
 
         // Depending on the phone's settings, dark mode is used for the map
-        //TODO - define map style
-        var myMapStyleOptions = MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style_day)
-        val nightModeFlags =
-            requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) myMapStyleOptions =
-            MapStyleOptions.loadRawResourceStyle(
-                requireContext(), R.raw.map_style_night
-            )
-        googleMap.setMapStyle(myMapStyleOptions)
+        googleMap.setMapStyle(getMapStyle(requireContext()))
 
         // Refresh the location used by the MainViewModel when camera is idle
         myGoogleMap?.apply { setOnCameraIdleListener {
@@ -108,15 +102,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
                 }
             }
         }
-    }
-
-
-    // Move the map's camera to a location
-    private fun navigateTo(latitude: Double, longitude: Double) {
-        val myLatLng = LatLng(latitude, longitude)
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLatLng, 12f)
-        myGoogleMap!!.moveCamera(cameraUpdate)
-        myGoogleMap!!.mapType = GoogleMap.MAP_TYPE_NORMAL
     }
 
     // Check if the user have allow the app to access his location
@@ -153,8 +138,8 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         }.launchIn(mainViewModel.viewModelScope)*/
 
         // Set an observer to get current location
-        mainViewModel.getLocation().observe(this) { coordinates ->
-            navigateTo(coordinates.xCoordinate, coordinates.yCoordinate)
+        mainViewModel.coordinates.observe(this) { coordinates ->
+            myGoogleMap?.navigateTo(coordinates)
         }
 
         // Set a listener to refresh location

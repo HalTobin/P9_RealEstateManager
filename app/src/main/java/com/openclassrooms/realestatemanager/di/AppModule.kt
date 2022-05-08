@@ -11,6 +11,7 @@ import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
+import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -56,7 +57,11 @@ object AppModule {
         }
 
         viewModel {
-            provideMainViewModel(get(), get())
+            provideMainViewModel(get())
+        }
+
+        viewModel {
+            provideAddEditEstateViewModel(get(), get())
         }
 
     }
@@ -77,7 +82,9 @@ object AppModule {
         return GsonConverterFactory.create(gson)
     }
 
-    private fun provideMainViewModel(estateRepository: EstateRepository, coordinatesRepository: CoordinatesRepository): MainViewModel = MainViewModel(estateRepository, coordinatesRepository)
+    private fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel = MainViewModel(estateRepository)
+
+    private fun provideAddEditEstateViewModel(estateRepository: EstateRepository, coordinatesRepository: CoordinatesRepository): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, coordinatesRepository)
 
     private fun provideListFragment(): ListFragment = ListFragment()
 

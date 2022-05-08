@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MainViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
+class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(), KoinComponent {
 
     private val _estates = MutableLiveData<List<Estate>>()
     val estates = _estates
@@ -32,11 +32,7 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
-        coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
-    }
-
-    fun getLocation(): LiveData<Coordinates> {
-        return coordinates
+        _coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
     }
 
     @SuppressLint("MissingPermission")
@@ -47,7 +43,4 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
         }
     }
 
-    fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()
-
-    fun setPositionStackApiKey(key: String) { coordinatesRepository.setApiKey(key) }
 }

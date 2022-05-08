@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.openclassrooms.realestatemanager.ui.SecondActivity" />
+        <activity android:name="com.openclassrooms.realestatemanager.ui.AddEditEstateActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

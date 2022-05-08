@@ -2,10 +2,11 @@ package com.openclassrooms.realestatemanager.ui
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -44,13 +45,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         this.context = this
 
         checkAndAskPermission()
-        setUpTabAndNav()
-        setApiKey()
+        setUpTabAndFragments()
         mainViewModel.findCurrentLocation(this)
     }
 
     // Allow navigation between fragments (List, Map)
-    private fun setUpTabAndNav() {
+    private fun setUpTabAndFragments() {
         setFragment(listFragment)
         binding?.apply {
             mainBottomNav.setOnItemSelectedListener { item ->
@@ -69,7 +69,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
     }
 
-    //
+    // Check permissions
     private fun checkAndAskPermission() {
 
         Dexter.withContext(context).withPermissions(
@@ -99,7 +99,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         fragmentTransaction.commit()
     }
 
-    private fun setApiKey() {
-        if(!mainViewModel.isPositionStackApiKeyDefined()) mainViewModel.setPositionStackApiKey(getString(R.string.position_stack_api_key))
+    companion object {
+        fun navigateToAddEditActivity(activity: FragmentActivity) {
+            val intent = Intent(activity, AddEditEstateActivity::class.java)
+            ActivityCompat.startActivity(activity, intent, null)
+        }
     }
+
 }

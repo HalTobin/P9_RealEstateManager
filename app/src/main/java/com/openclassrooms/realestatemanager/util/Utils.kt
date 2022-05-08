@@ -50,4 +50,8 @@ object Utils {
         /*val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wifi.isWifiEnabled*/
     }
+
+    fun fullAddress(address: String, zipCode: String?, city: String, country: String): String {
+        return address.plus(", ").plus(zipCode).plus(" ").plus(city).plus(", ").plus(country)
+    }
 }
