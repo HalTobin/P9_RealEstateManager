@@ -7,7 +7,7 @@ import retrofit2.Response
 
 interface CoordinatesRepository {
 
-    fun getCoordinates(address: String): LiveData<Coordinates?>
+    suspend fun getCoordinates(address: String): Flow<Coordinates?>
 
     fun setApiKey(key: String)
 

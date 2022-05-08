@@ -13,6 +13,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -23,102 +24,39 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
     //private val estateRepository: EstateRepository by inject()
     //private val coordinatesRepository: CoordinatesRepository by inject()
 
-    /*@OptIn(DelicateCoroutinesApi::class)
-    private val estates: Flow<List<Estate>> = flow {
-        while(true) {
-            estateRepository.getEstates().collect {
-                it.forEach { myEstate ->
+    private val _estates = MutableLiveData<List<Estate>>()
+    val estates = _estates
 
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val response = coordinatesRepository.getCoordinates(myEstate.address)
-                        if(response.isSuccessful) {
-                            myEstate.xCoordinate = response.body()?.xCoordinate
-                            myEstate.yCoordinate = response.body()?.yCoordinate
-                        }
-                    }
-
-                    /*coordinatesRepository.getCoordinates(myEstate.address).collect { xy ->
-                        myEstate.xCoordinate = xy.xCoordinate
-                        myEstate.yCoordinate = xy.yCoordinate
-                    }*/
-                }
-                emit(it)
-            }
-        }
-    }*/
-    private val estates: MutableLiveData<List<Estate>> by lazy { MutableLiveData<List<Estate>>() }
-    private val estatesWithCoordinates: MediatorLiveData<List<Estate>> by lazy { MediatorLiveData<List<Estate>>() }
-    private val coordinates: MutableLiveData<Coordinates> by lazy { MutableLiveData<Coordinates>() }
-
-    //fun getEstates(): Flow<List<Estate>> { return estates }
+    private val _coordinates = MutableLiveData<Coordinates>()
+    val coordinates = _coordinates
 
     init {
-        getEstates()
-    }
 
-    private fun getEstates(): LiveData<List<Estate>> {
-        val myList: ArrayList<Estate> = ArrayList()
-
-        estatesWithCoordinates.addSource(estateRepository.getEstates().asLiveData()) { estateList ->
-            estateList.forEach { myEstate ->
-                print("GET_LIVE_DATA - " + myEstate.toString())
-
-
-                /*val temp = coordinatesRepository.getCoordinates(myEstate.address)
-                println("GET LIVE DATA - " + temp.toString())
-                if(temp!=null) {
-                    myEstate.xCoordinate = temp.xCoordinate
-                    myEstate.yCoordinate = temp.yCoordinate
-                }*/
-
-                coordinatesRepository.getCoordinates(myEstate.address).value.apply {
-                    println("GET LIVE DATA - " + this.toString())
-                    if(this != null) {
-                        myEstate.xCoordinate = xCoordinate
-                        myEstate.yCoordinate = yCoordinate
-                    }
-                }
-                myList.add(myEstate)
-
-            }
+        viewModelScope.launch {
+            getEstates()
         }
 
-        /*estateRepository.getEstates().asLiveData().value?.forEach { myEstate ->
-            print("GET_LIVE_DATA - " + myEstate.toString())
-            coordinatesRepository.getCoordinates(myEstate.address).asLiveData().value?.apply {
-                myEstate.xCoordinate = xCoordinate
-                myEstate.yCoordinate = yCoordinate
-                myList.add(myEstate)
-            }
-        }*/
-        estatesWithCoordinates.value = myList
-        estatesWithCoordinates.postValue(myList)
+    }
 
-        /*estateRepository.getEstates().collect {
-            it.forEach { myEstate ->
+    private suspend fun getEstates() {
 
-                /*val response = coordinatesRepository.getCoordinates(myEstate.address)
-                if(response.isSuccessful) {
-                    myEstate.xCoordinate = response.body()?.xCoordinate
-                    myEstate.yCoordinate = response.body()?.yCoordinate
-                }*/
-
+        estateRepository.getEstates().collect { list ->
+            list.forEach { myEstate ->
                 coordinatesRepository.getCoordinates(myEstate.address).collect { xy ->
                     xy?.apply {
                         myEstate.xCoordinate = xCoordinate
                         myEstate.yCoordinate = yCoordinate
+                        _estates.value = list
+                        _estates.postValue(list)
                     }
                 }
             }
 
-            estates.value = it
-        }*/
+            //_estates.value = list
+            //_estates.postValue(list)
+        }
 
-        return estateRepository.getEstates().asLiveData()
-    }
-
-    fun getEstatesWithCoordinates(): LiveData<List<Estate>> {
-        return estatesWithCoordinates
+        //return _estates
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {

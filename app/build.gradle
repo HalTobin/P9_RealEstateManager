@@ -27,6 +27,13 @@ android {
                 "\"${MAPS_API_KEY}\"")
         resValue "string", "google_places_api_key", "${MAPS_API_KEY}"
 
+        // Placeholder for Google Map API key
+        manifestPlaceholders =
+                [MAPS_API_KEY: MAPS_API_KEY]
+        // Adds a new field for the authority to the BuildConfig class.
+        buildConfigField("String",
+                "MAPS_API_KEY",
+                "\"${MAPS_API_KEY}\"")
         resValue "string", "position_stack_api_key", "${POSITIONSTACK_API_KEY}"
     }
     buildTypes {
@@ -77,6 +84,8 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
 
     // Multidex
     implementation "androidx.multidex:multidex:2.0.1"
@@ -88,6 +97,12 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-fragment:$koin_version"
     implementation "org.koin:koin-test:$koin_version"
+
+    //Room Database
+    implementation "androidx.room:room-runtime:2.4.2"
+    kapt "androidx.room:room-compiler:2.4.2"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:2.4.2"
 }
 repositories {
     mavenCentral()

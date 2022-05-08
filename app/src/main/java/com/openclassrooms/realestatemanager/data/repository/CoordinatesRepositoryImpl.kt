@@ -1,60 +1,60 @@
 package com.openclassrooms.realestatemanager.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.openclassrooms.realestatemanager.api.PositionStackApi
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
+import com.openclassrooms.realestatemanager.util.ErrorUtils
+import com.openclassrooms.realestatemanager.model.Result
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.*
 
-class CoordinatesRepositoryImpl(private val positionStackApi: PositionStackApi) : CoordinatesRepository {
+class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRepository {
 
     private var apiKey: String? = null
+    private val positionStackApi = retrofit.create(PositionStackApi::class.java)
 
-    override fun getCoordinates(address: String): LiveData<Coordinates?> {
+    override suspend fun getCoordinates(address: String): Flow<Coordinates?> {
 
-        val estateCoordinates: MutableLiveData<Coordinates> = MutableLiveData<Coordinates>()
-        var coordinates: Flow<Coordinates?> = flowOf(Coordinates())
+            return flow {
+                if(isApiKeyDefined()) {
+                    val result = getResponse(
+                        request = { positionStackApi.getCoordinates(apiKey, address, 1) },
+                        defaultErrorMessage = "Error fetching Coordinates"
+                    )
 
-        var nonLiveCoordinates = Coordinates()
-
-        println("GET COORDINATES - " + address)
-
-        if(isApiKeyDefined()) {
-            //val response = positionStackApi.getCoordinates(apiKey, address, 1).await()
-
-            /*if(response.isSuccessful) {
-                coordinates = flowOf(response.body())
-            }*/
-
-            /*GlobalScope.launch(Dispatchers.IO) {
-                coordinates = flowOf()
-            }*/
-
-            positionStackApi.getCoordinates(apiKey, address, 1).enqueue(object : Callback<Coordinates?> {
-                override fun onResponse(call: Call<Coordinates?>, response: Response<Coordinates?>) {
-                    response.body()?.apply {
-
-                        nonLiveCoordinates = response.body()!!
-
-                        estateCoordinates.value = response.body()
-                        estateCoordinates.postValue(response.body())
-
-                        coordinates = flow {
-                            emit(response.body())
+                    when (result.status) {
+                        Result.Status.SUCCESS -> {
+                            result.data?.let { coordinates ->
+                                println("GET COORDINATES - " + coordinates.toString())
+                                emit(coordinates)
+                            }
                         }
-
+                        Result.Status.ERROR -> {
+                            result.message?.let {
+                                println("GET COOORDINATES ERROR - " + it)
+                            }
+                        }
+                        else -> {}
                     }
                 }
-                override fun onFailure(call: Call<Coordinates?>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
-            })
+               // emit(result)
+            }.flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun <T> getResponse(request: suspend () -> Response<T>, defaultErrorMessage: String): Result<T?> {
+        return try {
+            val result = request.invoke()
+            if (result.isSuccessful) return Result.success(result.body())
+            else {
+                val errorResponse = retrofit.let { ErrorUtils.parseError(result, it) }
+                Result.error(errorResponse?.message ?: defaultErrorMessage, errorResponse)
+            }
+        } catch (e: Throwable) {
+            Result.error(e.stackTraceToString(), null)
         }
-         return estateCoordinates
     }
 
     override fun setApiKey(key: String) { apiKey = key }
