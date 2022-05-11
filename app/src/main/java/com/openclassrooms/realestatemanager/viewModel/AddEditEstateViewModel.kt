@@ -1,29 +1,16 @@
 package com.openclassrooms.realestatemanager.viewModel
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.location.Location
+import android.graphics.Bitmap
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
-import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
-import com.openclassrooms.realestatemanager.util.JavaFusedLocationProviderClient
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
-
-    //private val _estate = MutableLiveData<Estate>()
-    //val estate = _estate
 
     private val _country = MutableLiveData<String>()
     val country = _country
@@ -37,8 +24,18 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _address = MutableLiveData<String>()
     val address = _address
 
+    private val _isDollar = MutableLiveData<Boolean>()
+    val isDollar = _isDollar
+
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
+
+    private val _pictures = MutableLiveData<ArrayList<ImageWithDescription>>()
+    val pictures = _pictures
+
+    init {
+        _isDollar.value = true
+    }
 
     fun searchLocation() {
         viewModelScope.launch {
@@ -55,6 +52,11 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         _coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
     }
 
+    fun changeCurrency() {
+        if(_isDollar.value != null) _isDollar.postValue(!_isDollar.value!!)
+        else _isDollar.postValue(true)
+    }
+
     private fun getCurrentFullAddress(): String? {
         return if(_address.value != null && _city.value != null && _country.value != null) {
             fullAddress(_address.value!!, _zip.value, _city.value!!, _country.value!!)
@@ -68,6 +70,12 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun setZip(zip: String) { _zip.value = zip }
 
     fun setAddress(address: String) { _address.value = address }
+
+    fun addPicture(imageUrl: String) {
+        _pictures.value?.add(ImageWithDescription(1, 1, "Test", imageUrl))
+    }
+
+    fun removePicture(imageWithDescription: ImageWithDescription) { _pictures.value?.remove(imageWithDescription) }
 
     fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()
 

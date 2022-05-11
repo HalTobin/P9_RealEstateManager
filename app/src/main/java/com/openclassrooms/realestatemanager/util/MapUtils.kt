@@ -21,16 +21,13 @@ object MapUtils {
         return myMapStyleOptions
     }
 
+    // Move the map's camera to a location
     fun GoogleMap.navigateTo(coordinates: Coordinates) {
-        // Move the map's camera to a location
-        val myLatLng = LatLng(coordinates.xCoordinate, coordinates.yCoordinate)
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLatLng, 12f)
-        this.moveCamera(cameraUpdate)
-        this.mapType = GoogleMap.MAP_TYPE_NORMAL
+        navigateTo(coordinates, 12f)
     }
 
+    // Move the map's camera to a location
     fun GoogleMap.navigateTo(coordinates: Coordinates, zoom: Float) {
-        // Move the map's camera to a location
         val myLatLng = LatLng(coordinates.xCoordinate, coordinates.yCoordinate)
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLatLng, zoom)
         this.moveCamera(cameraUpdate)

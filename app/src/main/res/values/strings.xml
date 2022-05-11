@@ -20,6 +20,10 @@
     <string name="add_edit_estate_agent">Agent</string>
     <string name="add_edit_estate_save_description_content">Enregistrer le bien immobilier</string>
 
+    <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
+    <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
+    <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
+
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
 
 </resources>

@@ -28,7 +28,6 @@ data class Estate(val id: Long,
 
     fun getFullAddress(): String {
         return fullAddress(address, zipCode, city, country)
-        //return address.plus(", ").plus(zipCode).plus(city).plus(", ").plus(country)
     }
 
     companion object {
