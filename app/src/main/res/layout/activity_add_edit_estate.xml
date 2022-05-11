@@ -142,6 +142,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/add_edit_estate_list_images"
         android:layout_width="0dp"
         android:layout_height="112dp"
         android:orientation="horizontal"

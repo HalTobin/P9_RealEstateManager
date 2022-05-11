@@ -11,8 +11,10 @@ import java.util.ArrayList
 
 class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
+
     private val context: Context
     private var estates: List<Estate>? = ArrayList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = ItemListEstateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view)

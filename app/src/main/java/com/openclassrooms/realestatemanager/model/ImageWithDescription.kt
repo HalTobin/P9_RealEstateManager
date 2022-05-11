@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager.model
 
 import android.content.Context
-import android.media.Image
+import android.graphics.Bitmap
 import com.google.gson.Gson
 import java.io.*
 import java.nio.charset.Charset
@@ -36,15 +36,16 @@ data class ImageWithDescription(
             return myImage
         }*/
 
-        fun saveImage(myImage: ImageWithDescription, fileName: String, context: Context) {
-            val myPath = File(context.filesDir.toString() + "/playlists")
+        fun saveImage(myImage: Bitmap, fileName: Long, context: Context): String {
+            val myPath = File(context.filesDir.toString() + "/images")
             val gson = Gson()
             val mySerializedPlaylist = gson.toJson(myImage)
             if (!myPath.exists()) myPath.mkdirs()
-            val myFile = File("$myPath/$fileName.json")
+            val myFile = File("$myPath/$fileName.png")
             var myOutputStream: FileOutputStream? = null
             try {
                 myOutputStream = FileOutputStream(myFile, false)
+                myImage.compress(Bitmap.CompressFormat.JPEG, 100, myOutputStream)
                 myOutputStream.write(mySerializedPlaylist.toByteArray(Charset.defaultCharset()))
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -55,6 +56,7 @@ data class ImageWithDescription(
                     e.printStackTrace()
                 }
             }
+            return context.filesDir.toString() + "/images/" + fileName + "/jpg"
         }
 
     }

@@ -1,14 +1,19 @@
 package com.openclassrooms.realestatemanager.viewModel
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.os.Environment
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
+import com.openclassrooms.realestatemanager.util.CustomTakePicture
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
+import java.io.File
+import java.io.IOException
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
@@ -71,8 +76,9 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setAddress(address: String) { _address.value = address }
 
-    fun addPicture(imageUrl: String) {
-        _pictures.value?.add(ImageWithDescription(1, 1, "Test", imageUrl))
+    fun addPicture(image: Bitmap, context: Context) {
+        val myFile = ImageWithDescription.saveImage(image, System.currentTimeMillis(), context)
+        _pictures.value?.add(ImageWithDescription(1, 1, "Test", myFile))
     }
 
     fun removePicture(imageWithDescription: ImageWithDescription) { _pictures.value?.remove(imageWithDescription) }
