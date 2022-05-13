@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
@@ -35,7 +38,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
 
-    private val _pictures = MutableLiveData<ArrayList<ImageWithDescription>>()
+    private val pictureList = mutableListOf<ImageWithDescription>()
+    private val _pictures = MutableLiveData<List<ImageWithDescription>>()
     val pictures = _pictures
 
     init {
@@ -76,12 +80,15 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setAddress(address: String) { _address.value = address }
 
-    fun addPicture(image: Bitmap, context: Context) {
-        val myFile = ImageWithDescription.saveImage(image, System.currentTimeMillis(), context)
-        _pictures.value?.add(ImageWithDescription(1, 1, "Test", myFile))
+    fun addPicture(image: String) {
+        pictureList.add(ImageWithDescription(1, 1, "Test", image))
+        _pictures.postValue(pictureList)
     }
 
-    fun removePicture(imageWithDescription: ImageWithDescription) { _pictures.value?.remove(imageWithDescription) }
+    fun removePicture(imageWithDescription: ImageWithDescription) {
+        pictureList.remove(imageWithDescription)
+        _pictures.postValue(pictureList)
+    }
 
     fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()
 

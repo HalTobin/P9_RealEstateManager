@@ -3,21 +3,23 @@ package com.openclassrooms.realestatemanager.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.content.FileProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.internal.Objects
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,20 +30,16 @@ import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditEstateBinding
-import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
-import com.openclassrooms.realestatemanager.ui.adapter.ListEstatePagerAdapter
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
+import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
-import java.io.File
-import java.util.ArrayList
 
-
-class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback {
+class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener {
 
     private val addEditEstateViewModel: AddEditEstateViewModel by viewModel()
 
@@ -51,7 +49,8 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     private var marker: Marker? = null
     var options = GoogleMapOptions().liteMode(true)
 
-    private lateinit var currentImageUri:Uri
+    lateinit var imagePicker: ImagePicker
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +62,10 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         setApiKey()
         setUpListenersAndObservers()
         initMapView(savedInstanceState)
+        initRecycler()
 
+        imagePicker = ImagePicker(this, BuildConfig.APPLICATION_ID)
+        imagePicker.setImageSelectedListener(this)
     }
 
     private fun setUpListenersAndObservers() {
@@ -145,21 +147,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         if(!addEditEstateViewModel.isPositionStackApiKeyDefined()) addEditEstateViewModel.setPositionStackApiKey(getString(R.string.position_stack_api_key))
     }
 
-    override fun onStart() {
-        super.onStart()
-        binding?.apply { addEditEstateLiteMap.onStart() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding?.apply { addEditEstateLiteMap.onResume() }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding?.apply { addEditEstateLiteMap.onPause() }
-    }
-
     private fun initMapView(savedInstanceState: Bundle?) {
         binding?.apply {
             addEditEstateLiteMap.onCreate(savedInstanceState)
@@ -186,66 +173,45 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
-            if (options[item] == getString(R.string.add_edit_estate_save_take_picture_item)) takePicture()
-            if (options[item] == getString(R.string.add_edit_estate_save_from_gallery_item)) chooseImageGallery()
+            if (options[item] == getString(R.string.add_edit_estate_save_take_picture_item)) imagePicker.takePhotoFromCamera()
+            if (options[item] == getString(R.string.add_edit_estate_save_from_gallery_item)) imagePicker.takePhotoFromGallery()
         }
         builder.show()
     }
 
-    private fun takePicture() {
-        //getResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-        startForResultToLoadImage.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+    override fun onImageSelectFailure() {
+        Toast.makeText(this, "Error with image selection...", Toast.LENGTH_LONG).show()
     }
 
-
-    private fun chooseImageGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        getResult.launch(intent)
-
-    }
-
-    private val getResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val value = it.data?.getStringExtra("input")
-                //addEditEstateViewModel.addPicture(value, this)
-            }
-        }
-
-    private val startForResultToLoadImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            try {
-                val selectedImage: Uri? = result.data?.data
-                if (selectedImage != null){
-                    // From Gallery
-                }else{
-                    // From Camera
-                    val bitmap = BitmapFactory.decodeStream(this.contentResolver?.openInputStream(currentImageUri))
-                    println("SAVE IMAGE")
-                    addEditEstateViewModel.addPicture(bitmap, this)
-                }
-            } catch (error: Exception) {
-                Log.d("TAG==>>", "Error : ${error.localizedMessage}")
-            }
-        }
-    }
-
-    private fun setUpAdapter() {
-        mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this)
-        binding!!.addEditEstateListImages.layoutManager = LinearLayoutManager(this)
-        binding!!.addEditEstateListImages.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        )
-        initRecycler()
+    override fun onImageSelectSuccess(imagePath: String) {
+        addEditEstateViewModel.addPicture(imagePath)
     }
 
     private fun initRecycler() {
-        binding!!.addEditEstateListImages.adapter = mAdapter
+        mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this)
+        binding!!.addEditEstateListImages.apply {
+            layoutManager = LinearLayoutManager(this@AddEditEstateActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = mAdapter
+        }
     }
 
     private fun refreshRecycler(myList: List<ImageWithDescription>) {
         mAdapter!!.updateList(myList)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding?.apply { addEditEstateLiteMap.onStart() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding?.apply { addEditEstateLiteMap.onResume() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding?.apply { addEditEstateLiteMap.onPause() }
     }
 
 }
