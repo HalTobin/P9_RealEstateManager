@@ -31,7 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
 
-class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener {
+class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
 
     private val addEditEstateViewModel: AddEditEstateViewModel by viewModel()
 
@@ -276,7 +276,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     }
 
     private fun initRecycler() {
-        mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this)
+        mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this, this)
         binding!!.addEditEstateListImages.apply {
             layoutManager = LinearLayoutManager(this@AddEditEstateActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = mAdapter
@@ -317,15 +317,41 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
             setView(dialogLayout)
 
             // Set up the buttons
-            setPositiveButton(getString(R.string.add_edit_estate_image_dialog_ok_button)) { dialog, _ ->
+            setPositiveButton(getString(R.string.ok_button)) { dialog, _ ->
                 // Here you get get input text from the Edittext
                 addEditEstateViewModel.addPicture(imagePath, input.text.toString())
                 dialog.cancel()
             }
-            setNegativeButton(getString(R.string.add_edit_estate_image_dialog_cancel_button)) { dialog, _ -> dialog.cancel() }
             show()
         }
+    }
 
+    @SuppressLint("InflateParams")
+    private fun showDeleteImageDialog(imageWithDescription: ImageWithDescription){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_delete_confirmation, null)
+
+        with(builder) {
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            setView(dialogLayout)
+
+            setTitle(getString(R.string.are_you_sure))
+
+            // Set up the buttons
+            setPositiveButton(getString(R.string.delete)) { dialog, _ ->
+                // Here you get get input text from the Edittext
+                addEditEstateViewModel.removePicture(imageWithDescription)
+                dialog.cancel()
+            }
+            setNegativeButton(getString(R.string.cancel_button)) { dialog, _ ->
+                dialog.cancel()
+            }
+            show()
+        }
+    }
+
+    override fun onClick(imageWithDescription: ImageWithDescription) {
+        showDeleteImageDialog(imageWithDescription)
     }
 
 }

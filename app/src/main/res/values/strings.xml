@@ -18,6 +18,7 @@
     <string name="add_edit_estate_school">École</string>
     <string name="add_edit_estate_shop">Supermaché</string>
     <string name="add_edit_estate_agent">Agent</string>
+    <string name="add_edit_estate_description">Description du logement</string>
     <string name="add_edit_estate_save_description_content">Enregistrer le bien immobilier</string>
 
     <string name="add_edit_estate_rooms">Pièces</string>
@@ -28,8 +29,13 @@
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
     <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
     <string name="add_edit_estate_image_dialog_text">Pièce</string>
-    <string name="add_edit_estate_image_dialog_cancel_button">Retour</string>
-    <string name="add_edit_estate_image_dialog_ok_button">Valider</string>
+
+    <string name="add_edit_estate_image_dialog_delete_image">Souhaitez-vous supprimer l\'image ?</string>
+
+    <string name="are_you_sure">Êtes-vous sûr ?</string>
+    <string name="delete">Supprimer</string>
+    <string name="cancel_button">Retour</string>
+    <string name="ok_button">Valider</string>
 
     <string name="add_edit_estate_uncomplete">Certains champs n\'ont pas étés remplis !</string>
     <string name="add_edit_estate_cant_find_location">La localisation du bien n\'a pas été trouvée</string>

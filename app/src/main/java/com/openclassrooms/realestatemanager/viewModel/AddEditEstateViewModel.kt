@@ -45,7 +45,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     val price = _price
     var priceAsDollar: Int = 0
 
-    private val _isDollar = MutableLiveData<Boolean>()
+    private val _isDollar = MutableLiveData(true)
     val isDollar = _isDollar
 
     private val _coordinates = MutableLiveData<Coordinates>()
@@ -79,13 +79,13 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _nbBedrooms = MutableLiveData<Int>()
     val nbBedrooms = _nbBedrooms
 
-    private val _entryDate = MutableLiveData<Long>()
+    private val _entryDate = MutableLiveData(System.currentTimeMillis())
     val entryDate = _entryDate
 
     private val _soldDate = MutableLiveData<Long>()
     val soldDate = _soldDate
 
-    private val _status = MutableLiveData<Int>(Estate.AVAILABLE)
+    private val _status = MutableLiveData(Estate.AVAILABLE)
     val status = _status
 
     private val _warning = MutableLiveData<Int>()
@@ -95,8 +95,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     val mustClose = _mustClose
 
     init {
-        _isDollar.value = true
-        _description.value = "This is not empty..."
+        //TODO - to load an Estate to edit
     }
 
     fun searchLocation() {
@@ -162,6 +161,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     }
 
     fun removePicture(imageWithDescription: ImageWithDescription) {
+        File(imageWithDescription.imageUrl).delete()
         pictureList.remove(imageWithDescription)
         _pictures.postValue(pictureList)
     }
@@ -183,8 +183,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     nearbyShop = _nearbyShop.value,
                     nearbyPark = _nearbyPark.value,
                     status = _status.value,
-                    entryDate = System.currentTimeMillis(),
-                    soldDate = 0,
+                    entryDate = _entryDate.value,
+                    soldDate = _soldDate.value,
                     agent = _agent.value!!,
                     description = _description.value!!))
             _mustClose.postValue(true)
