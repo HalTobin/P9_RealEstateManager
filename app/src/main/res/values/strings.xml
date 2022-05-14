@@ -27,6 +27,9 @@
     <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
     <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
+    <string name="add_edit_estate_image_dialog_text">Pièce</string>
+    <string name="add_edit_estate_image_dialog_cancel_button">Retour</string>
+    <string name="add_edit_estate_image_dialog_ok_button">Valider</string>
 
     <string name="add_edit_estate_uncomplete">Certains champs n\'ont pas étés remplis !</string>
     <string name="add_edit_estate_cant_find_location">La localisation du bien n\'a pas été trouvée</string>

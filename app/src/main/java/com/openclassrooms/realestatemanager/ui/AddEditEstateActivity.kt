@@ -1,10 +1,12 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
-import android.widget.CompoundButton
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.GoogleMap
@@ -13,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.textfield.TextInputEditText
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
@@ -257,7 +260,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         val options = arrayOf<CharSequence>(getString(R.string.add_edit_estate_save_take_picture_item), getString(R.string.add_edit_estate_save_from_gallery_item))
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
-        builder.setItems(options) { _, item ->
+        builder.setItems(options) { dialog, item ->
             if (options[item] == getString(R.string.add_edit_estate_save_take_picture_item)) imagePicker.takePhotoFromCamera()
             if (options[item] == getString(R.string.add_edit_estate_save_from_gallery_item)) imagePicker.takePhotoFromGallery()
         }
@@ -269,7 +272,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     }
 
     override fun onImageSelectSuccess(imagePath: String) {
-        addEditEstateViewModel.addPicture(imagePath)
+        showInputTextDialog(imagePath)
     }
 
     private fun initRecycler() {
@@ -301,6 +304,28 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     override fun onPause() {
         super.onPause()
         binding?.apply { addEditEstateLiteMap.onPause() }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun showInputTextDialog(imagePath: String){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_text_input, null)
+        val input = dialogLayout.findViewById<TextInputEditText>(R.id.add_edit_estate_add_image_dialog_text)
+
+        with(builder) {
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            setView(dialogLayout)
+
+            // Set up the buttons
+            setPositiveButton(getString(R.string.add_edit_estate_image_dialog_ok_button)) { dialog, _ ->
+                // Here you get get input text from the Edittext
+                addEditEstateViewModel.addPicture(imagePath, input.text.toString())
+                dialog.cancel()
+            }
+            setNegativeButton(getString(R.string.add_edit_estate_image_dialog_cancel_button)) { dialog, _ -> dialog.cancel() }
+            show()
+        }
+
     }
 
 }
