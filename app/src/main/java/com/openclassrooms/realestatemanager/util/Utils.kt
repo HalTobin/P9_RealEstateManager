@@ -26,6 +26,10 @@ object Utils {
         return Math.round(euros * 1.05).toInt()
     }
 
+    fun Int.fromEuroToDollar(): Int {
+        return convertEuroToDollar(this)
+    }
+
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE

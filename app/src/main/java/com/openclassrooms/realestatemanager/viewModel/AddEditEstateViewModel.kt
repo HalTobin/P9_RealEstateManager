@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.viewModel
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
@@ -10,6 +11,7 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.util.CustomTakePicture
+import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -41,6 +43,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     private val _price = MutableLiveData<Int>()
     val price = _price
+    var priceAsDollar: Int = 0
 
     private val _isDollar = MutableLiveData<Boolean>()
     val isDollar = _isDollar
@@ -85,6 +88,12 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _status = MutableLiveData<Int>(Estate.AVAILABLE)
     val status = _status
 
+    private val _warning = MutableLiveData<Int>()
+    val warning = _warning
+
+    private val _mustClose = MutableLiveData<Boolean>()
+    val mustClose = _mustClose
+
     init {
         _isDollar.value = true
         _description.value = "This is not empty..."
@@ -116,6 +125,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         } else null
     }
 
+    fun setTitle(title: String) { _title.value = title }
+
     fun setCountry(country: String) { _country.value = country }
 
     fun setCity(city: String) { _city.value = city }
@@ -123,6 +134,27 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun setZip(zip: String) { _zip.value = zip }
 
     fun setAddress(address: String) { _address.value = address }
+
+    fun setArea(area: String) { _area.value = area.toInt() }
+
+    fun setPrice(price: String) {
+        _price.value = price.toInt()
+        priceAsDollar = if(!isDollar.value!!) price.toInt().fromEuroToDollar() else price.toInt()
+    }
+
+    fun setRooms(rooms: String) { _nbRooms.value = rooms.toInt() }
+
+    fun setBedrooms(bedrooms: String) { _nbBedrooms.value = bedrooms.toInt() }
+
+    fun setBathrooms(bathrooms: String) { _nbBathrooms.value = bathrooms.toInt() }
+
+    fun setPark(park: Boolean) { _nearbyPark.value = park }
+
+    fun setSchool(school: Boolean) { _nearbySchool.value = school }
+
+    fun setShop(shop: Boolean) { _nearbyShop.value = shop }
+
+    fun setAgent(agent: String) { _agent.value = agent }
 
     fun addPicture(image: String) {
         pictureList.add(ImageWithDescription(1, 1, "Test", image))
@@ -135,7 +167,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     }
 
     fun saveEstate() {
-        if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, _price.value, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _soldDate.value, _agent.value, _description.value)) {
+        if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
             estateRepository.addEstate(Estate(title = _title.value!!,
                     address = _address.value!!,
                     city = _city.value!!,
@@ -155,8 +187,11 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     soldDate = 0,
                     agent = _agent.value!!,
                     description = _description.value!!))
+            _mustClose.postValue(true)
         }
-
+        if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
+        else if(coordinates.value!!.isUndefined()) _warning.postValue(Estate.CANT_FIND_LOCATION)
+        else _warning.postValue(Estate.UNCOMPLETE)
     }
 
     fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()

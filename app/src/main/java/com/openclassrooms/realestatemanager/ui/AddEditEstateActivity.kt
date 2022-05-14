@@ -1,25 +1,12 @@
 package com.openclassrooms.realestatemanager.ui
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.content.FileProvider
-import androidx.core.net.toUri
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.internal.Objects
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,6 +17,7 @@ import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditEstateBinding
+import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
@@ -38,6 +26,7 @@ import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
+
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener {
 
@@ -69,6 +58,15 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     }
 
     private fun setUpListenersAndObservers() {
+
+        // Textfield for the Estate's title
+        binding?.addEditEstateTitle?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
+            }
+        })
 
         // TextField for the Estate's country
         binding?.addEditEstateCountry?.addTextChangedListener(object : TextWatcher {
@@ -103,6 +101,75 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) addEditEstateViewModel.setAddress(s.toString())
+            }
+        })
+
+        // TextField for the Estate's area
+        binding?.addEditEstateArea?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setArea(s.toString())
+            }
+        })
+
+        // TextField for the Estate's price
+        binding?.addEditEstatePrice?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setPrice(s.toString())
+            }
+        })
+
+        // TextField for the Estate's numbers of rooms
+        binding?.addEditEstateNbRooms?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setRooms(s.toString())
+            }
+        })
+
+        // TextField for the Estate's numbers of bedrooms
+        binding?.addEditEstateNbBedrooms?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setBedrooms(s.toString())
+            }
+        })
+
+        // TextField for the Estate's numbers of bathrooms
+        binding?.addEditEstateNbBathrooms?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setBathrooms(s.toString())
+            }
+        })
+
+        // Checkbox to indicate if there is a park near the Estate
+        binding?.addEditEstateCheckPark?.setOnCheckedChangeListener { _, isChecked ->
+            addEditEstateViewModel.setPark(isChecked)
+        }
+
+        // Checkbox to indicate if there is a school near the Estate
+        binding?.addEditEstateCheckSchool?.setOnCheckedChangeListener { _, isChecked ->
+            addEditEstateViewModel.setSchool(isChecked)
+        }
+
+        // Checkbox to indicate if there is a shop near the Estate
+        binding?.addEditEstateCheckShop?.setOnCheckedChangeListener { _, isChecked ->
+            addEditEstateViewModel.setShop(isChecked)
+        }
+
+        // TextField for the Estate's agent
+        binding?.addEditEstateAgent?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setAgent(s.toString())
             }
         })
 
@@ -145,6 +212,19 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
                 MarkerOptions()
                     .position(LatLng(coordinates.xCoordinate, coordinates.yCoordinate))
             )?.let { marker = it }
+        }
+
+        // Observe if a warning has been posted
+        addEditEstateViewModel.warning.observe(this) { warning ->
+            when(warning) {
+                Estate.UNCOMPLETE -> showToast(R.string.add_edit_estate_uncomplete)
+                Estate.CANT_FIND_LOCATION -> showToast(R.string.add_edit_estate_cant_find_location)
+            }
+        }
+
+        // Observe if the activity must be closed
+        addEditEstateViewModel.mustClose.observe(this) { mustClose ->
+            if(mustClose) finish()
         }
     }
 
@@ -202,6 +282,10 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
     private fun refreshRecycler(myList: List<ImageWithDescription>) {
         mAdapter!!.updateList(myList)
+    }
+
+    private fun showToast(contentId: Int) {
+        Toast.makeText(this, contentId, Toast.LENGTH_SHORT).show()
     }
 
     override fun onStart() {

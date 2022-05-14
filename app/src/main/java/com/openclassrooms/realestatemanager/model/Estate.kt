@@ -36,22 +36,24 @@ data class Estate(val id: Long? = null,
         const val STAND_BY: Int = 1
         const val SOLD: Int = 2
 
-        fun isFilled(title: String?, address: String?, city: String?, country: String?, coordinates: Coordinates?, priceDollar: Int?, area: Int?, nbRooms: Int?, nbBathrooms: Int?, nbBedrooms: Int?, soldDate: Long?, agent: String?, description: String?): Boolean {
-            var uncorrectField = true
-            if(title != null) { if(title.isEmpty()) uncorrectField = false } else uncorrectField = false
-            if(address != null) { if(address.isEmpty()) uncorrectField = false } else uncorrectField = false
-            if(city != null) { if(city.isEmpty()) uncorrectField = false } else uncorrectField = false
-            if(country != null) { if(country.isEmpty()) uncorrectField = false } else uncorrectField = false
-            if(coordinates == null) uncorrectField = false
-            if(priceDollar == null) uncorrectField = false
-            if(area == null) uncorrectField = false
-            if(nbRooms == null) uncorrectField = false
-            if(nbBathrooms == null) uncorrectField = false
-            if(nbBedrooms == null) uncorrectField = false
-            if(soldDate == null) uncorrectField = false
-            if(agent != null) { if(agent.isEmpty()) uncorrectField = false } else uncorrectField = false
-            if(description != null) { if(description.isEmpty()) uncorrectField = false } else uncorrectField = false
-            return uncorrectField
+        const val UNCOMPLETE: Int = 10
+        const val CANT_FIND_LOCATION: Int = 11
+
+        fun isFilled(title: String?, address: String?, city: String?, country: String?, coordinates: Coordinates?, priceDollar: Int?, area: Int?, nbRooms: Int?, nbBathrooms: Int?, nbBedrooms: Int?, agent: String?, description: String?): Boolean {
+            var isFilled = true
+            if(title != null) { if(title.isEmpty()) isFilled = false } else isFilled = false
+            if(address != null) { if(address.isEmpty()) isFilled = false } else isFilled = false
+            if(city != null) { if(city.isEmpty()) isFilled = false } else isFilled = false
+            if(country != null) { if(country.isEmpty()) isFilled = false } else isFilled = false
+            if(coordinates == null) isFilled = false
+            if(priceDollar == null) isFilled = false
+            if(area == null) isFilled = false
+            if(nbRooms == null) isFilled = false
+            if(nbBathrooms == null) isFilled = false
+            if(nbBedrooms == null) isFilled = false
+            if(agent != null) { if(agent.isEmpty()) isFilled = false } else isFilled = false
+            if(description != null) { if(description.isEmpty()) isFilled = false } else isFilled = false
+            return isFilled
         }
 
         val fake_list = listOf(

@@ -22,13 +22,14 @@
 
     <string name="add_edit_estate_rooms">Pièces</string>
     <string name="add_edit_estate_bedrooms">Chambres</string>
-    <string name="add_edit_estate_bathrooms">Salle de bain</string>
-
-
+    <string name="add_edit_estate_bathrooms">Salles de bain</string>
 
     <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
     <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
+
+    <string name="add_edit_estate_uncomplete">Certains champs n\'ont pas étés remplis !</string>
+    <string name="add_edit_estate_cant_find_location">La localisation du bien n\'a pas été trouvée</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
 
