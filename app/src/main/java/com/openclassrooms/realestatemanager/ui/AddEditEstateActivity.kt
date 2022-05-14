@@ -121,6 +121,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
             selectImage()
         }
 
+        // Click listener to save the Estate
+        binding?.addEditEstateSave?.setOnClickListener {
+            addEditEstateViewModel.saveEstate()
+        }
+
         // Observe the list of ImageWithDescription
         addEditEstateViewModel.pictures.observe(this) { pictures ->
             refreshRecycler(pictures)

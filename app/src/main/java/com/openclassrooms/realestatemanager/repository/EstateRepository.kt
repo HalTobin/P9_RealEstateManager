@@ -7,4 +7,6 @@ interface EstateRepository {
 
     fun getEstates(): Flow<List<Estate>>
 
+    fun addEstate(estate: Estate)
+
 }

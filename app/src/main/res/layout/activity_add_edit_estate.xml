@@ -125,8 +125,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/add_edit_estate_add_image_card_view"
-        android:layout_width="112dp"
-        android:layout_height="112dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/add_edit_estate_price"
@@ -144,13 +144,52 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/add_edit_estate_list_images"
         android:layout_width="0dp"
-        android:layout_height="112dp"
+        android:layout_height="96dp"
         android:orientation="horizontal"
         android:layout_margin="8dp"
         app:layout_constraintTop_toBottomOf="@id/add_edit_estate_price"
         app:layout_constraintStart_toEndOf="@id/add_edit_estate_add_image_card_view"
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_list_images_with_description"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/add_edit_estate_nbRooms"
+        android:hint="@string/add_edit_estate_rooms"
+        android:inputType="number"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_edit_estate_nbBedrooms"
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_add_image_card_view"
+        app:layout_constraintBottom_toTopOf="@id/add_edit_estate_check_parc"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/add_edit_estate_nbBedrooms"
+        android:hint="@string/add_edit_estate_bedrooms"
+        android:inputType="number"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_edit_estate_nbBathrooms"
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_list_images"
+        app:layout_constraintBottom_toTopOf="@id/add_edit_estate_check_school" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/add_edit_estate_nbBathrooms"
+        android:hint="@string/add_edit_estate_bathrooms"
+        android:inputType="number"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toEndOf="add_edit_estate_nbBedrooms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_list_images"
+        app:layout_constraintBottom_toTopOf="@id/add_edit_estate_check_shop" />
 
     <CheckBox
         android:id="@+id/add_edit_estate_check_parc"
@@ -160,7 +199,7 @@
         android:text="@string/add_edit_estate_parc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/add_edit_estate_check_school"
-        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_add_image_card_view"/>
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_nbRooms"/>
 
     <CheckBox
         android:id="@+id/add_edit_estate_check_school"
@@ -170,7 +209,7 @@
         android:text="@string/add_edit_estate_school"
         app:layout_constraintStart_toEndOf="@id/add_edit_estate_check_parc"
         app:layout_constraintEnd_toStartOf="@id/add_edit_estate_check_shop"
-        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_add_image_card_view"/>
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_nbBedrooms"/>
 
     <CheckBox
         android:id="@+id/add_edit_estate_check_shop"
@@ -180,7 +219,7 @@
         android:text="@string/add_edit_estate_shop"
         app:layout_constraintStart_toEndOf="@id/add_edit_estate_check_school"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_add_image_card_view"/>
+        app:layout_constraintTop_toBottomOf="@id/add_edit_estate_nbBathrooms"/>
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/add_edit_estate_agent"
@@ -198,12 +237,12 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="256dp"
         android:layout_margin="8dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/add_edit_estate_agent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        >
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/add_edit_estate_lite_map"

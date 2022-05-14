@@ -7,11 +7,17 @@ import kotlinx.coroutines.flow.flow
 
 class EstateRepositoryImpl: EstateRepository {
 
+    private val estates = mutableListOf(Estate.fake_list[0], Estate.fake_list[1], Estate.fake_list[2], Estate.fake_list[3], Estate.fake_list[4])
+
     override fun getEstates(): Flow<List<Estate>> {
         val estateFlow: Flow<List<Estate>> = flow {
-            emit(Estate.fake_list)
+            emit(estates)
         }
         return estateFlow
+    }
+
+    override fun addEstate(estate: Estate) {
+        estates.add(estate)
     }
 
 }

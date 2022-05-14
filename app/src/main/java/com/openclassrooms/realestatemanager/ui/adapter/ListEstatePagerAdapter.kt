@@ -24,7 +24,7 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
         val myEstate = estates!![position]
 
         holder.binding.itemEstateName.text = myEstate.title
-        holder.binding.itemEstateLocation.text = myEstate.neighborhood
+        holder.binding.itemEstateLocation.text = myEstate.city
         //TODO - Change currency dynamically
         holder.binding.itemEstatePrice.text = myEstate.priceDollar.toString().plus("€")
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Environment
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
+import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
@@ -20,17 +21,26 @@ import kotlin.collections.ArrayList
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
-    private val _country = MutableLiveData<String>()
+    private val _title = MutableLiveData("")
+    val title = _title
+
+    private val _country = MutableLiveData("")
     val country = _country
 
-    private val _city = MutableLiveData<String>()
+    private val _city = MutableLiveData("")
     val city = _city
 
-    private val _zip = MutableLiveData<String>()
+    private val _zip = MutableLiveData("")
     val zip = _zip
 
-    private val _address = MutableLiveData<String>()
+    private val _address = MutableLiveData("")
     val address = _address
+
+    private val _area = MutableLiveData<Int>()
+    val area = _area
+
+    private val _price = MutableLiveData<Int>()
+    val price = _price
 
     private val _isDollar = MutableLiveData<Boolean>()
     val isDollar = _isDollar
@@ -42,8 +52,42 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _pictures = MutableLiveData<List<ImageWithDescription>>()
     val pictures = _pictures
 
+    private val _nearbyPark = MutableLiveData<Boolean>()
+    val nearbyPark = _nearbyPark
+
+    private val _nearbyShop = MutableLiveData<Boolean>()
+    val nearbyShop = _nearbyShop
+
+    private val _nearbySchool = MutableLiveData<Boolean>()
+    val nearbySchool = _nearbySchool
+
+    private val _agent = MutableLiveData("")
+    val agent = _agent
+
+    private val _description = MutableLiveData("")
+    val description = _description
+
+    private val _nbRooms = MutableLiveData<Int>()
+    val nbRooms = _nbRooms
+
+    private val _nbBathrooms = MutableLiveData<Int>()
+    val nbBathrooms = _nbBathrooms
+
+    private val _nbBedrooms = MutableLiveData<Int>()
+    val nbBedrooms = _nbBedrooms
+
+    private val _entryDate = MutableLiveData<Long>()
+    val entryDate = _entryDate
+
+    private val _soldDate = MutableLiveData<Long>()
+    val soldDate = _soldDate
+
+    private val _status = MutableLiveData<Int>(Estate.AVAILABLE)
+    val status = _status
+
     init {
         _isDollar.value = true
+        _description.value = "This is not empty..."
     }
 
     fun searchLocation() {
@@ -88,6 +132,31 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun removePicture(imageWithDescription: ImageWithDescription) {
         pictureList.remove(imageWithDescription)
         _pictures.postValue(pictureList)
+    }
+
+    fun saveEstate() {
+        if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, _price.value, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _soldDate.value, _agent.value, _description.value)) {
+            estateRepository.addEstate(Estate(title = _title.value!!,
+                    address = _address.value!!,
+                    city = _city.value!!,
+                    country = _country.value!!, zipCode = _zip.value!!,
+                    xCoordinate = _coordinates.value!!.xCoordinate,
+                    yCoordinate = _coordinates.value!!.yCoordinate, priceDollar = _price.value!!,
+                    area = _area.value!!,
+                    nbRooms = _nbRooms.value!!,
+                    nbBathrooms = _nbBathrooms.value!!,
+                    nbBedrooms = _nbBedrooms.value!!,
+                    pictures = _pictures.value,
+                    nearbySchool = _nearbySchool.value,
+                    nearbyShop = _nearbyShop.value,
+                    nearbyPark = _nearbyPark.value,
+                    status = _status.value,
+                    entryDate = System.currentTimeMillis(),
+                    soldDate = 0,
+                    agent = _agent.value!!,
+                    description = _description.value!!))
+        }
+
     }
 
     fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()
