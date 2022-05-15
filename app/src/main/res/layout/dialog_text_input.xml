@@ -4,11 +4,17 @@
     android:layout_height="match_parent"
     android:layout_margin="32dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/add_edit_estate_add_image_dialog_text"
-        android:hint="@string/add_edit_estate_image_dialog_text"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp" />
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_edit_estate_add_image_dialog_text"
+            android:hint="@string/add_edit_estate_image_dialog_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
