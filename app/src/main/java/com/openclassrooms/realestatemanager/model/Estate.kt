@@ -3,7 +3,7 @@ package com.openclassrooms.realestatemanager.model
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import java.util.*
 
-data class Estate(val id: Long? = null,
+data class Estate(val id: Long = 0,
                   var title: String,
                   var address: String,
                   var city: String,

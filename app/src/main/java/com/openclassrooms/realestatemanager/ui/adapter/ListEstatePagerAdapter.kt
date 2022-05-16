@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
+import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import java.util.ArrayList
 
-class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
+class ListEstatePagerAdapter(items: List<Estate>?, context: Context, listener: OnItemClick) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
 
     private val context: Context
     private var estates: List<Estate>? = ArrayList()
+    private val mCallback: OnItemClick?
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = ItemListEstateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -36,6 +38,8 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
             }
         }
 
+        // Set up the onClickListener to open the EstateDetailsActivity
+        holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.id) }
     }
 
     override fun getItemCount(): Int {
@@ -54,5 +58,10 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context) :
     init {
         estates = items
         this.context = context
+        this.mCallback = listener
+    }
+
+    interface OnItemClick {
+        fun onClick(estateId: Long)
     }
 }

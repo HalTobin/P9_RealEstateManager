@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.util.ArrayList
 
-class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
+class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, ListEstatePagerAdapter.OnItemClick {
     private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstatePagerAdapter? = null
 
@@ -53,7 +53,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     }
 
     private fun setUpAdapter() {
-        mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext())
+        mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext(), this)
         mBinding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
         mBinding!!.listEstateRecycler.addItemDecoration(
             DividerItemDecoration(
@@ -75,6 +75,10 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent {
     override fun onResume() {
         super.onResume()
         initRecycler()
+    }
+
+    override fun onClick(estateId: Long) {
+        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1) }
     }
 
 }

@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.openclassrooms.realestatemanager.ui.activity.AddEditEstateActivity" />
+        <activity android:name="com.openclassrooms.realestatemanager.ui.activity.EstateDetailsActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

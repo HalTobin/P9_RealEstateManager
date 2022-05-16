@@ -104,6 +104,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             val intent = Intent(activity, AddEditEstateActivity::class.java)
             ActivityCompat.startActivity(activity, intent, null)
         }
+
+        fun navigateToEstateDetailsActivity(activity: FragmentActivity) {
+            val intent = Intent(activity, EstateDetailsActivity::class.java)
+            ActivityCompat.startActivity(activity, intent, null)
+        }
     }
 
 }
