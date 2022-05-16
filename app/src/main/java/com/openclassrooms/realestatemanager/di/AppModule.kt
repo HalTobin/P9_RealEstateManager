@@ -12,6 +12,7 @@ import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
+import com.openclassrooms.realestatemanager.viewModel.EstateDetailsViewModel
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,6 +65,10 @@ object AppModule {
             provideAddEditEstateViewModel(get(), get())
         }
 
+        viewModel {
+            provideEstateDetailsViewModel(get())
+        }
+
     }
 
     private fun provideEstateRepository(): EstateRepository = EstateRepositoryImpl()
@@ -85,6 +90,8 @@ object AppModule {
     private fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel = MainViewModel(estateRepository)
 
     private fun provideAddEditEstateViewModel(estateRepository: EstateRepository, coordinatesRepository: CoordinatesRepository): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, coordinatesRepository)
+
+    private fun provideEstateDetailsViewModel(estateRepository: EstateRepository): EstateDetailsViewModel = EstateDetailsViewModel(estateRepository)
 
     private fun provideListFragment(): ListFragment = ListFragment()
 

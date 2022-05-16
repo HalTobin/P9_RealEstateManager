@@ -14,7 +14,7 @@
     <string name="add_edit_estate_surface">m²</string>
     <string name="add_edit_estate_price">Prix</string>
     <string name="add_edit_estate_currency">€</string>
-    <string name="add_edit_estate_parc">Parc</string>
+    <string name="add_edit_estate_park">Parc</string>
     <string name="add_edit_estate_school">École</string>
     <string name="add_edit_estate_shop">Supermaché</string>
     <string name="add_edit_estate_agent">Agent</string>
@@ -40,13 +40,18 @@
     <string name="cancel_button">Retour</string>
     <string name="ok_button">Valider</string>
 
-    <string name="estate_details_media_text">Médias</string>
-    <string name="estate_details_media_description">Description</string>
-    <string name="estate_details_media_area">Surface</string>
-    <string name="estate_details_media_number_rooms">Nombre de pièces</string>
-    <string name="estate_details_media_number_bathrooms">Nombre de salles de bain</string>
-    <string name="estate_details_media_number_bedrooms">Nombre de chambre</string>
-    <string name="estate_details_media_location">Localisation</string>
+    <string name="estate_details_media_title">Médias</string>
+    <string name="estate_details_description">Description</string>
+    <string name="estate_details_area">Surface</string>
+    <string name="estate_details_number_rooms">Pièces</string>
+    <string name="estate_details_number_bathrooms">Salles de bains</string>
+    <string name="estate_details_number_bedrooms">Chambres</string>
+    <string name="estate_details_location">Localisation</string>
+    <string name="estate_details_shop">Supermarché</string>
+    <string name="estate_details_school">École</string>
+    <string name="estate_details_park">Parc</string>
+
+    <string name="estate_details_edit_estate_button_description">Modifier le bien immobilier</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
 

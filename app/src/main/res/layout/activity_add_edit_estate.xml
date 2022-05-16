@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.openclassrooms.realestatemanager.ui.AddEditEstateActivity">
+        tools:context="com.openclassrooms.realestatemanager.ui.activity.AddEditEstateActivity">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_edit_estate_title_layout"
@@ -281,7 +281,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@string/add_edit_estate_parc"
+            android:text="@string/add_edit_estate_park"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/add_edit_estate_check_school"
             app:layout_constraintTop_toBottomOf="@id/add_edit_estate_nbRooms_layout"/>

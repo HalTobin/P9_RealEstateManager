@@ -11,8 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
-import com.openclassrooms.realestatemanager.ui.MainActivity
-import kotlinx.coroutines.Job
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import java.util.ArrayList
