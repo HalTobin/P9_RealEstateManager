@@ -105,6 +105,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             ActivityCompat.startActivity(activity, intent, null)
         }
 
+        fun navigateToAddEditActivity(activity: FragmentActivity, estateId: Long) {
+            val intent = Intent(activity, AddEditEstateActivity::class.java)
+            intent.putExtra("estate_id", estateId)
+            ActivityCompat.startActivity(activity, intent, null)
+        }
+
         fun navigateToEstateDetailsActivity(activity: FragmentActivity, estateId: Long) {
             val intent = Intent(activity, EstateDetailsActivity::class.java)
             intent.putExtra("estate_id", estateId)

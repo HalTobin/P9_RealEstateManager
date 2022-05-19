@@ -31,6 +31,8 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
 
     private var mAdapter: ListImageWithDescriptionAdapter? = null
 
+    private var estateId:Long = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEstateDetailsBinding.inflate(layoutInflater)
@@ -40,7 +42,8 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
         initMapView(savedInstanceState)
         setUpListenersAndObservers()
 
-        estateDetailsViewModel.setEstateId(intent.getLongExtra("estate_id", -1))
+        estateId = intent.getLongExtra("estate_id", -1)
+        estateDetailsViewModel.setEstateId(estateId)
     }
 
     private fun initRecycler() {
@@ -74,6 +77,10 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
                 MarkerOptions()
                     .position(LatLng(estate.xCoordinate!!, estate.yCoordinate!!))
             )?.let { marker = it }
+        }
+
+        binding?.estateDetailsEditButton?.setOnClickListener {
+            MainActivity.navigateToAddEditActivity(this, estateId)
         }
     }
 

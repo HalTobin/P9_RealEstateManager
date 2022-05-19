@@ -13,6 +13,7 @@ import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.util.CustomTakePicture
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import java.io.File
@@ -51,7 +52,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
 
-    private val pictureList = mutableListOf<ImageWithDescription>()
+    private var pictureList = mutableListOf<ImageWithDescription>()
     private val _pictures = MutableLiveData<List<ImageWithDescription>>()
     val pictures = _pictures
 
@@ -80,10 +81,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     val nbBedrooms = _nbBedrooms
 
     private val _entryDate = MutableLiveData(System.currentTimeMillis())
-    val entryDate = _entryDate
 
     private val _soldDate = MutableLiveData<Long>()
-    val soldDate = _soldDate
 
     private val _status = MutableLiveData(Estate.AVAILABLE)
     val status = _status
@@ -94,10 +93,6 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _mustClose = MutableLiveData<Boolean>()
     val mustClose = _mustClose
 
-    init {
-        //TODO - to load an Estate to edit
-    }
-
     fun searchLocation() {
         viewModelScope.launch {
             if(getCurrentFullAddress() != null) {
@@ -105,6 +100,34 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                 coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).collect { coordinates ->
                     if(coordinates != null) setLocation(coordinates.xCoordinate, coordinates.yCoordinate)
                 }
+            }
+        }
+    }
+
+    fun loadEstate(estateId: Long) {
+        viewModelScope.launch {
+            estateRepository.getEstate(estateId).collect {
+                _title.postValue(it.title)
+                _country.postValue(it.country)
+                _city.postValue(it.city)
+                _zip.postValue(it.zipCode)
+                _address.postValue(it.address)
+                _area.postValue(it.area!!)
+                _price.postValue(it.priceDollar!!)
+                _isDollar.postValue(true)
+                _coordinates.postValue(Coordinates(it.xCoordinate!!, it.yCoordinate!!))
+                pictureList = it.pictures as MutableList<ImageWithDescription>
+                _pictures.postValue(pictureList)
+                _nearbyPark.postValue(it.nearbyPark!!)
+                _nearbyShop.postValue(it.nearbyShop!!)
+                _nearbySchool.postValue(it.nearbySchool!!)
+                _agent.postValue(it.agent)
+                _description.postValue(it.description)
+                _nbRooms.postValue(it.nbRooms!!)
+                _nbBathrooms.postValue(it.nbBathrooms!!)
+                _nbBedrooms.postValue(it.nbBedrooms!!)
+                _entryDate.value = it.entryDate
+                if(it.soldDate != null) _soldDate.value = it.soldDate!! else _soldDate.value = 0
             }
         }
     }
