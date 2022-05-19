@@ -10,8 +10,15 @@ class EstateRepositoryImpl: EstateRepository {
     private val estates = mutableListOf(Estate.fake_list[0], Estate.fake_list[1], Estate.fake_list[2], Estate.fake_list[3], Estate.fake_list[4])
 
     override fun getEstates(): Flow<List<Estate>> {
-        val estateFlow: Flow<List<Estate>> = flow {
+        val estatesFlow: Flow<List<Estate>> = flow {
             emit(estates)
+        }
+        return estatesFlow
+    }
+
+    override fun getEstate(id: Long): Flow<Estate> {
+        val estateFlow: Flow<Estate> = flow {
+            emit(estates[id.toInt()])
         }
         return estateFlow
     }

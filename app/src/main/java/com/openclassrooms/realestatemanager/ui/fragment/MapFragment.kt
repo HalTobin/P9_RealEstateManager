@@ -65,7 +65,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
             mapMapView.onCreate(savedInstanceState)
             mapMapView.getMapAsync(this@MapFragment)
         }
-        //TODO - Set get localisation button
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

@@ -174,6 +174,15 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
             }
         })
 
+        // TextField for the Estate's description
+        binding?.addEditEstateDescription?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) addEditEstateViewModel.setDescription(s.toString())
+            }
+        })
+
         // Click listener to find the Estate's location
         binding?.addEditEstateFind?.setOnClickListener {
             addEditEstateViewModel.searchLocation()
@@ -245,13 +254,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         // Depending on the phone's settings, dark mode is used for the map
         googleMap.setMapStyle(getMapStyle(this))
-
-        /*map!!.addMarker(
-            MarkerOptions()
-                .position(LatLng(0.0, 0.0))
-                .title("Marker")
-        )  */
-
     }
 
     private fun selectImage() {

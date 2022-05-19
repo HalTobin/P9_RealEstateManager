@@ -78,7 +78,8 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
     }
 
     override fun onClick(estateId: Long) {
-        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1) }
+        //TODO - '-1' to remove when the database will be implemented
+        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId-1) }
     }
 
 }

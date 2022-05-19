@@ -155,6 +155,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setAgent(agent: String) { _agent.value = agent }
 
+    fun setDescription(description: String) { _description.value = description }
+
     fun addPicture(image: String, text: String) {
         pictureList.add(ImageWithDescription(1, 1, text, image))
         _pictures.postValue(pictureList)
