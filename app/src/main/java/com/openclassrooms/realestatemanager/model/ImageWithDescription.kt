@@ -1,14 +1,16 @@
 package com.openclassrooms.realestatemanager.model
 
-import android.content.Context
-import android.graphics.Bitmap
-import com.google.gson.Gson
-import java.io.*
-import java.nio.charset.Charset
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
+@Entity(foreignKeys = arrayOf(ForeignKey(entity = Estate::class,
+    parentColumns = arrayOf("id"),
+    childColumns = arrayOf("estateId"),
+    onDelete = ForeignKey.CASCADE)))
 data class ImageWithDescription(
-    val id: Long,
-    val estateId: Long,
+    @PrimaryKey val id: Int,
+    val estateId: Int,
     val description: String = "",
     val imageUrl: String
 ) {

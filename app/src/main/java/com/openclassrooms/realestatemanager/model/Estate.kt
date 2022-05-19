@@ -1,9 +1,13 @@
 package com.openclassrooms.realestatemanager.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import java.util.*
 
-data class Estate(val id: Long = 0,
+@Entity
+data class Estate(@PrimaryKey val id: Int? = null,
                   var title: String,
                   var address: String,
                   var city: String,

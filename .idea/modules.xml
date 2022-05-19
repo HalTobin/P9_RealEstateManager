@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/P9_RealEstateManager.iml" filepath="$PROJECT_DIR$/.idea/modules/P9_RealEstateManager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/P9_RealEstateManager-main.iml" filepath="$PROJECT_DIR$/.idea/modules/P9_RealEstateManager-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/P9_RealEstateManager-main.app.unitTest.iml" />
     </modules>
   </component>
 </project>
