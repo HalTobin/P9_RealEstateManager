@@ -7,10 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface ImageRepository {
 
-    fun getImages(): Flow<List<ImageWithDescription>>
+    fun getImagesByEstateId(estateId: Int): Flow<List<ImageWithDescription>>
 
-    suspend fun getImage(id: Int): Flow<ImageWithDescription>
+    fun getImage(id: Int): Flow<ImageWithDescription>
 
     suspend fun addImage(image: ImageWithDescription)
+
+    suspend fun addListOfImages(images: List<ImageWithDescription>)
+
+    suspend fun deleteImage(image: ImageWithDescription)
 
 }

@@ -31,7 +31,7 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
 
     private var mAdapter: ListImageWithDescriptionAdapter? = null
 
-    private var estateId:Long = -1
+    private var estateId:Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
         initMapView(savedInstanceState)
         setUpListenersAndObservers()
 
-        estateId = intent.getLongExtra("estate_id", -1)
+        estateId = intent.getIntExtra("estate_id", -1)
         estateDetailsViewModel.setEstateId(estateId)
     }
 
@@ -61,21 +61,21 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), Koin
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpListenersAndObservers() {
         estateDetailsViewModel.estate.observe(this) { estate ->
-            if(estate.pictures != null) refreshRecycler(estate.pictures!!)
-            binding!!.estateDetailsDescriptionText.text = estate.description
-            binding!!.estateDetailsArea.text = estate.area.toString().plus("m²")
-            binding!!.estateDetailsRooms.text = estate.nbRooms.toString()
-            binding!!.estateDetailsBedrooms.text = estate.nbBedrooms.toString()
-            binding!!.estateDetailsBathrooms.text = estate.nbBathrooms.toString()
-            binding!!.estateDetailsLocationAddress.text = estate.getAddressInPresentation()
-            if(estate.nearbyShop == true) binding!!.estateDetailsIsShop.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsShop.setImageDrawable(getDrawable(R.drawable.ic_cross))
-            if(estate.nearbySchool == true) binding!!.estateDetailsIsSchool.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsSchool.setImageDrawable(getDrawable(R.drawable.ic_cross))
-            if(estate.nearbyPark == true) binding!!.estateDetailsIsPark.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsPark.setImageDrawable(getDrawable(R.drawable.ic_cross))
-            map!!.navigateTo(Coordinates(estate.xCoordinate!!, estate.yCoordinate!!), 16f)
+            refreshRecycler(estate.images!!)
+            binding!!.estateDetailsDescriptionText.text = estate.estate.description
+            binding!!.estateDetailsArea.text = estate.estate.area.toString().plus("m²")
+            binding!!.estateDetailsRooms.text = estate.estate.nbRooms.toString()
+            binding!!.estateDetailsBedrooms.text = estate.estate.nbBedrooms.toString()
+            binding!!.estateDetailsBathrooms.text = estate.estate.nbBathrooms.toString()
+            binding!!.estateDetailsLocationAddress.text = estate.estate.getAddressInPresentation()
+            if(estate.estate.nearbyShop == true) binding!!.estateDetailsIsShop.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsShop.setImageDrawable(getDrawable(R.drawable.ic_cross))
+            if(estate.estate.nearbySchool == true) binding!!.estateDetailsIsSchool.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsSchool.setImageDrawable(getDrawable(R.drawable.ic_cross))
+            if(estate.estate.nearbyPark == true) binding!!.estateDetailsIsPark.setImageDrawable(getDrawable(R.drawable.ic_done)) else binding!!.estateDetailsIsPark.setImageDrawable(getDrawable(R.drawable.ic_cross))
+            map!!.navigateTo(Coordinates(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!), 16f)
             if(marker != null) marker!!.remove()
             map!!.addMarker(
                 MarkerOptions()
-                    .position(LatLng(estate.xCoordinate!!, estate.yCoordinate!!))
+                    .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
             )?.let { marker = it }
         }
 

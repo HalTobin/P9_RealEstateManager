@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
+import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
@@ -47,7 +48,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
         }
 
         // Setup observer for list of estate
-        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<Estate> ->
+        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
             refreshRecycler(estates)
         }
     }
@@ -68,7 +69,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
         mBinding!!.listEstateRecycler.adapter = mAdapter
     }
 
-    private fun refreshRecycler(myList: List<Estate>) {
+    private fun refreshRecycler(myList: List<EstateWithImages>) {
         mAdapter!!.updateList(myList)
     }
 
@@ -77,9 +78,8 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
         initRecycler()
     }
 
-    override fun onClick(estateId: Long) {
-        //TODO - '-1' to remove when the database will be implemented
-        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId-1) }
+    override fun onClick(estateId: Int) {
+        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId) }
     }
 
 }

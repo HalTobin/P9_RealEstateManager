@@ -8,7 +8,7 @@ data class EstateWithImages (
     val estate: Estate,
     @Relation(
         parentColumn = "id",
-        entityColumn = "estate"
+        entityColumn = "estateId"
     )
     val images: List<ImageWithDescription>
 )

@@ -15,7 +15,7 @@ class EstateRepositoryImpl(private val dao: EstateDao): EstateRepository {
         return dao.getEstates()
     }
 
-    override suspend fun getEstate(id: Int): Flow<EstateWithImages> {
+    override fun getEstate(id: Int): Flow<EstateWithImages> {
         return dao.getEstateById(id)
     }
 

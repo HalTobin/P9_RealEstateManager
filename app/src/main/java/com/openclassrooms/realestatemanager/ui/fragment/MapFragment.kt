@@ -23,6 +23,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
@@ -84,7 +85,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         setUpListenersAndObservers()
     }
 
-    private fun refreshMarkers(estates: List<Estate>?) {
+    private fun refreshMarkers(estates: List<EstateWithImages>?) {
         // Delete old markers
         for (marker in markers) {
             marker.remove()
@@ -92,11 +93,11 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         if (estates != null) {
             // Create new markers
             for (estate in estates) {
-                if((estate.xCoordinate != null) && (estate.yCoordinate != null)) {
+                if((estate.estate.xCoordinate != null) && (estate.estate.yCoordinate != null)) {
                     myGoogleMap!!.addMarker(
                         MarkerOptions()
-                            .position(LatLng(estate.xCoordinate!!, estate.yCoordinate!!))
-                            .title(estate.title)
+                            .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
+                            .title(estate.estate.title)
                     )?.let { markers.add(it) }
                 }
             }
@@ -128,7 +129,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     // Setup listeners and observers of MapFragment
     private fun setUpListenersAndObservers() {
         // Set an observer to get Estate
-        mainViewModel.getEstates().observe(this) { estates: List<Estate> ->
+        mainViewModel.getEstates().observe(this) { estates: List<EstateWithImages> ->
             refreshMarkers(estates)
         }
         /*getEstatesJob?.cancel()

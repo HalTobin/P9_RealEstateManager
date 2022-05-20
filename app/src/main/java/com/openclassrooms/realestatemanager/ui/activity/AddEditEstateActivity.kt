@@ -57,8 +57,8 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         imagePicker = ImagePicker(this, BuildConfig.APPLICATION_ID)
         imagePicker.setImageSelectedListener(this)
 
-        val estateToLoadId = this.intent.getLongExtra("estate_id", -1)
-        if(estateToLoadId != -1L) addEditEstateViewModel.loadEstate(estateToLoadId)
+        val estateToLoadId = this.intent.getIntExtra("estate_id", -1)
+        if(estateToLoadId != -1) addEditEstateViewModel.loadEstate(estateToLoadId)
     }
 
     private fun setUpListenersAndObservers() {
@@ -73,9 +73,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's title
-        addEditEstateViewModel.title.observe(this) {
+        /*addEditEstateViewModel.title.observe(this) {
             binding?.addEditEstateTitle?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's country
         binding?.addEditEstateCountry?.addTextChangedListener(object : TextWatcher {
@@ -87,9 +87,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's country
-        addEditEstateViewModel.country.observe(this) {
+        /*addEditEstateViewModel.country.observe(this) {
             binding?.addEditEstateCountry?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's city
         binding?.addEditEstateCity?.addTextChangedListener(object : TextWatcher {
@@ -101,9 +101,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's city
-        addEditEstateViewModel.city.observe(this) {
+        /*addEditEstateViewModel.city.observe(this) {
             binding?.addEditEstateCity?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's zip code
         binding?.addEditEstateZip?.addTextChangedListener(object : TextWatcher {
@@ -115,9 +115,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's zip Code
-        addEditEstateViewModel.zip.observe(this) {
+        /*addEditEstateViewModel.zip.observe(this) {
             binding?.addEditEstateZip?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's address
         binding?.addEditEstateAddress?.addTextChangedListener(object : TextWatcher {
@@ -129,9 +129,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's address
-        addEditEstateViewModel.address.observe(this) {
+        /*addEditEstateViewModel.address.observe(this) {
             binding?.addEditEstateAddress?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's area
         binding?.addEditEstateArea?.addTextChangedListener(object : TextWatcher {
@@ -143,9 +143,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's area
-        addEditEstateViewModel.area.observe(this) {
+        /*addEditEstateViewModel.area.observe(this) {
             binding?.addEditEstateArea?.setText(it.toString())
-        }
+        }*/
 
         // TextField listener for the Estate's price
         binding?.addEditEstatePrice?.addTextChangedListener(object : TextWatcher {
@@ -157,9 +157,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's price
-        addEditEstateViewModel.price.observe(this) {
+        /*addEditEstateViewModel.price.observe(this) {
             binding?.addEditEstatePrice?.setText(it.toString())
-        }
+        }*/
 
         // TextField listener for the Estate's numbers of rooms
         binding?.addEditEstateNbRooms?.addTextChangedListener(object : TextWatcher {
@@ -171,9 +171,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's numbers of room
-        addEditEstateViewModel.nbRooms.observe(this) {
+        /*addEditEstateViewModel.nbRooms.observe(this) {
             binding?.addEditEstateNbRooms?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's numbers of bedrooms
         binding?.addEditEstateNbBedrooms?.addTextChangedListener(object : TextWatcher {
@@ -185,9 +185,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's numbers of bedrooms
-        addEditEstateViewModel.nbBedrooms.observe(this) {
+        /*addEditEstateViewModel.nbBedrooms.observe(this) {
             binding?.addEditEstateNbBedrooms?.setText(it)
-        }
+        }*/
 
         // TextField listener for the Estate's numbers of bathrooms
         binding?.addEditEstateNbBathrooms?.addTextChangedListener(object : TextWatcher {
@@ -199,9 +199,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's numbers of bathroom
-        addEditEstateViewModel.nbBathrooms.observe(this) {
+        /*addEditEstateViewModel.nbBathrooms.observe(this) {
             binding?.addEditEstateNbBathrooms?.setText(it.toString())
-        }
+        }*/
 
         // Checkbox listener to indicate if there is a park near the Estate
         binding?.addEditEstateCheckPark?.setOnCheckedChangeListener { _, isChecked ->
@@ -209,9 +209,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's park checkbox
-        addEditEstateViewModel.nearbyPark.observe(this) {
+        /*addEditEstateViewModel.nearbyPark.observe(this) {
             binding?.addEditEstateCheckPark?.isChecked = it
-        }
+        }*/
 
         // Checkbox listener to indicate if there is a school near the Estate
         binding?.addEditEstateCheckSchool?.setOnCheckedChangeListener { _, isChecked ->
@@ -219,9 +219,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's school checkbox
-        addEditEstateViewModel.nearbySchool.observe(this) {
+        /*addEditEstateViewModel.nearbySchool.observe(this) {
             binding?.addEditEstateCheckSchool?.isChecked = it
-        }
+        }*/
 
         // Checkbox listener to indicate if there is a shop near the Estate
         binding?.addEditEstateCheckShop?.setOnCheckedChangeListener { _, isChecked ->
@@ -229,9 +229,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's shop checkbox
-        addEditEstateViewModel.nearbyShop.observe(this) {
+        /*addEditEstateViewModel.nearbyShop.observe(this) {
             binding?.addEditEstateCheckShop?.isChecked = it
-        }
+        }*/
 
         // TextField listener for the Estate's agent
         binding?.addEditEstateAgent?.addTextChangedListener(object : TextWatcher {
@@ -243,9 +243,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's agent
-        addEditEstateViewModel.agent.observe(this) {
+        /*addEditEstateViewModel.agent.observe(this) {
             binding?.addEditEstateAgent?.setText(it.toString())
-        }
+        }*/
 
         // TextField listener for the Estate's description
         binding?.addEditEstateDescription?.addTextChangedListener(object : TextWatcher {
@@ -257,9 +257,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's numbers of bathroom
-        addEditEstateViewModel.description.observe(this) {
+        /*addEditEstateViewModel.description.observe(this) {
             binding?.addEditEstateDescription?.setText(it.toString())
-        }
+        }*/
 
         // Click listener to find the Estate's location
         binding?.addEditEstateFind?.setOnClickListener {

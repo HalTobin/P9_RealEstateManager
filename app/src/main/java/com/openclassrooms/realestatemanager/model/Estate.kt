@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.model
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
@@ -20,7 +21,7 @@ data class Estate(@PrimaryKey val id: Int? = null,
                   var nbRooms: Int? = null,
                   var nbBathrooms: Int? = null,
                   var nbBedrooms: Int? = null,
-                  var pictures: List<ImageWithDescription>? = listOf(),
+                  //@Ignore var pictures: List<ImageWithDescription>? = listOf(),
                   var nearbySchool:Boolean? = false,
                   var nearbyShop:Boolean? = false,
                   var nearbyPark:Boolean? = false,

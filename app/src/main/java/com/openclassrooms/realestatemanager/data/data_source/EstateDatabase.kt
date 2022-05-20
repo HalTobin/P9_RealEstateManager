@@ -14,6 +14,10 @@ abstract class EstateDatabase: RoomDatabase() {
     abstract val estateDao: EstateDao
     abstract val imageDao: ImageDao
 
+    companion object {
 
+        const val DATABASE_NAME = "estate_db"
+
+    }
 
 }

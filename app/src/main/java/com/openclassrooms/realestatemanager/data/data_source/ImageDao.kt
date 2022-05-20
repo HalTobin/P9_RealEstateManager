@@ -11,10 +11,13 @@ interface ImageDao {
     fun getImageByEstateId(estateId: Int): Flow<List<ImageWithDescription>>
 
     @Query("SELECT * FROM imagewithdescription WHERE id = :id")
-    suspend fun getImageById(id: Int): ImageWithDescription?
+    fun getImageById(id: Int): Flow<ImageWithDescription>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImage(image: ImageWithDescription)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImages(images: List<ImageWithDescription>)
 
     @Delete
     suspend fun deleteImage(image: ImageWithDescription)

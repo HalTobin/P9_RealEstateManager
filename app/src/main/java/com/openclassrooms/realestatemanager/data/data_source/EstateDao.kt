@@ -12,7 +12,7 @@ interface EstateDao {
     fun getEstates(): Flow<List<EstateWithImages>>
 
     @Query("SELECT * FROM estate WHERE id = :id")
-    suspend fun getEstateById(id: Int): Flow<EstateWithImages>
+    fun getEstateById(id: Int): Flow<EstateWithImages>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEstate(estate: Estate)

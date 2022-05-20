@@ -10,6 +10,7 @@ import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
+import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.CustomTakePicture
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
@@ -22,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
+class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
     private val _title = MutableLiveData("")
     val title = _title
@@ -104,30 +105,30 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         }
     }
 
-    fun loadEstate(estateId: Long) {
+    fun loadEstate(estateId: Int) {
         viewModelScope.launch {
             estateRepository.getEstate(estateId).collect {
-                _title.postValue(it.title)
-                _country.postValue(it.country)
-                _city.postValue(it.city)
-                _zip.postValue(it.zipCode)
-                _address.postValue(it.address)
-                _area.postValue(it.area!!)
-                _price.postValue(it.priceDollar!!)
+                _title.postValue(it.estate.title)
+                _country.postValue(it.estate.country)
+                _city.postValue(it.estate.city)
+                _zip.postValue(it.estate.zipCode)
+                _address.postValue(it.estate.address)
+                _area.postValue(it.estate.area!!)
+                _price.postValue(it.estate.priceDollar!!)
                 _isDollar.postValue(true)
-                _coordinates.postValue(Coordinates(it.xCoordinate!!, it.yCoordinate!!))
-                pictureList = it.pictures as MutableList<ImageWithDescription>
+                _coordinates.postValue(Coordinates(it.estate.xCoordinate!!, it.estate.yCoordinate!!))
+                pictureList = it.images as MutableList<ImageWithDescription>
                 _pictures.postValue(pictureList)
-                _nearbyPark.postValue(it.nearbyPark!!)
-                _nearbyShop.postValue(it.nearbyShop!!)
-                _nearbySchool.postValue(it.nearbySchool!!)
-                _agent.postValue(it.agent)
-                _description.postValue(it.description)
-                _nbRooms.postValue(it.nbRooms!!)
-                _nbBathrooms.postValue(it.nbBathrooms!!)
-                _nbBedrooms.postValue(it.nbBedrooms!!)
-                _entryDate.value = it.entryDate
-                if(it.soldDate != null) _soldDate.value = it.soldDate!! else _soldDate.value = 0
+                _nearbyPark.postValue(it.estate.nearbyPark!!)
+                _nearbyShop.postValue(it.estate.nearbyShop!!)
+                _nearbySchool.postValue(it.estate.nearbySchool!!)
+                _agent.postValue(it.estate.agent)
+                _description.postValue(it.estate.description)
+                _nbRooms.postValue(it.estate.nbRooms!!)
+                _nbBathrooms.postValue(it.estate.nbBathrooms!!)
+                _nbBedrooms.postValue(it.estate.nbBedrooms!!)
+                _entryDate.value = it.estate.entryDate
+                if(it.estate.soldDate != null) _soldDate.value = it.estate.soldDate!! else _soldDate.value = 0
             }
         }
     }
@@ -193,7 +194,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun saveEstate() {
         if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
-            estateRepository.addEstate(Estate(title = _title.value!!,
+            viewModelScope.launch {
+                estateRepository.addEstate(Estate(title = _title.value!!,
                     address = _address.value!!,
                     city = _city.value!!,
                     country = _country.value!!, zipCode = _zip.value!!,
@@ -203,7 +205,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     nbRooms = _nbRooms.value!!,
                     nbBathrooms = _nbBathrooms.value!!,
                     nbBedrooms = _nbBedrooms.value!!,
-                    pictures = _pictures.value,
+                    //pictures = _pictures.value,
                     nearbySchool = _nearbySchool.value,
                     nearbyShop = _nearbyShop.value,
                     nearbyPark = _nearbyPark.value,
@@ -212,7 +214,12 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     soldDate = _soldDate.value,
                     agent = _agent.value!!,
                     description = _description.value!!))
-            _mustClose.postValue(true)
+                _mustClose.postValue(true)
+
+                _pictures.value?.let { imageRepository.addListOfImages(it) }
+
+            }
+
         }
         if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
         else if(coordinates.value!!.isUndefined()) _warning.postValue(Estate.CANT_FIND_LOCATION)

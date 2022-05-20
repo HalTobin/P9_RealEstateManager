@@ -8,7 +8,7 @@ interface EstateRepository {
 
     fun getEstates(): Flow<List<EstateWithImages>>
 
-    suspend fun getEstate(id: Int): Flow<EstateWithImages>
+    fun getEstate(id: Int): Flow<EstateWithImages>
 
     suspend fun addEstate(estate: Estate)
 

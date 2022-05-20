@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
+import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import java.util.ArrayList
 
-class ListEstatePagerAdapter(items: List<Estate>?, context: Context, listener: OnItemClick) :
+class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, listener: OnItemClick) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
 
     private val context: Context
-    private var estates: List<Estate>? = ArrayList()
+    private var estates: List<EstateWithImages>? = ArrayList()
     private val mCallback: OnItemClick?
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,28 +26,26 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context, listener: O
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val myEstate = estates!![position]
 
-        holder.binding.itemEstateName.text = myEstate.title
-        holder.binding.itemEstateLocation.text = myEstate.city
+        holder.binding.itemEstateName.text = myEstate.estate.title
+        holder.binding.itemEstateLocation.text = myEstate.estate.city
         //TODO - Change currency dynamically
-        holder.binding.itemEstatePrice.text = myEstate.priceDollar.toString().plus("€")
+        holder.binding.itemEstatePrice.text = myEstate.estate.priceDollar.toString().plus("€")
 
-        if(myEstate.pictures != null) {
-            if(myEstate.pictures!!.isNotEmpty()) {
-                Glide.with(context)
-                    .load(myEstate.pictures!![0].imageUrl)
-                    .into(holder.binding.itemEstateImage)
-            }
+        if(myEstate.images!!.isNotEmpty()) {
+            Glide.with(context)
+                .load(myEstate.images!![0].imageUrl)
+                .into(holder.binding.itemEstateImage)
         }
 
         // Set up the onClickListener to open the EstateDetailsActivity
-        holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.id) }
+        holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
     }
 
     override fun getItemCount(): Int {
         return if (estates != null) estates!!.size else 0
     }
 
-    fun updateList(estates: List<Estate>) {
+    fun updateList(estates: List<EstateWithImages>) {
         this.estates = estates
         notifyDataSetChanged()
     }
@@ -62,6 +61,6 @@ class ListEstatePagerAdapter(items: List<Estate>?, context: Context, listener: O
     }
 
     interface OnItemClick {
-        fun onClick(estateId: Long)
+        fun onClick(estateId: Int)
     }
 }

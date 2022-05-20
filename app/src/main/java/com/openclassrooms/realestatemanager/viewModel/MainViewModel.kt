@@ -6,6 +6,7 @@ import android.location.Location
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.util.JavaFusedLocationProviderClient
@@ -27,7 +28,7 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
 
-    fun getEstates(): LiveData<List<Estate>> {
+    fun getEstates(): LiveData<List<EstateWithImages>> {
         return estateRepository.getEstates().asLiveData()
     }
 
