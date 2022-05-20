@@ -57,13 +57,13 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _pictures = MutableLiveData<List<ImageWithDescription>>()
     val pictures = _pictures
 
-    private val _nearbyPark = MutableLiveData<Boolean>()
+    private val _nearbyPark = MutableLiveData(false)
     val nearbyPark = _nearbyPark
 
-    private val _nearbyShop = MutableLiveData<Boolean>()
+    private val _nearbyShop = MutableLiveData(false)
     val nearbyShop = _nearbyShop
 
-    private val _nearbySchool = MutableLiveData<Boolean>()
+    private val _nearbySchool = MutableLiveData(false)
     val nearbySchool = _nearbySchool
 
     private val _agent = MutableLiveData("")

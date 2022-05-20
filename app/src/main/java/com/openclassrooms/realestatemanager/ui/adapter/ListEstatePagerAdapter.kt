@@ -5,7 +5,8 @@ import com.openclassrooms.realestatemanager.model.Estate
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
-import com.bumptech.glide.Glide
+import coil.Coil
+import coil.load
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
@@ -32,9 +33,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
         holder.binding.itemEstatePrice.text = myEstate.estate.priceDollar.toString().plus("€")
 
         if(myEstate.images!!.isNotEmpty()) {
-            Glide.with(context)
-                .load(myEstate.images!![0].imageUrl)
-                .into(holder.binding.itemEstateImage)
+            holder.binding.itemEstateImage.load(myEstate.images!![0].imageUrl)
         }
 
         // Set up the onClickListener to open the EstateDetailsActivity

@@ -28,7 +28,6 @@ import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
-
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
 
     private val addEditEstateViewModel: AddEditEstateViewModel by viewModel()
@@ -40,7 +39,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
     var options = GoogleMapOptions().liteMode(true)
 
     lateinit var imagePicker: ImagePicker
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

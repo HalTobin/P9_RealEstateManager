@@ -2,10 +2,9 @@ package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import com.openclassrooms.realestatemanager.databinding.ItemListImagesWithDescriptionBinding
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 
@@ -27,9 +26,7 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
         holder.binding.imageWithDescriptionDescription.text = myImage.description
 
         if(myImage.imageUrl.isNotEmpty()) {
-            Glide.with(context)
-                .load(myImage.imageUrl)
-                .into(holder.binding.imageWithDescriptionImage)
+            holder.binding.imageWithDescriptionImage.load(myImage.imageUrl)
         }
 
         // Set up the onClickListener to open the RestaurantDetailsActivity
