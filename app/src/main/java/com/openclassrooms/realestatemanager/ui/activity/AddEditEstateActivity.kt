@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.activity
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import android.app.*
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,10 +23,13 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
+import com.openclassrooms.realestatemanager.util.EstateNotification
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
 
@@ -310,6 +313,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         // Observe if the activity must be closed
         addEditEstateViewModel.mustClose.observe(this) { mustClose ->
+            EstateNotification.createNotification(this)
             if(mustClose) finish()
         }
     }
