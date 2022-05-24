@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
-    private val _title = MutableLiveData("")
+    val _title = MutableLiveData("")
     val title = _title
 
     private val _country = MutableLiveData("")

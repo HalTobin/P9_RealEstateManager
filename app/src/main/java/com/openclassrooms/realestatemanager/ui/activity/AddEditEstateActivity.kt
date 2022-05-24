@@ -69,140 +69,140 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
             }
         })
 
         // Observer for the Estate's title
-        /*addEditEstateViewModel.title.observe(this) {
-            binding?.addEditEstateTitle?.setText(it)
-        }*/
+        addEditEstateViewModel.title.observe(this) {
+            if(it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(it)
+        }
 
         // TextField listener for the Estate's country
         binding?.addEditEstateCountry?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setCountry(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setCountry(s.toString())
             }
         })
 
         // Observer for the Estate's country
-        /*addEditEstateViewModel.country.observe(this) {
-            binding?.addEditEstateCountry?.setText(it)
-        }*/
+        addEditEstateViewModel.country.observe(this) {
+            if(it != binding?.addEditEstateCountry?.text.toString()) binding?.addEditEstateCountry?.setText(it)
+        }
 
         // TextField listener for the Estate's city
         binding?.addEditEstateCity?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setCity(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setCity(s.toString())
             }
         })
 
         // Observer for the Estate's city
-        /*addEditEstateViewModel.city.observe(this) {
-            binding?.addEditEstateCity?.setText(it)
-        }*/
+        addEditEstateViewModel.city.observe(this) {
+            if(it != binding?.addEditEstateCity?.text.toString()) binding?.addEditEstateCity?.setText(it)
+        }
 
         // TextField listener for the Estate's zip code
         binding?.addEditEstateZip?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setZip(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setZip(s.toString())
             }
         })
 
         // Observer for the Estate's zip Code
-        /*addEditEstateViewModel.zip.observe(this) {
-            binding?.addEditEstateZip?.setText(it)
-        }*/
+        addEditEstateViewModel.zip.observe(this) {
+            if(it != binding?.addEditEstateZip?.text.toString()) binding?.addEditEstateZip?.setText(it)
+        }
 
         // TextField listener for the Estate's address
         binding?.addEditEstateAddress?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setAddress(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setAddress(s.toString())
             }
         })
 
         // Observer for the Estate's address
-        /*addEditEstateViewModel.address.observe(this) {
-            binding?.addEditEstateAddress?.setText(it)
-        }*/
+        addEditEstateViewModel.address.observe(this) {
+            if(it != binding?.addEditEstateAddress?.text.toString()) binding?.addEditEstateAddress?.setText(it)
+        }
 
         // TextField listener for the Estate's area
         binding?.addEditEstateArea?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setArea(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setArea(s.toString())
             }
         })
 
         // Observer for the Estate's area
-        /*addEditEstateViewModel.area.observe(this) {
-            binding?.addEditEstateArea?.setText(it.toString())
-        }*/
+        addEditEstateViewModel.area.observe(this) {
+            if(it.toString() != binding?.addEditEstateArea?.text.toString()) binding?.addEditEstateArea?.setText(it.toString())
+        }
 
         // TextField listener for the Estate's price
         binding?.addEditEstatePrice?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setPrice(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setPrice(s.toString())
             }
         })
 
         // Observer for the Estate's price
-        /*addEditEstateViewModel.price.observe(this) {
-            binding?.addEditEstatePrice?.setText(it.toString())
-        }*/
+        addEditEstateViewModel.price.observe(this) {
+            if(it.toString() != binding?.addEditEstatePrice?.text.toString()) binding?.addEditEstatePrice?.setText(it.toString())
+        }
 
         // TextField listener for the Estate's numbers of rooms
         binding?.addEditEstateNbRooms?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setRooms(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setRooms(s.toString())
             }
         })
 
         // Observer for the Estate's numbers of room
-        /*addEditEstateViewModel.nbRooms.observe(this) {
-            binding?.addEditEstateNbRooms?.setText(it)
-        }*/
+        addEditEstateViewModel.nbRooms.observe(this) {
+            if(it.toString() != binding?.addEditEstateNbRooms?.text.toString()) binding?.addEditEstateNbRooms?.setText(it.toString())
+        }
 
         // TextField listener for the Estate's numbers of bedrooms
         binding?.addEditEstateNbBedrooms?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setBedrooms(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setBedrooms(s.toString())
             }
         })
 
         // Observer for the Estate's numbers of bedrooms
-        /*addEditEstateViewModel.nbBedrooms.observe(this) {
-            binding?.addEditEstateNbBedrooms?.setText(it)
-        }*/
+        addEditEstateViewModel.nbBedrooms.observe(this) {
+            if(it.toString() != binding?.addEditEstateNbBedrooms?.text.toString()) binding?.addEditEstateNbBedrooms?.setText(it.toString())
+        }
 
         // TextField listener for the Estate's numbers of bathrooms
         binding?.addEditEstateNbBathrooms?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setBathrooms(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setBathrooms(s.toString())
             }
         })
 
         // Observer for the Estate's numbers of bathroom
-        /*addEditEstateViewModel.nbBathrooms.observe(this) {
-            binding?.addEditEstateNbBathrooms?.setText(it.toString())
-        }*/
+        addEditEstateViewModel.nbBathrooms.observe(this) {
+            if(it.toString() != binding?.addEditEstateNbBathrooms?.text.toString()) binding?.addEditEstateNbBathrooms?.setText(it.toString())
+        }
 
         // Checkbox listener to indicate if there is a park near the Estate
         binding?.addEditEstateCheckPark?.setOnCheckedChangeListener { _, isChecked ->
@@ -210,9 +210,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's park checkbox
-        /*addEditEstateViewModel.nearbyPark.observe(this) {
-            binding?.addEditEstateCheckPark?.isChecked = it
-        }*/
+        addEditEstateViewModel.nearbyPark.observe(this) {
+            if(it != binding?.addEditEstateCheckPark?.isChecked) binding?.addEditEstateCheckPark?.isChecked = it
+        }
 
         // Checkbox listener to indicate if there is a school near the Estate
         binding?.addEditEstateCheckSchool?.setOnCheckedChangeListener { _, isChecked ->
@@ -220,9 +220,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's school checkbox
-        /*addEditEstateViewModel.nearbySchool.observe(this) {
-            binding?.addEditEstateCheckSchool?.isChecked = it
-        }*/
+        addEditEstateViewModel.nearbySchool.observe(this) {
+            if(it != binding?.addEditEstateCheckSchool?.isChecked) binding?.addEditEstateCheckSchool?.isChecked = it
+        }
 
         // Checkbox listener to indicate if there is a shop near the Estate
         binding?.addEditEstateCheckShop?.setOnCheckedChangeListener { _, isChecked ->
@@ -230,37 +230,37 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
 
         // Observer for the Estate's shop checkbox
-        /*addEditEstateViewModel.nearbyShop.observe(this) {
-            binding?.addEditEstateCheckShop?.isChecked = it
-        }*/
+        addEditEstateViewModel.nearbyShop.observe(this) {
+            if(it != binding?.addEditEstateCheckShop?.isChecked) binding?.addEditEstateCheckShop?.isChecked = it
+        }
 
         // TextField listener for the Estate's agent
         binding?.addEditEstateAgent?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setAgent(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setAgent(s.toString())
             }
         })
 
         // Observer for the Estate's agent
-        /*addEditEstateViewModel.agent.observe(this) {
-            binding?.addEditEstateAgent?.setText(it.toString())
-        }*/
+        addEditEstateViewModel.agent.observe(this) {
+            if(it != binding?.addEditEstateAgent?.text.toString()) binding?.addEditEstateAgent?.setText(it)
+        }
 
         // TextField listener for the Estate's description
         binding?.addEditEstateDescription?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) addEditEstateViewModel.setDescription(s.toString())
+                if(s.isNotEmpty()) addEditEstateViewModel.setDescription(s.toString())
             }
         })
 
         // Observer for the Estate's numbers of bathroom
-        /*addEditEstateViewModel.description.observe(this) {
-            binding?.addEditEstateDescription?.setText(it.toString())
-        }*/
+        addEditEstateViewModel.description.observe(this) {
+            if(it != binding?.addEditEstateDescription?.text.toString()) binding?.addEditEstateDescription?.setText(it.toString())
+        }
 
         // Click listener to find the Estate's location
         binding?.addEditEstateFind?.setOnClickListener {
