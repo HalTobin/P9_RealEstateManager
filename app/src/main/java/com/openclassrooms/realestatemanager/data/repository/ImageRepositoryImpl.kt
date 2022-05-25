@@ -27,4 +27,8 @@ class ImageRepositoryImpl(private val dao: ImageDao): ImageRepository {
         dao.deleteImage(image)
     }
 
+    override suspend fun deleteListOfImages(images: List<ImageWithDescription>) {
+        dao.deletesImages(images)
+    }
+
 }

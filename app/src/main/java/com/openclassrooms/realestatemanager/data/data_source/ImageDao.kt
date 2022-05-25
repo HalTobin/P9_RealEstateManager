@@ -22,4 +22,7 @@ interface ImageDao {
     @Delete
     suspend fun deleteImage(image: ImageWithDescription)
 
+    @Delete
+    suspend fun deletesImages(images: List<ImageWithDescription>)
+
 }

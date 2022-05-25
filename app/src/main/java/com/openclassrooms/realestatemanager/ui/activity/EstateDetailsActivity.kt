@@ -22,7 +22,7 @@ import com.openclassrooms.realestatemanager.viewModel.EstateDetailsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
-class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), KoinComponent, OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
+class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
 
     private val estateDetailsViewModel: EstateDetailsViewModel by viewModel()
 

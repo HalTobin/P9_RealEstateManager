@@ -17,4 +17,6 @@ interface ImageRepository {
 
     suspend fun deleteImage(image: ImageWithDescription)
 
+    suspend fun deleteListOfImages(images : List<ImageWithDescription>)
+
 }

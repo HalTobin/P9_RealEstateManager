@@ -15,6 +15,6 @@ interface EstateDao {
     fun getEstateById(id: Int): Flow<EstateWithImages>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEstate(estate: Estate)
+    suspend fun insertEstate(estate: Estate): Long
 
 }

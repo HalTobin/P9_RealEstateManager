@@ -9,8 +9,8 @@ import androidx.room.PrimaryKey
     childColumns = arrayOf("estateId"),
     onDelete = ForeignKey.CASCADE)))
 data class ImageWithDescription(
-    @PrimaryKey val id: Int,
-    val estateId: Int,
+    @PrimaryKey val id: Int? = null,
+    var estateId: Int,
     val description: String = "",
     val imageUrl: String
 ) {

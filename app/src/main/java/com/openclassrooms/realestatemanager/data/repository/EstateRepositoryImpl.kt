@@ -19,7 +19,7 @@ class EstateRepositoryImpl(private val dao: EstateDao): EstateRepository {
         return dao.getEstateById(id)
     }
 
-    override suspend fun addEstate(estate: Estate) {
+    override suspend fun addEstate(estate: Estate): Long {
         return dao.insertEstate(estate)
     }
 

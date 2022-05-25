@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
-    val _title = MutableLiveData("")
+    private val _title = MutableLiveData("")
     val title = _title
 
     private val _country = MutableLiveData("")
@@ -53,6 +53,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
 
+    private var picturesListToDelete = mutableListOf<ImageWithDescription>()
     private var pictureList = mutableListOf<ImageWithDescription>()
     private val _pictures = MutableLiveData<List<ImageWithDescription>>()
     val pictures = _pictures
@@ -94,6 +95,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _mustClose = MutableLiveData<Boolean>()
     val mustClose = _mustClose
 
+    private var currentEstateId: Int? = null
+
     fun searchLocation() {
         viewModelScope.launch {
             if(getCurrentFullAddress() != null) {
@@ -108,6 +111,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun loadEstate(estateId: Int) {
         viewModelScope.launch {
             estateRepository.getEstate(estateId).collect {
+                currentEstateId = it.estate.id
                 _title.postValue(it.estate.title)
                 _country.postValue(it.estate.country)
                 _city.postValue(it.estate.city)
@@ -138,8 +142,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     }
 
     fun changeCurrency() {
-        if(_isDollar.value != null) _isDollar.postValue(!_isDollar.value!!)
-        else _isDollar.postValue(true)
+        _isDollar.postValue(!_isDollar.value!!)
+        refreshPriceAsDollar()
     }
 
     private fun getCurrentFullAddress(): String? {
@@ -160,9 +164,15 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setArea(area: String) { _area.value = area.toInt() }
 
+    //TODO - Fix bug
     fun setPrice(price: String) {
         _price.value = price.toInt()
-        priceAsDollar = if(!isDollar.value!!) price.toInt().fromEuroToDollar() else price.toInt()
+        refreshPriceAsDollar()
+    }
+
+    private fun refreshPriceAsDollar() {
+        priceAsDollar = if(!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
+        println("PRICE AS DOLLAR : ".plus(priceAsDollar))
     }
 
     fun setRooms(rooms: String) { _nbRooms.value = rooms.toInt() }
@@ -182,12 +192,13 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun setDescription(description: String) { _description.value = description }
 
     fun addPicture(image: String, text: String) {
-        pictureList.add(ImageWithDescription(1, 1, text, image))
+        if(currentEstateId == null) pictureList.add(ImageWithDescription(estateId = -1, description = text, imageUrl = image))
+        else pictureList.add(ImageWithDescription(estateId = currentEstateId!!, description = text, imageUrl = image))
         _pictures.postValue(pictureList)
     }
 
     fun removePicture(imageWithDescription: ImageWithDescription) {
-        File(imageWithDescription.imageUrl).delete()
+        picturesListToDelete.add(imageWithDescription)
         pictureList.remove(imageWithDescription)
         _pictures.postValue(pictureList)
     }
@@ -195,17 +206,19 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     fun saveEstate() {
         if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
             viewModelScope.launch {
-                estateRepository.addEstate(Estate(title = _title.value!!,
+                currentEstateId = estateRepository.addEstate(Estate(id = currentEstateId,
+                    title = _title.value!!,
                     address = _address.value!!,
                     city = _city.value!!,
-                    country = _country.value!!, zipCode = _zip.value!!,
+                    country = _country.value!!,
+                    zipCode = _zip.value!!,
                     xCoordinate = _coordinates.value!!.xCoordinate,
-                    yCoordinate = _coordinates.value!!.yCoordinate, priceDollar = _price.value!!,
+                    yCoordinate = _coordinates.value!!.yCoordinate,
+                    priceDollar = priceAsDollar,
                     area = _area.value!!,
                     nbRooms = _nbRooms.value!!,
                     nbBathrooms = _nbBathrooms.value!!,
                     nbBedrooms = _nbBedrooms.value!!,
-                    //pictures = _pictures.value,
                     nearbySchool = _nearbySchool.value,
                     nearbyShop = _nearbyShop.value,
                     nearbyPark = _nearbyPark.value,
@@ -213,11 +226,23 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     entryDate = _entryDate.value,
                     soldDate = _soldDate.value,
                     agent = _agent.value!!,
-                    description = _description.value!!))
+                    description = _description.value!!)).toInt()
                 _mustClose.postValue(true)
 
-                _pictures.value?.let { imageRepository.addListOfImages(it) }
+                for(imageWithDescription in pictureList) {
+                    if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
+                }
 
+                for(imageWithDescription in picturesListToDelete) {
+                    if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
+                    File(imageWithDescription.imageUrl).delete()
+                }
+
+                imageRepository.deleteListOfImages(picturesListToDelete)
+
+                _pictures.value?.let {
+                    imageRepository.addListOfImages(it)
+                }
             }
 
         }

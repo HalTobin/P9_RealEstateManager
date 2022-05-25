@@ -313,7 +313,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         // Observe if the activity must be closed
         addEditEstateViewModel.mustClose.observe(this) { mustClose ->
-            EstateNotification.createNotification(this)
+            //EstateNotification.createNotification(this)
             if(mustClose) finish()
         }
     }
