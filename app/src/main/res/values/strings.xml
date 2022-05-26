@@ -6,6 +6,8 @@
 
     <string name="map_floating_ask_location_description_content">Rafraîchir la localisation</string>
 
+    <string name="estate_list_no_estate">Aucun bien immobilier trouvé…</string>
+
     <string name="add_edit_estate_title">Intitulé du bien</string>
     <string name="add_edit_estate_country">Pays</string>
     <string name="add_edit_estate_city">Ville</string>
@@ -55,6 +57,8 @@
     <string name="estate_details_school">École</string>
     <string name="estate_details_park">Parc</string>
 
+    <string name="estate_details_more_option_description">Afficher plus d\'options</string>
+    <string name="estate_details_sold_state_description">Déclarer le bien comme vendu ou non-vendu</string>
     <string name="estate_details_edit_estate_button_description">Modifier le bien immobilier</string>
 
     <string name="estate_details_edit_estate_button_edit">Modifier</string>

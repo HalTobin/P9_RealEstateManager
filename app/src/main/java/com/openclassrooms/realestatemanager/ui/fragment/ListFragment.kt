@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
+import coil.load
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity
@@ -18,30 +20,22 @@ import org.koin.core.KoinComponent
 import java.util.ArrayList
 
 class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, ListEstatePagerAdapter.OnItemClick {
-    private var mBinding: FragmentEstateListBinding? = null
     private var mAdapter: ListEstatePagerAdapter? = null
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        mBinding = FragmentEstateListBinding.inflate(
-            layoutInflater
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentEstateListBinding.inflate(layoutInflater)
 
         setUpAdapter()
         setListenersAndObservers()
 
-        return mBinding!!.root
+        return binding!!.root
     }
 
     private fun setListenersAndObservers() {
-
         // Setup listener to navigate to AddEditActivity
-        mBinding?.apply {
+        binding?.apply {
             listBtAdd.setOnClickListener {
                 this@ListFragment.activity?.let { it1 -> MainActivity.navigateToAddEditActivity(it1) }
             }
@@ -49,14 +43,22 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
 
         // Setup observer for list of estate
         mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
+            val dummyList = mutableListOf<EstateWithImages>()
             refreshRecycler(estates)
+            if(estates.isEmpty()) {
+                binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)
+                binding?.listEstateNoEstateText?.text = getString(R.string.estate_list_no_estate)
+            } else {
+                binding?.listEstateNoEstateImage?.load(0x00000000)
+                binding?.listEstateNoEstateText?.text = " "
+            }
         }
     }
 
     private fun setUpAdapter() {
         mAdapter = ListEstatePagerAdapter(ArrayList(), false, this.requireContext(), this)
-        mBinding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
-        mBinding!!.listEstateRecycler.addItemDecoration(
+        binding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
+        binding!!.listEstateRecycler.addItemDecoration(
             DividerItemDecoration(
                 this.context,
                 DividerItemDecoration.VERTICAL
@@ -66,7 +68,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
     }
 
     private fun initRecycler() {
-        mBinding!!.listEstateRecycler.adapter = mAdapter
+        binding!!.listEstateRecycler.adapter = mAdapter
     }
 
     private fun refreshRecycler(myList: List<EstateWithImages>) {

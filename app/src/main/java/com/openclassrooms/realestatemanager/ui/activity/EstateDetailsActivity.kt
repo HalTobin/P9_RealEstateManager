@@ -42,8 +42,6 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMa
         initMapView(savedInstanceState)
         setUpListenersAndObservers()
 
-        binding?.addEditEstateMore?.menuIconView?.setColorFilter(Color.BLACK)
-
         estateId = intent.getIntExtra("estate_id", -1)
         estateDetailsViewModel.setEstateId(estateId)
     }
@@ -82,11 +80,11 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMa
 
             if(estate.estate.sold) {
                 binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
-                binding?.estateDetailsSoldButton?.labelText = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
+                binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
             }
             else {
                 binding?.estateDetailsIsSoldImage?.load(0x00000000)
-                binding?.estateDetailsSoldButton?.labelText = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
+                binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
             }
         }
 

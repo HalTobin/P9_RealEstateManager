@@ -36,7 +36,6 @@ import org.koin.core.KoinComponent
 
 class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, OnMapReadyCallback {
 
-    private var mBinding: FragmentEstateMapBinding? = null
     private val mainViewModel: MainViewModel by sharedViewModel()
 
     private var myGoogleMap: GoogleMap? = null
@@ -44,16 +43,10 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
 
     private val markers: MutableList<Marker> = ArrayList()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        mBinding = FragmentEstateMapBinding.inflate(
-            layoutInflater
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentEstateMapBinding.inflate(layoutInflater)
 
-        return mBinding!!.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,7 +55,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
     }
 
     private fun initMapView(savedInstanceState: Bundle?) {
-        mBinding?.apply {
+        binding?.apply {
             mapMapView.onCreate(savedInstanceState)
             mapMapView.getMapAsync(this@MapFragment)
         }
@@ -143,23 +136,23 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         }
 
         // Set a listener to refresh location
-        mBinding?.apply { mapBtLocate.setOnClickListener {
+        binding?.apply { mapBtLocate.setOnClickListener {
             mainViewModel.findCurrentLocation(requireContext())
         } }
     }
 
     override fun onStart() {
         super.onStart()
-        mBinding?.apply { mapMapView.onStart() }
+        binding?.apply { mapMapView.onStart() }
     }
 
     override fun onResume() {
         super.onResume()
-        mBinding?.apply { mapMapView.onResume() }
+        binding?.apply { mapMapView.onResume() }
     }
 
     override fun onPause() {
         super.onPause()
-        mBinding?.apply { mapMapView.onPause() }
+        binding?.apply { mapMapView.onPause() }
     }
 }

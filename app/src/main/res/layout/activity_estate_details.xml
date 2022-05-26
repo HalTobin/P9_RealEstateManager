@@ -250,38 +250,43 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/add_edit_estate_more"
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/estate_details_estate_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        app:fab_addButtonColorNormal="@color/white"
+        app:fab_addButtonColorPressed="@color/white"
+        app:fab_addButtonPlusIconColor="@color/black"
+        app:fab_labelsPosition="left"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:borderWidth="0dp"
-        app:menu_colorNormal="@color/white"
-        app:menu_colorPressed="@color/white"
-        android:contentDescription="@string/estate_details_edit_estate_button_description" >
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/estate_details_sold_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_home"
-            app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/white"
-            app:fab_size="mini"
-            app:fab_label="@string/estate_details_edit_estate_button_sold_to_sold"/>
-
-        <com.github.clans.fab.FloatingActionButton
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/estate_details_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
             app:fab_colorNormal="@color/white"
-            app:fab_colorPressed="@color/white"
             app:fab_size="mini"
-            app:fab_label="@string/estate_details_edit_estate_button_edit"/>
+            app:fab_icon="@drawable/ic_edit"
+            app:fab_title="@string/estate_details_edit_estate_button_edit"
+            app:fab_colorPressed="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/estate_details_estate_more"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </com.github.clans.fab.FloatingActionMenu>
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+            android:id="@+id/estate_details_sold_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_home"
+            app:fab_title="@string/estate_details_edit_estate_button_sold_to_sold"
+            app:fab_colorPressed="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/estate_details_edit_button"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

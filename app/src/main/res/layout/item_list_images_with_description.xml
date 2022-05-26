@@ -26,10 +26,9 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:backgroundTint="#B9000000"
+        android:background="@color/transparent_black"
         app:layout_constraintBottom_toBottomOf="@+id/image_with_description_image"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
