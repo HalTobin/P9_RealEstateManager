@@ -54,7 +54,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
     }
 
     private fun setUpAdapter() {
-        mAdapter = ListEstatePagerAdapter(ArrayList(), this.requireContext(), this)
+        mAdapter = ListEstatePagerAdapter(ArrayList(), false, this.requireContext(), this)
         mBinding!!.listEstateRecycler.layoutManager = LinearLayoutManager(this.context)
         mBinding!!.listEstateRecycler.addItemDecoration(
             DividerItemDecoration(

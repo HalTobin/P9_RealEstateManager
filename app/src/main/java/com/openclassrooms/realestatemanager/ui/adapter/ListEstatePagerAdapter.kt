@@ -1,24 +1,21 @@
 package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
-import com.openclassrooms.realestatemanager.model.Estate
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
-import coil.Coil
 import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import com.openclassrooms.realestatemanager.model.EstateWithImages
-import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
-import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import java.util.ArrayList
 
-class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, listener: OnItemClick) :
+class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, context: Context, listener: OnItemClick) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
 
     private val context: Context
+    private var isDollar = false
     private var estates: List<EstateWithImages>? = ArrayList()
     private val mCallback: OnItemClick?
 
@@ -32,8 +29,9 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
 
         holder.binding.itemEstateName.text = myEstate.estate.title
         holder.binding.itemEstateLocation.text = myEstate.estate.city
-        //TODO - Change currency dynamically
-        holder.binding.itemEstatePrice.text = myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
+        holder.binding.itemEstatePrice.text =
+            if(isDollar) myEstate.estate.priceDollar?.toString().plus("$")
+            else myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
 
         if(myEstate.images!!.isNotEmpty()) {
             holder.binding.itemEstateImage.load(myEstate.images!![0].imageUrl)
@@ -46,6 +44,11 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
 
     override fun getItemCount(): Int {
         return if (estates != null) estates!!.size else 0
+    }
+
+    fun updateCurrency(isDollar: Boolean) {
+        this.isDollar = isDollar
+        notifyDataSetChanged()
     }
 
     fun updateList(estates: List<EstateWithImages>) {
@@ -61,6 +64,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
         estates = items
         this.context = context
         this.mCallback = listener
+        this.isDollar = isDollar
     }
 
     interface OnItemClick {
