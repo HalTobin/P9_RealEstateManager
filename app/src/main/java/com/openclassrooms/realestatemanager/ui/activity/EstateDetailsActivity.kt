@@ -3,10 +3,8 @@ package com.openclassrooms.realestatemanager.ui.activity
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng

@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui.activity
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,7 +28,7 @@ import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
-import kotlin.collections.ArrayList
+
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
 
@@ -58,6 +59,10 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         val estateToLoadId = this.intent.getIntExtra("estate_id", -1)
         if(estateToLoadId != -1) addEditEstateViewModel.loadEstate(estateToLoadId)
+    }
+
+    override fun onBackPressed() {
+        exitConfirmationDialog()
     }
 
     private fun setUpListenersAndObservers() {
@@ -333,6 +338,23 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         // Depending on the phone's settings, dark mode is used for the map
         googleMap.setMapStyle(getMapStyle(this))
+    }
+
+    // Ask the user if he's sure about closing the activity
+    private fun exitConfirmationDialog() {
+        val dialogClickListener =
+            DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> { super.onBackPressed() }
+                    DialogInterface.BUTTON_NEGATIVE -> {  }
+                }
+            }
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.add_edit_estate_exit_text))
+            .setPositiveButton(getString(R.string.add_edit_estate_exit_yes), dialogClickListener)
+            .setNegativeButton(getString(R.string.add_edit_estate_exit_no), dialogClickListener)
+            .show()
     }
 
     private fun selectImage() {

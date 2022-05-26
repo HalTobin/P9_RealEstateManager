@@ -35,6 +35,10 @@
     <string name="add_edit_estate_uncomplete">Certains champs n\'ont pas étés remplis !</string>
     <string name="add_edit_estate_cant_find_location">La localisation du bien n\'a pas été trouvée</string>
 
+    <string name="add_edit_estate_exit_text">Êtes-vous sûr de vouloir quitter cette fenêtre ? Vos modifications seront perdues</string>
+    <string name="add_edit_estate_exit_yes">Oui</string>
+    <string name="add_edit_estate_exit_no">Non</string>
+
     <string name="are_you_sure">Êtes-vous sûr ?</string>
     <string name="delete">Supprimer</string>
     <string name="cancel_button">Retour</string>
