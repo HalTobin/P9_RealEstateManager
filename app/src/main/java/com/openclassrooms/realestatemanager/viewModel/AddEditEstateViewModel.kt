@@ -1,9 +1,5 @@
 package com.openclassrooms.realestatemanager.viewModel
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.os.Environment
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
@@ -11,17 +7,12 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
-import com.openclassrooms.realestatemanager.util.CustomTakePicture
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
 
@@ -86,8 +77,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     private val _soldDate = MutableLiveData<Long>()
 
-    private val _status = MutableLiveData(Estate.AVAILABLE)
-    val status = _status
+    private val _sold = MutableLiveData(false)
+    val status = _sold
 
     private val _warning = MutableLiveData<Int>()
     val warning = _warning
@@ -132,6 +123,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                 _nbBathrooms.postValue(it.estate.nbBathrooms!!)
                 _nbBedrooms.postValue(it.estate.nbBedrooms!!)
                 _entryDate.value = it.estate.entryDate
+                _sold.value = it.estate.sold
                 if(it.estate.soldDate != null) _soldDate.value = it.estate.soldDate!! else _soldDate.value = 0
             }
         }
@@ -143,7 +135,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun changeCurrency() {
         _isDollar.postValue(!_isDollar.value!!)
-        refreshPriceAsDollar()
+        if(_price.value != null) refreshPriceAsDollar()
     }
 
     private fun getCurrentFullAddress(): String? {
@@ -222,7 +214,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     nearbySchool = _nearbySchool.value,
                     nearbyShop = _nearbyShop.value,
                     nearbyPark = _nearbyPark.value,
-                    status = _status.value,
+                    sold = _sold.value!!,
                     entryDate = _entryDate.value,
                     soldDate = _soldDate.value,
                     agent = _agent.value!!,
@@ -248,7 +240,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         }
         if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
         else if(coordinates.value!!.isUndefined()) _warning.postValue(Estate.CANT_FIND_LOCATION)
-        else _warning.postValue(Estate.UNCOMPLETE)
+        else _warning.postValue(Estate.UNCOMPLETED)
     }
 
     fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()

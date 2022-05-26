@@ -1,9 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.activity
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
@@ -13,14 +16,13 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityEstateDetailsBinding
 import com.openclassrooms.realestatemanager.model.Coordinates
-import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.EstateDetailsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.KoinComponent
+
 
 class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
 
@@ -41,6 +43,8 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMa
         initRecycler()
         initMapView(savedInstanceState)
         setUpListenersAndObservers()
+
+        binding?.addEditEstateMore?.menuIconView?.setColorFilter(Color.BLACK)
 
         estateId = intent.getIntExtra("estate_id", -1)
         estateDetailsViewModel.setEstateId(estateId)
@@ -77,10 +81,23 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>(), OnMa
                 MarkerOptions()
                     .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
             )?.let { marker = it }
+
+            if(estate.estate.sold) {
+                binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
+                binding?.estateDetailsSoldButton?.labelText = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
+            }
+            else {
+                binding?.estateDetailsIsSoldImage?.load(0x00000000)
+                binding?.estateDetailsSoldButton?.labelText = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
+            }
         }
 
         binding?.estateDetailsEditButton?.setOnClickListener {
             MainActivity.navigateToAddEditActivity(this, estateId)
+        }
+
+        binding?.estateDetailsSoldButton?.setOnClickListener {
+            estateDetailsViewModel.updateSoldState()
         }
     }
 

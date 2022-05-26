@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import coil.Coil
 import coil.load
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
+import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import java.util.ArrayList
 
 class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, listener: OnItemClick) :
@@ -30,7 +33,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
         holder.binding.itemEstateName.text = myEstate.estate.title
         holder.binding.itemEstateLocation.text = myEstate.estate.city
         //TODO - Change currency dynamically
-        holder.binding.itemEstatePrice.text = myEstate.estate.priceDollar.toString().plus("€")
+        holder.binding.itemEstatePrice.text = myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
 
         if(myEstate.images!!.isNotEmpty()) {
             holder.binding.itemEstateImage.load(myEstate.images!![0].imageUrl)
@@ -38,6 +41,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, context: Context, l
 
         // Set up the onClickListener to open the EstateDetailsActivity
         holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
+        if(myEstate.estate.sold) { holder.binding.itemEstateSold.load(R.drawable.sold) }
     }
 
     override fun getItemCount(): Int {

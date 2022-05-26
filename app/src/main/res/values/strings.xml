@@ -28,7 +28,7 @@
     <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
     <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
-    <string name="add_edit_estate_image_dialog_text">Pièce</string>
+    <string name="add_edit_estate_image_dialog_text">Description</string>
 
     <string name="add_edit_estate_image_dialog_delete_image">Souhaitez-vous supprimer l\'image ?</string>
 
@@ -52,6 +52,10 @@
     <string name="estate_details_park">Parc</string>
 
     <string name="estate_details_edit_estate_button_description">Modifier le bien immobilier</string>
+
+    <string name="estate_details_edit_estate_button_edit">Modifier</string>
+    <string name="estate_details_edit_estate_button_sold_to_sold">Déclarer vendu</string>
+    <string name="estate_details_edit_estate_button_sold_to_unsold">Déclarer non-vendu</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
 

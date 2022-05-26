@@ -30,6 +30,10 @@ object Utils {
         return convertEuroToDollar(this)
     }
 
+    fun Int.fromDollarToEuro(): Int {
+        return convertDollarToEuro(this)
+    }
+
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE

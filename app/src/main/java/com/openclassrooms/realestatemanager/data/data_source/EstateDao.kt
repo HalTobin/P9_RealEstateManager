@@ -17,4 +17,7 @@ interface EstateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEstate(estate: Estate): Long
 
+    @Query("UPDATE estate SET sold = :soldState WHERE id = :id")
+    suspend fun changeSoldState(id: Int, soldState: Boolean)
+
 }

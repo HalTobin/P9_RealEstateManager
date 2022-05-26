@@ -105,7 +105,10 @@ dependencies {
     // Android Image Picker
     implementation "com.github.dIvYaNshhh:android-image-picker:1.0.3"
 
-    //Room Database
+    // Implementation of FloatingActionButton with lots of features
+    implementation 'com.github.clans:fab:1.6.4'
+
+    // Room Database
     implementation "androidx.room:room-runtime:2.4.2"
     kapt "androidx.room:room-compiler:2.4.2"
     // optional - Kotlin Extensions and Coroutines support for Room

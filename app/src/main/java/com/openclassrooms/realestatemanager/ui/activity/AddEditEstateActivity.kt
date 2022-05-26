@@ -23,12 +23,10 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
-import com.openclassrooms.realestatemanager.util.EstateNotification
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
-import java.util.*
 import kotlin.collections.ArrayList
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
@@ -306,7 +304,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         // Observe if a warning has been posted
         addEditEstateViewModel.warning.observe(this) { warning ->
             when(warning) {
-                Estate.UNCOMPLETE -> showToast(R.string.add_edit_estate_uncomplete)
+                Estate.UNCOMPLETED -> showToast(R.string.add_edit_estate_uncomplete)
                 Estate.CANT_FIND_LOCATION -> showToast(R.string.add_edit_estate_cant_find_location)
             }
         }
@@ -318,6 +316,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
     }
 
+    //TODO - Inject with Koin
     private fun setApiKey() {
         if(!addEditEstateViewModel.isPositionStackApiKeyDefined()) addEditEstateViewModel.setPositionStackApiKey(getString(R.string.position_stack_api_key))
     }
@@ -393,7 +392,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         val input = dialogLayout.findViewById<TextInputEditText>(R.id.add_edit_estate_add_image_dialog_text)
 
         with(builder) {
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             setView(dialogLayout)
 
             // Set up the buttons

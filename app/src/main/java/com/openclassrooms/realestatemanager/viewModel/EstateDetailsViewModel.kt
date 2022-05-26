@@ -22,7 +22,12 @@ class EstateDetailsViewModel(private val estateRepository: EstateRepository): Vi
                 _estate.postValue(it)
             }
         }
+    }
 
+    fun updateSoldState() {
+        viewModelScope.launch {
+            estateRepository.changeSoldState(_estate.value!!.estate.id!!, !_estate.value!!.estate.sold)
+        }
     }
 
 }

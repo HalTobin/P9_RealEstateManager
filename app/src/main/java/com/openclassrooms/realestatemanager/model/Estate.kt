@@ -21,11 +21,10 @@ data class Estate(@PrimaryKey val id: Int? = null,
                   var nbRooms: Int? = null,
                   var nbBathrooms: Int? = null,
                   var nbBedrooms: Int? = null,
-                  //@Ignore var pictures: List<ImageWithDescription>? = listOf(),
                   var nearbySchool:Boolean? = false,
                   var nearbyShop:Boolean? = false,
                   var nearbyPark:Boolean? = false,
-                  var status: Int? = AVAILABLE,
+                  var sold: Boolean = false,
                   var entryDate: Long? = null,
                   var soldDate: Long? = null,
                   var agent: String = "",
@@ -41,11 +40,7 @@ data class Estate(@PrimaryKey val id: Int? = null,
 
     companion object {
 
-        const val AVAILABLE: Int = 0
-        const val STAND_BY: Int = 1
-        const val SOLD: Int = 2
-
-        const val UNCOMPLETE: Int = 10
+        const val UNCOMPLETED: Int = 10
         const val CANT_FIND_LOCATION: Int = 11
 
         fun isFilled(title: String?, address: String?, city: String?, country: String?, coordinates: Coordinates?, priceDollar: Int?, area: Int?, nbRooms: Int?, nbBathrooms: Int?, nbBedrooms: Int?, agent: String?, description: String?): Boolean {
