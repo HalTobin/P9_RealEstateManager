@@ -9,8 +9,4 @@ interface CoordinatesRepository {
 
     suspend fun getCoordinates(address: String): Flow<Coordinates?>
 
-    fun setApiKey(key: String)
-
-    fun isApiKeyDefined(): Boolean
-
 }

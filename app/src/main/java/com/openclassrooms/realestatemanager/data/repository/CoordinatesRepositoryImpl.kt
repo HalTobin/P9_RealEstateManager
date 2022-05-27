@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.repository
 
+import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.api.PositionStackApi
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
@@ -13,32 +14,29 @@ import retrofit2.*
 
 class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRepository {
 
-    private var apiKey: String? = null
     private val positionStackApi = retrofit.create(PositionStackApi::class.java)
 
     override suspend fun getCoordinates(address: String): Flow<Coordinates?> {
 
             return flow {
-                if(isApiKeyDefined()) {
-                    val result = getResponse(
-                        request = { positionStackApi.getCoordinates(apiKey, address, 1) },
-                        defaultErrorMessage = "Error fetching Coordinates"
-                    )
+                val result = getResponse(
+                    request = { positionStackApi.getCoordinates(BuildConfig.POSITIONSTACK_API_KEY, address, 1) },
+                    defaultErrorMessage = "Error fetching Coordinates"
+                )
 
-                    when (result.status) {
-                        Result.Status.SUCCESS -> {
-                            result.data?.let { coordinates ->
-                                println("GET COORDINATES - " + coordinates.toString())
-                                emit(coordinates)
-                            }
+                when (result.status) {
+                    Result.Status.SUCCESS -> {
+                        result.data?.let { coordinates ->
+                            println("GET COORDINATES - " + coordinates.toString())
+                            emit(coordinates)
                         }
-                        Result.Status.ERROR -> {
-                            result.message?.let {
-                                println("GET COOORDINATES ERROR - " + it)
-                            }
-                        }
-                        else -> {}
                     }
+                    Result.Status.ERROR -> {
+                        result.message?.let {
+                            println("GET COOORDINATES ERROR - " + it)
+                        }
+                    }
+                    else -> {}
                 }
             }.flowOn(Dispatchers.IO)
     }
@@ -56,7 +54,4 @@ class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRep
         }
     }
 
-    override fun setApiKey(key: String) { apiKey = key }
-
-    override fun isApiKeyDefined(): Boolean = (apiKey!=null)
 }

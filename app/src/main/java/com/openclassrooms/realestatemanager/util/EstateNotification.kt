@@ -21,8 +21,8 @@ object EstateNotification {
         val channelId = "real_estate_manager_new_estate"
         val manager: NotificationManager = context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var channel: NotificationChannel = manager.getNotificationChannel(channelId)
-            if(channel != null) {
+            var channel = manager.getNotificationChannel(channelId)
+            if(channel == null) {
                 channel = NotificationChannel(channelId, "New Estate", NotificationManager.IMPORTANCE_HIGH)
                 channel.description = ""
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -36,8 +36,7 @@ object EstateNotification {
             .setSmallIcon(R.drawable.ic_home)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_home))
             .setContentTitle("RealEstateManager")
-            //TODO - Access from string resources
-            .setContentText("An estate has been successfully saved !")
+            .setContentText(context.getString(R.string.add_edit_estate_save_notification))
         builder.setContentIntent(contentIntent)
         val m = NotificationManagerCompat.from(context.applicationContext)
         m.notify(Random().nextInt(), builder.build())

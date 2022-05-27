@@ -22,6 +22,7 @@ import com.openclassrooms.realestatemanager.databinding.ActivityAddEditEstateBin
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
+import com.openclassrooms.realestatemanager.util.EstateNotification
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
@@ -49,7 +50,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         binding = ActivityAddEditEstateBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
-        setApiKey()
         setUpListenersAndObservers()
         initMapView(savedInstanceState)
         initRecycler()
@@ -316,14 +316,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
 
         // Observe if the activity must be closed
         addEditEstateViewModel.mustClose.observe(this) { mustClose ->
-            //EstateNotification.createNotification(this)
+            EstateNotification.createNotification(this)
             if(mustClose) finish()
         }
-    }
-
-    //TODO - Inject with Koin
-    private fun setApiKey() {
-        if(!addEditEstateViewModel.isPositionStackApiKeyDefined()) addEditEstateViewModel.setPositionStackApiKey(getString(R.string.position_stack_api_key))
     }
 
     private fun initMapView(savedInstanceState: Bundle?) {

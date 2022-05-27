@@ -219,7 +219,6 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     soldDate = _soldDate.value,
                     agent = _agent.value!!,
                     description = _description.value!!)).toInt()
-                _mustClose.postValue(true)
 
                 for(imageWithDescription in pictureList) {
                     if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
@@ -235,6 +234,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                 _pictures.value?.let {
                     imageRepository.addListOfImages(it)
                 }
+
+                _mustClose.postValue(true)
             }
 
         }
@@ -242,9 +243,5 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         else if(coordinates.value!!.isUndefined()) _warning.postValue(Estate.CANT_FIND_LOCATION)
         else _warning.postValue(Estate.UNCOMPLETED)
     }
-
-    fun isPositionStackApiKeyDefined() = coordinatesRepository.isApiKeyDefined()
-
-    fun setPositionStackApiKey(key: String) { coordinatesRepository.setApiKey(key) }
 
 }
