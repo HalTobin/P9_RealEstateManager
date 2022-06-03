@@ -17,7 +17,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/estate_details_image_list"
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="@dimen/image_adapter_size"
         android:layout_margin="16dp"
         tools:listitem="@layout/item_list_images_with_description"
         android:orientation="horizontal"

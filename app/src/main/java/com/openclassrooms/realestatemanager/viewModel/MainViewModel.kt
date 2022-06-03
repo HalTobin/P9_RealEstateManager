@@ -68,6 +68,7 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     fun updateSoldState() {
         viewModelScope.launch {
             estateRepository.changeSoldState(_estate.value!!.estate.id!!, !_estate.value!!.estate.sold)
+            estateRepository.changeSoldDate(_estate.value!!.estate.id!!, System.currentTimeMillis())
         }
     }
 

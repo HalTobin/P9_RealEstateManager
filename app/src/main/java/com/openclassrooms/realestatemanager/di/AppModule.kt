@@ -14,6 +14,7 @@ import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.ImageRepositoryImpl
 import com.openclassrooms.realestatemanager.model.Coordinates
+import com.openclassrooms.realestatemanager.provider.EstateContentProvider
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository

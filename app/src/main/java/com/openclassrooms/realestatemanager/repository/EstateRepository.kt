@@ -14,4 +14,6 @@ interface EstateRepository {
 
     suspend fun changeSoldState(id: Int, sold: Boolean)
 
+    suspend fun changeSoldDate(id: Int, soldDate: Long)
+
 }

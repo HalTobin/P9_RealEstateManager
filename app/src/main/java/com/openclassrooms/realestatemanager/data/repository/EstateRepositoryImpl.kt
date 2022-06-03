@@ -27,6 +27,10 @@ class EstateRepositoryImpl(private val dao: EstateDao): EstateRepository {
         return dao.changeSoldState(id, sold)
     }
 
+    override suspend fun changeSoldDate(id: Int, soldDate: Long) {
+        return dao.changeSoldDate(id, soldDate)
+    }
+
     /*override fun getEstates(): Flow<List<Estate>> {
         val estatesFlow: Flow<List<Estate>> = flow {
             emit(estates)
