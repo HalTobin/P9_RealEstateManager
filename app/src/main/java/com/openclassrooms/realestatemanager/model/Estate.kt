@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.model
 
+import android.content.ContentValues
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -60,6 +61,31 @@ data class Estate(@PrimaryKey val id: Int? = null,
             return isFilled
         }
 
+        fun fromContentValues(values: ContentValues): Estate {
+            return Estate(
+                id = values.getAsInteger("id"),
+                title = values.getAsString("title"),
+                address = values.getAsString("address"),
+                city = values.getAsString("city"),
+                zipCode = values.getAsString("zipCode"),
+                country = values.getAsString("country"),
+                xCoordinate = values.getAsDouble("xCoordinate"),
+                yCoordinate = values.getAsDouble("yCoordinate"),
+                priceDollar = values.getAsInteger("priceDollar"),
+                area = values.getAsInteger("area"),
+                nbRooms = values.getAsInteger("nbRooms"),
+                nbBathrooms = values.getAsInteger("nbBathrooms"),
+                nbBedrooms = values.getAsInteger("nbBedrooms"),
+                nearbySchool = values.getAsBoolean("nearbySchool"),
+                nearbyShop = values.getAsBoolean("nearbyShop"),
+                nearbyPark = values.getAsBoolean("nearbyPark"),
+                sold = values.getAsBoolean("sold"),
+                entryDate = values.getAsLong("entryDate"),
+                soldDate = values.getAsLong("soldDate"),
+                agent = values.getAsString("agent"),
+                description = values.getAsString("description"))
+        }
+
         val fake_list = listOf(
             Estate(id = 1, title = "Maison Bagnolet", address = "2bis rue de Bagnolet", city = "Bagnolet", zipCode = "93170", country = "France", xCoordinate = 48.868627, yCoordinate = 2.421451,priceDollar = 450000, area = 25, nbRooms = 3, nbBathrooms = 1, nbBedrooms = 1, nearbyShop = false, nearbySchool = false, nearbyPark = false),
             Estate(id = 2, title = "Appartement Gambetta", address = "40 avenue Gambetta", city = "Paris", zipCode = "75020", country = "France", xCoordinate = 48.86484, yCoordinate = 2.397598, priceDollar = 700000, area = 35, nbRooms = 4, nbBathrooms = 1, nbBedrooms = 2, nearbyShop = true, nearbySchool = true, nearbyPark = true),
@@ -67,6 +93,7 @@ data class Estate(@PrimaryKey val id: Int? = null,
             Estate(id = 4, title = "Appartement Villette", address = "10 rue Delesseux", city = "Paris", zipCode = "75019", country = "France", xCoordinate = 48.888535, yCoordinate = 2.38737, priceDollar = 750000, area = 45, nbRooms = 5, nbBathrooms = 1, nbBedrooms = 3, nearbyShop = true, nearbySchool = false, nearbyPark = true),
             Estate(id = 5, title = "Studio Barbès", address = "13 rue de Sofia", city = "Paris", zipCode = "75018", country = "France", xCoordinate = 48.884719, yCoordinate = 2.348279, priceDollar = 250000, area = 20, nbRooms = 1, nbBathrooms = 1, nbBedrooms = 0, nearbyShop = false, nearbySchool = true, nearbyPark = true),
         )
+
     }
 
 }

@@ -33,6 +33,13 @@
         <activity android:name="com.openclassrooms.realestatemanager.ui.activity.AddEditEstateActivity" />
         <activity android:name="com.openclassrooms.realestatemanager.ui.activity.EstateDetailsActivity" />
 
+        <!--
+        <provider
+            android:authorities="com.openclassrooms.realestatemanager.provider"
+            android:name=".provider.EstateContentProvider"
+            android:exported="true"/>
+            -->
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

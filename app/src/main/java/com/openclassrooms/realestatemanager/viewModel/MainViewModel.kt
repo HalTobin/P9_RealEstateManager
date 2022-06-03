@@ -22,11 +22,19 @@ import org.koin.core.inject
 
 class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(), KoinComponent {
 
+    private var estateId: Int? = null
+
+    private val _estate = MutableLiveData<EstateWithImages>()
+    val estate = _estate
+
     private val _estates = MutableLiveData<List<Estate>>()
     val estates = _estates
 
     private val _coordinates = MutableLiveData<Coordinates>()
     val coordinates = _coordinates
+
+    private val _selection = MutableLiveData<Int>()
+    val selection = _selection
 
     fun getEstates(): LiveData<List<EstateWithImages>> {
         return estateRepository.getEstates().asLiveData()
@@ -41,6 +49,25 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
         val myLocationClient = JavaFusedLocationProviderClient(context)
         myLocationClient.currentLocation.addOnSuccessListener { location: Location? ->
             location?.apply { setLocation(latitude, longitude) }
+        }
+    }
+
+    fun selectEstate(estateId: Int) {
+        _selection.postValue(estateId)
+    }
+
+    fun setEstateId(estateId: Int) {
+        this.estateId = estateId
+        viewModelScope.launch {
+            estateRepository.getEstate(estateId).collect {
+                _estate.postValue(it)
+            }
+        }
+    }
+
+    fun updateSoldState() {
+        viewModelScope.launch {
+            estateRepository.changeSoldState(_estate.value!!.estate.id!!, !_estate.value!!.estate.sold)
         }
     }
 

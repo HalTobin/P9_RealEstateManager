@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.data_source
 
+import android.database.Cursor
 import androidx.room.*
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateWithImages
@@ -7,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EstateDao {
+
+    @Query("SELECT * FROM estate WHERE id = :id")
+    fun getEstateWithCursor(id: Int): Cursor
 
     @Query("SELECT * FROM estate")
     fun getEstates(): Flow<List<EstateWithImages>>

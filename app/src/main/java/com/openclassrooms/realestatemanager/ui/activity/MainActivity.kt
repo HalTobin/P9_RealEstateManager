@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -15,6 +16,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
+import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
@@ -30,6 +32,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private val listFragment: ListFragment by inject()
     private val mapFragment: MapFragment by inject()
+    private val detailsFragment: DetailsFragment by inject()
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,28 +47,45 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         this.context = this
 
+        if(isLarge()) {
+            setUpClassicLayout()
+        } else {
+            setUpForLargeLayout()
+        }
+
         checkAndAskPermission()
-        setUpTabAndFragments()
         mainViewModel.findCurrentLocation(this)
     }
 
     // Allow navigation between fragments (List, Map)
-    private fun setUpTabAndFragments() {
-        setFragment(listFragment)
+    private fun setUpClassicLayout() {
+        setFragment(supportFragmentManager, R.id.main_frame_layout, listFragment)
         binding?.apply {
             mainBottomNav.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.main_hub_menu_list -> {
-                        setFragment(listFragment)
+                        setFragment(supportFragmentManager, R.id.main_frame_layout, listFragment)
                         return@setOnItemSelectedListener true
                     }
                     R.id.main_hub_menu_map -> {
-                        setFragment(mapFragment)
+                        setFragment(supportFragmentManager, R.id.main_frame_layout, mapFragment)
                         return@setOnItemSelectedListener true
                     }
                     else -> return@setOnItemSelectedListener false
                 }
             }
+        }
+        mainViewModel.selection.observe(this) { id ->
+            navigateToEstateDetailsActivity(this, id)
+        }
+    }
+
+    private fun setUpForLargeLayout() {
+        setFragment(supportFragmentManager, R.id.main_fragment_list, listFragment)
+        setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        mainViewModel.selection.observe(this) { id ->
+            mainViewModel.setEstateId(id)
+            setFragment(supportFragmentManager, R.id.main_fragment_map_details, detailsFragment)
         }
     }
 
@@ -92,14 +112,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }).check()
     }
 
-    // Setup fragment
-    private fun setFragment(fragment: Fragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frame_layout, fragment)
-        fragmentTransaction.commit()
+    // Check if the user's device is large or not
+    private fun isLarge(): Boolean {
+        return (binding?.mainFrameLayout != null)
     }
 
     companion object {
+        // Setup fragment
+        fun setFragment(fragmentManager: FragmentManager, target: Int, fragment: Fragment,) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(target, fragment)
+            fragmentTransaction.commit()
+        }
+
         fun navigateToAddEditActivity(activity: FragmentActivity) {
             val intent = Intent(activity, AddEditEstateActivity::class.java)
             ActivityCompat.startActivity(activity, intent, null)

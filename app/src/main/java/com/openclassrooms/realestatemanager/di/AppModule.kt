@@ -17,9 +17,9 @@ import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
+import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
-import com.openclassrooms.realestatemanager.viewModel.EstateDetailsViewModel
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -53,21 +53,14 @@ object AppModule {
         single {
             Retrofit
                 .Builder()
-                .client(
-                    OkHttpClient.Builder()
-                        .addInterceptor(HttpLoggingInterceptor()).build()
-                )
+                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor()).build())
                 .baseUrl(POSITION_STACK_BASE_URL)
                 .addConverterFactory(createGsonConverter())
                 .build()
         }
 
         single {
-            Room.databaseBuilder(
-                androidApplication(),
-                EstateDatabase::class.java,
-                EstateDatabase.DATABASE_NAME
-            )
+            Room.databaseBuilder(androidApplication(), EstateDatabase::class.java, EstateDatabase.DATABASE_NAME)
                 //.addCallback(EstateDatabase.prepopulate)
                 .build()
         }
@@ -88,16 +81,16 @@ object AppModule {
             provideMapFragment()
         }
 
+        fragment {
+            provideDetailsFragment()
+        }
+
         viewModel {
             provideMainViewModel(get())
         }
 
         viewModel {
             provideAddEditEstateViewModel(estateRepository = get(), imageRepository = get(), coordinatesRepository = get())
-        }
-
-        viewModel {
-            provideEstateDetailsViewModel(estateRepository = get())
         }
 
     }
@@ -112,17 +105,13 @@ object AppModule {
     private fun provideImageRepository(imageDao: ImageDao): ImageRepository =
         ImageRepositoryImpl(imageDao)
 
-    //TODO - Check how to retrieve api key from manifest
     private fun provideCoordinatesRepository(retrofit: Retrofit): CoordinatesRepository =
         CoordinatesRepositoryImpl(retrofit)
 
     // This allow the use of a custom deserializer (GetCoordinatesDeserializer)
     private fun createGsonConverter(): Converter.Factory {
         val gsonBuilder = GsonBuilder()
-        gsonBuilder.registerTypeAdapter(
-            object : TypeToken<Coordinates>() {}.type,
-            GetCoordinatesDeserializer()
-        )
+        gsonBuilder.registerTypeAdapter(object : TypeToken<Coordinates>() {}.type, GetCoordinatesDeserializer())
         val gson: Gson = gsonBuilder.create()
         return GsonConverterFactory.create(gson)
     }
@@ -136,11 +125,10 @@ object AppModule {
         coordinatesRepository: CoordinatesRepository
     ): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, imageRepository, coordinatesRepository)
 
-    private fun provideEstateDetailsViewModel(estateRepository: EstateRepository): EstateDetailsViewModel =
-        EstateDetailsViewModel(estateRepository)
-
     private fun provideListFragment(): ListFragment = ListFragment()
 
     private fun provideMapFragment(): MapFragment = MapFragment()
+
+    private fun provideDetailsFragment(): DetailsFragment = DetailsFragment()
 
 }

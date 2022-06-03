@@ -20,11 +20,12 @@ import org.koin.core.KoinComponent
 import java.util.ArrayList
 
 class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, ListEstatePagerAdapter.OnItemClick {
+
     private var mAdapter: ListEstatePagerAdapter? = null
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentEstateListBinding.inflate(layoutInflater)
 
         setUpAdapter()
@@ -81,7 +82,8 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
     }
 
     override fun onClick(estateId: Int) {
-        this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId) }
+        mainViewModel.selectEstate(estateId)
+        //this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId) }
     }
 
 }
