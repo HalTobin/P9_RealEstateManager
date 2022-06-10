@@ -32,11 +32,9 @@ import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.KoinComponent
 
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
-    //KoinComponent,
     OnMapReadyCallback,
     ImagePicker.OnImageSelectedListener,
     ListImageWithDescriptionAdapter.OnItemClick {

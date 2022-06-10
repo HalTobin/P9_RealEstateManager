@@ -34,7 +34,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val mapFragment: MapFragment by inject()
     private val detailsFragment: DetailsFragment by inject()
 
-    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         // Setup Koin Fragment Factory
         setupKoinFragmentFactory()
@@ -52,16 +51,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         } else {
             setUpForLargeLayout()
         }
+        setListeners()
 
         checkAndAskPermission()
         mainViewModel.findCurrentLocation(this)
+    }
+
+    override fun onBackPressed() {
+        if(!isLarge()) { setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment) }
+        else { super.onBackPressed() }
     }
 
     // Allow navigation between fragments (List, Map)
     private fun setUpClassicLayout() {
         setFragment(supportFragmentManager, R.id.main_frame_layout, listFragment)
         binding?.apply {
-            mainBottomNav.setOnItemSelectedListener { item ->
+            mainBottomNav?.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.main_hub_menu_list -> {
                         setFragment(supportFragmentManager, R.id.main_frame_layout, listFragment)
@@ -87,6 +92,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             mainViewModel.setEstateId(id)
             setFragment(supportFragmentManager, R.id.main_fragment_map_details, detailsFragment)
         }
+    }
+
+    private fun setListeners() {
+        binding?.mainListBtAdd?.setOnClickListener { navigateToAddEditActivity(this) }
     }
 
     // Check permissions
@@ -125,9 +134,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             fragmentTransaction.commit()
         }
 
-        fun navigateToAddEditActivity(activity: FragmentActivity) {
-            val intent = Intent(activity, AddEditEstateActivity::class.java)
-            ActivityCompat.startActivity(activity, intent, null)
+        fun navigateToAddEditActivity(context: Context) {
+            val intent = Intent(context, AddEditEstateActivity::class.java)
+            ActivityCompat.startActivity(context, intent, null)
         }
 
         fun navigateToAddEditActivity(activity: FragmentActivity, estateId: Int) {

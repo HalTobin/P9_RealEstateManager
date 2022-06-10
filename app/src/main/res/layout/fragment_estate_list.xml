@@ -35,16 +35,4 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_list_estate"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/list_bt_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:backgroundTint="@color/white"
-        android:src="@drawable/ic_add"
-        app:borderWidth="0dp"
-        android:contentDescription="@string/item_image_with_description_description_content" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

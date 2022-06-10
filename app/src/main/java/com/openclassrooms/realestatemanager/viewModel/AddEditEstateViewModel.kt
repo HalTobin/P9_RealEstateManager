@@ -10,11 +10,10 @@ import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
 import java.io.File
 import java.util.*
 
-class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel(), KoinComponent {
+class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel() {
 
     private val _title = MutableLiveData("")
     val title = _title

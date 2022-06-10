@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/main_bottom_nav"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment_map_details"
@@ -23,13 +23,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/main_fragment_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/main_bottom_nav"/>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/main_bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:menu="@menu/menu_bottom_nav"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/main_list_bt_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_add"
+        app:borderWidth="0dp"
+        android:contentDescription="@string/item_image_with_description_description_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

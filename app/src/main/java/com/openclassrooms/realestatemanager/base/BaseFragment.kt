@@ -7,10 +7,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.di.AppModule
-import org.koin.core.KoinComponent
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
-import org.koin.dsl.koinApplication
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.ParameterizedType
 

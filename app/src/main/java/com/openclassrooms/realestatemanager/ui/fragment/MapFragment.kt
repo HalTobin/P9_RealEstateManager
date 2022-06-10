@@ -19,22 +19,15 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
-import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.KoinComponent
 
-
-class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, OnMapReadyCallback {
+class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallback {
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
@@ -134,11 +127,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), KoinComponent, On
         mainViewModel.coordinates.observe(this) { coordinates ->
             myGoogleMap?.navigateTo(coordinates)
         }
-
-        // Set a listener to refresh location
-        binding?.apply { mapBtLocate.setOnClickListener {
-            mainViewModel.findCurrentLocation(requireContext())
-        } }
     }
 
     override fun onStart() {

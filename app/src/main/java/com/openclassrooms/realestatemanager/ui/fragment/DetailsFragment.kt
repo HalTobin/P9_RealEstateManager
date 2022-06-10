@@ -22,9 +22,8 @@ import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.KoinComponent
 
-class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), KoinComponent, OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
+class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
 
     private var mAdapter: ListImageWithDescriptionAdapter? = null
 

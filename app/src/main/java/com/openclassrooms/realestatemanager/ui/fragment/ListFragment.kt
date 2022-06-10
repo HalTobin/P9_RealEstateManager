@@ -4,7 +4,6 @@ import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.ui.adapter.ListEstatePagerAdapter
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import android.os.Bundle
-import com.openclassrooms.realestatemanager.model.Estate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +13,10 @@ import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
 import com.openclassrooms.realestatemanager.model.EstateWithImages
-import com.openclassrooms.realestatemanager.ui.activity.MainActivity
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.core.KoinComponent
 import java.util.ArrayList
 
-class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, ListEstatePagerAdapter.OnItemClick {
+class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePagerAdapter.OnItemClick {
 
     private var mAdapter: ListEstatePagerAdapter? = null
 
@@ -35,13 +32,6 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), KoinComponent, 
     }
 
     private fun setListenersAndObservers() {
-        // Setup listener to navigate to AddEditActivity
-        binding?.apply {
-            listBtAdd.setOnClickListener {
-                this@ListFragment.activity?.let { it1 -> MainActivity.navigateToAddEditActivity(it1) }
-            }
-        }
-
         // Setup observer for list of estate
         mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
             val dummyList = mutableListOf<EstateWithImages>()
