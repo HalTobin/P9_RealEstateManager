@@ -96,6 +96,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun setListeners() {
         binding?.mainListBtAdd?.setOnClickListener { navigateToAddEditActivity(this) }
+
+        mainViewModel.closeDetails.observe(this) {
+            if(it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        }
     }
 
     // Check permissions

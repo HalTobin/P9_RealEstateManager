@@ -16,6 +16,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateDetailsBinding
 import com.openclassrooms.realestatemanager.model.Coordinates
+import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateTypeFromInt
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils
@@ -27,7 +28,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
 
     private var mAdapter: ListImageWithDescriptionAdapter? = null
 
-    private val estateDetailsViewModel: MainViewModel by sharedViewModel()
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     private var map: GoogleMap? = null
     private var marker: Marker? = null
@@ -42,8 +43,9 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     }
 
     private fun setUpListenersAndObservers() {
-        estateDetailsViewModel.estate.observe(viewLifecycleOwner) { estate ->
+        mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshRecycler(estate.images)
+            binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type).plus(" - ").plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
             binding?.estateDetailsRooms?.text = estate.estate.nbRooms.toString()
@@ -77,7 +79,11 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         }
 
         binding?.estateDetailsSoldButton?.setOnClickListener {
-            estateDetailsViewModel.updateSoldState()
+            mainViewModel.updateSoldState()
+        }
+
+        binding?.estateDetailsCloseButton?.setOnClickListener {
+            mainViewModel.closeDetails()
         }
     }
 

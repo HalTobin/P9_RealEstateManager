@@ -27,6 +27,9 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     private val _selection = MutableLiveData<Int>()
     val selection = _selection
 
+    private val _closeDetails = MutableLiveData<Boolean>(false)
+    val closeDetails = _closeDetails
+
     fun getEstates(): LiveData<List<EstateWithImages>> {
         return estateRepository.getEstates().asLiveData()
     }
@@ -61,6 +64,11 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
             estateRepository.changeSoldState(_estate.value!!.estate.id!!, !_estate.value!!.estate.sold)
             estateRepository.changeSoldDate(_estate.value!!.estate.id!!, System.currentTimeMillis())
         }
+    }
+
+    fun closeDetails() {
+        _closeDetails.postValue(true)
+        //_closeDetails.postValue(false)
     }
 
 }

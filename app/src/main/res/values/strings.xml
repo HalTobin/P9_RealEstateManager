@@ -49,6 +49,7 @@
     <string name="cancel_button">Retour</string>
     <string name="ok_button">Valider</string>
 
+    <string name="estate_details_type_and_title">Type - Titre</string>
     <string name="estate_details_media_title">Médias</string>
     <string name="estate_details_description">Description</string>
     <string name="estate_details_area">Surface</string>

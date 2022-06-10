@@ -24,6 +24,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditEstateBinding
 import com.openclassrooms.realestatemanager.model.Estate
+import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateTypes
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.EstateNotification
@@ -405,27 +406,23 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     private fun initSpinner() {
-        val types = listOf(getString(R.string.estate_type_appartment), getString(R.string.estate_type_house), getString(R.string.estate_type_loft), getString(R.string.estate_type_manor), getString(R.string.estate_type_townhouse))
-
         val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
             this,
             R.layout.item_spinner_estate_type,
-            types
+            getEstateTypes(this)
         )
 
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        //editTextFilledExposedDropdown.setAdapter(adapter)
-
         binding?.addEditEstateType?.setAdapter(spinnerAdapter)
         // When user select a List-Item.
-        /*binding?.addEditEstateType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding?.addEditEstateType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 addEditEstateViewModel.setType(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }*/
+        }
     }
 
     private fun showToast(contentId: Int) {

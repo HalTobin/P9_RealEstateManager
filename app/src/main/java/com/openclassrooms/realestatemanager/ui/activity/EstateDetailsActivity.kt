@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.activity
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityEstateDetailsBinding

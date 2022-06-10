@@ -1,10 +1,12 @@
 package com.openclassrooms.realestatemanager.model
 
 import android.content.ContentValues
+import android.content.Context
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import java.util.*
 
@@ -93,6 +95,18 @@ data class Estate(@PrimaryKey val id: Int? = null,
                 soldDate = values.getAsLong("soldDate"),
                 agent = values.getAsString("agent"),
                 description = values.getAsString("description"))
+        }
+
+        fun getEstateTypes(context: Context): List<String> {
+            return listOf(context.getString(R.string.estate_type_appartment),
+                context.getString(R.string.estate_type_house),
+                context.getString(R.string.estate_type_loft),
+                context.getString(R.string.estate_type_manor),
+                context.getString(R.string.estate_type_townhouse))
+        }
+
+        fun getEstateTypeFromInt(context: Context, index: Int): String {
+            return getEstateTypes(context).get(index)
         }
 
         val fake_list = listOf(
