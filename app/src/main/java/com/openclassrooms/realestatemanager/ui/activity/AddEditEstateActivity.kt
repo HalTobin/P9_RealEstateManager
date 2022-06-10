@@ -6,6 +6,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.GoogleMap
@@ -31,7 +35,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
 
-class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), KoinComponent, OnMapReadyCallback, ImagePicker.OnImageSelectedListener, ListImageWithDescriptionAdapter.OnItemClick {
+class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
+    //KoinComponent,
+    OnMapReadyCallback,
+    ImagePicker.OnImageSelectedListener,
+    ListImageWithDescriptionAdapter.OnItemClick {
 
     private val addEditEstateViewModel: AddEditEstateViewModel by viewModel()
 
@@ -53,6 +61,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         setUpListenersAndObservers()
         initMapView(savedInstanceState)
         initRecycler()
+        initSpinner()
 
         imagePicker = ImagePicker(this, BuildConfig.APPLICATION_ID)
         imagePicker.setImageSelectedListener(this)
@@ -77,6 +86,20 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         })
 
         // Observer for the Estate's title
+        addEditEstateViewModel.title.observe(this) {
+            if(it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(it)
+        }
+
+        // Textfield listener for the Estate's type
+        binding?.addEditEstateTitle?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if(s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
+            }
+        })
+
+        // Observer for the Estate's type
         addEditEstateViewModel.title.observe(this) {
             if(it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(it)
         }
@@ -383,6 +406,30 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         mAdapter!!.updateList(myList)
     }
 
+    private fun initSpinner() {
+        val types = listOf(getString(R.string.estate_type_appartment), getString(R.string.estate_type_house), getString(R.string.estate_type_loft), getString(R.string.estate_type_manor), getString(R.string.estate_type_townhouse))
+
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            R.layout.item_spinner_estate_type,
+            types
+        )
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //editTextFilledExposedDropdown.setAdapter(adapter)
+
+        binding?.addEditEstateType?.setAdapter(spinnerAdapter)
+        // When user select a List-Item.
+        /*binding?.addEditEstateType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                addEditEstateViewModel.setType(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }*/
+    }
+
     private fun showToast(contentId: Int) {
         Toast.makeText(this, contentId, Toast.LENGTH_SHORT).show()
     }
@@ -445,7 +492,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(), Koin
         }
     }
 
-    override fun onClick(imageWithDescription: ImageWithDescription) {
+    override fun onImageClick(imageWithDescription: ImageWithDescription) {
         showDeleteImageDialog(imageWithDescription)
     }
 

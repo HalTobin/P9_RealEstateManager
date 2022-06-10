@@ -19,6 +19,9 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _title = MutableLiveData("")
     val title = _title
 
+    private val _type = MutableLiveData(0)
+    val type = _type
+
     private val _country = MutableLiveData("")
     val country = _country
 
@@ -146,6 +149,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setTitle(title: String) { _title.value = title }
 
+    fun setType(type: Int) { _type.value = type }
+
     fun setCountry(country: String) { _country.value = country }
 
     fun setCity(city: String) { _city.value = city }
@@ -199,6 +204,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
         if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
             viewModelScope.launch {
                 currentEstateId = estateRepository.addEstate(Estate(id = currentEstateId,
+                    type = _type.value!!,
                     title = _title.value!!,
                     address = _address.value!!,
                     city = _city.value!!,

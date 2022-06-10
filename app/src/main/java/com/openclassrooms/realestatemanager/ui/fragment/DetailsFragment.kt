@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +42,6 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), KoinCompon
         return binding!!.root
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpListenersAndObservers() {
         estateDetailsViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshRecycler(estate.images)
@@ -111,7 +109,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), KoinCompon
         setUpListenersAndObservers()
     }
 
-    override fun onClick(imageWithDescription: ImageWithDescription) {
+    override fun onImageClick(imageWithDescription: ImageWithDescription) {
         //TODO - Display the selected image in fullscreen
         TODO("Not yet implemented")
     }

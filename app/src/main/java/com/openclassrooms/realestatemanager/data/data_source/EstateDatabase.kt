@@ -2,6 +2,8 @@ package com.openclassrooms.realestatemanager.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 

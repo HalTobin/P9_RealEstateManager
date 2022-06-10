@@ -62,7 +62,6 @@ object AppModule {
 
         single {
             Room.databaseBuilder(androidApplication(), EstateDatabase::class.java, EstateDatabase.DATABASE_NAME)
-                //.addCallback(EstateDatabase.prepopulate)
                 .build()
         }
 

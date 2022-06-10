@@ -9,6 +9,7 @@
     <string name="estate_list_no_estate">Aucun bien immobilier trouvé…</string>
 
     <string name="add_edit_estate_title">Intitulé du bien</string>
+    <string name="add_edit_estate_type">Type de logement</string>
     <string name="add_edit_estate_country">Pays</string>
     <string name="add_edit_estate_city">Ville</string>
     <string name="add_edit_estate_zip">Code</string>
@@ -66,6 +67,13 @@
     <string name="estate_details_edit_estate_button_edit">Modifier</string>
     <string name="estate_details_edit_estate_button_sold_to_sold">Déclarer vendu</string>
     <string name="estate_details_edit_estate_button_sold_to_unsold">Déclarer non-vendu</string>
+
+    <string name="estate_type_all">Tout</string>
+    <string name="estate_type_appartment">Appartement</string>
+    <string name="estate_type_house">Maison</string>
+    <string name="estate_type_loft">Loft</string>
+    <string name="estate_type_manor">Manoir</string>
+    <string name="estate_type_townhouse">Maison de ville</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
 
