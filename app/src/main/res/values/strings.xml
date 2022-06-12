@@ -49,6 +49,12 @@
     <string name="cancel_button">Retour</string>
     <string name="ok_button">Valider</string>
 
+    <string name="search">Chercher un bien immobilier</string>
+
+    <string name="search_dialog_search">Chercher</string>
+    <string name="search_dialog_reset">Vider</string>
+    <string name="search_dialog_cancel">Retour</string>
+
     <string name="estate_details_type_and_title">Type - Titre</string>
     <string name="estate_details_media_title">Médias</string>
     <string name="estate_details_description">Description</string>

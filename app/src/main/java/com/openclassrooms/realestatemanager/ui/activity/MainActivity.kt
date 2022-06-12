@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.activity
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.textfield.TextInputEditText
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -58,7 +60,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun onBackPressed() {
-        if(!isLarge()) { setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment) }
+        if(!isLarge()) {
+            removeDetailsFragment()
+            //setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        }
         else { super.onBackPressed() }
     }
 
@@ -90,12 +95,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
         mainViewModel.selection.observe(this) { id ->
             mainViewModel.setEstateId(id)
-            setFragment(supportFragmentManager, R.id.main_fragment_map_details, detailsFragment)
+            addDetailsFragment()
+            //setFragment(supportFragmentManager, R.id.main_fragment_map_details, detailsFragment)
         }
     }
 
     private fun setListeners() {
         binding?.mainListBtAdd?.setOnClickListener { navigateToAddEditActivity(this) }
+
+        binding?.mainAppbar?.mainSearch?.setOnClickListener { showSearchDialog() }
 
         mainViewModel.closeDetails.observe(this) {
             if(it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
@@ -104,7 +112,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     // Check permissions
     private fun checkAndAskPermission() {
-
         Dexter.withContext(context).withPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -128,6 +135,31 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     // Check if the user's device is large or not
     private fun isLarge(): Boolean {
         return (binding?.mainFrameLayout != null)
+    }
+
+    private fun showSearchDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_search_estate, null)
+
+        with(builder) {
+            setView(dialogLayout)
+            show()
+        }
+    }
+
+    // Setup fragment
+    private fun addDetailsFragment() {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.main_fragment_map_details, detailsFragment)
+        fragmentTransaction.commit()
+    }
+
+    // Setup fragment
+    private fun removeDetailsFragment() {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.remove(detailsFragment)
+        //fragmentTransaction.remove(R.id.main_fragment_map_details, detailsFragment)
+        fragmentTransaction.commit()
     }
 
     companion object {
