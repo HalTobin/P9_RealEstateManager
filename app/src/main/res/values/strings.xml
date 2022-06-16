@@ -8,25 +8,29 @@
 
     <string name="estate_list_no_estate">Aucun bien immobilier trouvé…</string>
 
-    <string name="add_edit_estate_title">Intitulé du bien</string>
-    <string name="add_edit_estate_type">Type de logement</string>
-    <string name="add_edit_estate_country">Pays</string>
-    <string name="add_edit_estate_city">Ville</string>
-    <string name="add_edit_estate_zip">Code</string>
-    <string name="add_edit_estate_address">Addresse</string>
-    <string name="add_edit_estate_surface">m²</string>
-    <string name="add_edit_estate_price">Prix</string>
-    <string name="add_edit_estate_currency">€</string>
-    <string name="add_edit_estate_park">Parc</string>
-    <string name="add_edit_estate_school">École</string>
-    <string name="add_edit_estate_shop">Supermaché</string>
-    <string name="add_edit_estate_agent">Agent</string>
-    <string name="add_edit_estate_description">Description du logement</string>
+    <string name="estate_title">Intitulé du bien</string>
+    <string name="estate_type">Type de logement</string>
+    <string name="estate_country">Pays</string>
+    <string name="estate_city">Ville</string>
+    <string name="estate_zip">Code</string>
+    <string name="estate_address">Addresse</string>
+    <string name="estate_area">m²</string>
+    <string name="estate_price">Prix</string>
+    <string name="estate_currency">€</string>
+    <string name="estate_park">Parc</string>
+    <string name="estate_school">École</string>
+    <string name="estate_shop">Magasin</string>
+    <string name="estate_agent">Agent</string>
+    <string name="estate_description">Description du logement</string>
     <string name="add_edit_estate_save_description_content">Enregistrer le bien immobilier</string>
 
-    <string name="add_edit_estate_rooms">Pièces</string>
-    <string name="add_edit_estate_bedrooms">Chambres</string>
-    <string name="add_edit_estate_bathrooms">Salles de bain</string>
+    <string name="estate_details_type_and_title">Type - Titre</string>
+    <string name="estate_details_media_title">Médias</string>
+    <string name="estate_details_location">Localisation</string>
+
+    <string name="estate_rooms">Pièces</string>
+    <string name="estate_bedrooms">Chambres</string>
+    <string name="estate_bathrooms">Salles de bain</string>
 
     <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
@@ -52,20 +56,8 @@
     <string name="search">Chercher un bien immobilier</string>
 
     <string name="search_dialog_search">Chercher</string>
-    <string name="search_dialog_reset">Vider</string>
+    <string name="search_dialog_reset">Annuler</string>
     <string name="search_dialog_cancel">Retour</string>
-
-    <string name="estate_details_type_and_title">Type - Titre</string>
-    <string name="estate_details_media_title">Médias</string>
-    <string name="estate_details_description">Description</string>
-    <string name="estate_details_area">Surface</string>
-    <string name="estate_details_number_rooms">Pièces</string>
-    <string name="estate_details_number_bathrooms">Salles de bains</string>
-    <string name="estate_details_number_bedrooms">Chambres</string>
-    <string name="estate_details_location">Localisation</string>
-    <string name="estate_details_shop">Supermarché</string>
-    <string name="estate_details_school">École</string>
-    <string name="estate_details_park">Parc</string>
 
     <string name="estate_details_more_option_description">Afficher plus d\'options</string>
     <string name="estate_details_sold_state_description">Déclarer le bien comme vendu ou non-vendu</string>
