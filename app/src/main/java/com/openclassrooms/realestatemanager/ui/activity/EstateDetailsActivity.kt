@@ -33,10 +33,11 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>() {
         setFragment(supportFragmentManager, R.id.fragment_estate_details, detailsFragment)
     }
 
-    /*private fun setUpListenersAndObservers() {
-        binding?.estateDetailsEditButton?.setOnClickListener {
-            MainActivity.navigateToAddEditActivity(this, estateId)
+    private fun setUpListenersAndObservers() {
+        mainViewModel.closeDetails.observe(this) {
+            //mainViewModel.resetCloseDetails()
+            super.onBackPressed()
         }
-    }*/
+    }
 
 }

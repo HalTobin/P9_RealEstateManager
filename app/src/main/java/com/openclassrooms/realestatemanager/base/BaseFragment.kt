@@ -17,12 +17,6 @@ import java.lang.reflect.ParameterizedType
 abstract class BaseFragment<T : ViewBinding?> : Fragment() {
     protected var binding: T? = null
 
-    init{
-        // Making sure we do not get "module already loaded" error
-        //unloadKoinModules(modules)
-        //loadKoinModules(modules)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,8 +41,4 @@ abstract class BaseFragment<T : ViewBinding?> : Fragment() {
         return binding!!.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        unloadKoinModules(modules)
-    }
 }

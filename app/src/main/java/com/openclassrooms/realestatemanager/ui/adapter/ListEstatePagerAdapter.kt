@@ -1,9 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
+import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import coil.clear
+import coil.dispose
 import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
@@ -40,6 +43,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, 
         // Set up the onClickListener to open the EstateDetailsActivity
         holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
         if(myEstate.estate.sold == true) { holder.binding.itemEstateSold.load(R.drawable.sold) }
+        //else holder.binding.itemEstateSold.dispose()
     }
 
     override fun getItemCount(): Int {

@@ -11,21 +11,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:text="@string/estate_details_type_and_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/estate_details_close_button"/>
+        app:layout_constraintEnd_toStartOf="@id/estate_details_edit_button"/>
 
     <ImageView
-        android:id="@+id/estate_details_close_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/estate_details_edit_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_margin="8dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/estate_details_type_and_name"
+        app:layout_constraintBottom_toBottomOf="@id/estate_details_type_and_name"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_close"/>
+        android:src="@drawable/ic_edit"/>
 
     <TextView
         android:id="@+id/estate_details_media_title"
@@ -271,41 +272,5 @@
             app:layout_constraintTop_toBottomOf="@id/estate_details_location_address" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/estate_details_estate_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        app:fab_addButtonColorNormal="@color/white"
-        app:fab_addButtonColorPressed="@color/grey"
-        app:fab_addButtonPlusIconColor="@color/black"
-        app:fab_labelsPosition="left"
-        app:fab_labelStyle="@style/menu_labels_style"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/estate_details_sold_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/white"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_home"
-            app:fab_title="@string/estate_details_edit_estate_button_sold_to_sold"
-            app:fab_colorPressed="@color/grey" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/estate_details_edit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/white"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_edit"
-            app:fab_title="@string/estate_details_edit_estate_button_edit"
-            app:fab_colorPressed="@color/grey" />
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

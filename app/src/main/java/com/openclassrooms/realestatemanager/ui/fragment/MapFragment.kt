@@ -115,7 +115,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
     // Setup listeners and observers of MapFragment
     private fun setUpListenersAndObservers() {
         // Set an observer to get Estate
-        mainViewModel.getEstates().observe(this) { estates: List<EstateWithImages> ->
+        mainViewModel.estates.observe(this) { estates: List<EstateWithImages> ->
             refreshMarkers(estates)
         }
         /*getEstatesJob?.cancel()

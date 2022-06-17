@@ -45,13 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val detailsFragment: DetailsFragment by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Setup Koin Fragment Factory
-        setupKoinFragmentFactory()
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
         this.context = this
@@ -104,7 +98,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         mainViewModel.selection.observe(this) { id ->
             mainViewModel.setEstateId(id)
             addDetailsFragment()
-            //setFragment(supportFragmentManager, R.id.main_fragment_map_details, detailsFragment)
         }
     }
 
@@ -270,7 +263,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             })
 
             dialogLayout.search_estate_search.setOnClickListener {
-                mainViewModel.enterSearch()
+                mainViewModel.search()
             }
         }
     }

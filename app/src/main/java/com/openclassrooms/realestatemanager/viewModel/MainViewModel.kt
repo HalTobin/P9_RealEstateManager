@@ -34,13 +34,16 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     private val _isSearchInDollar = MutableLiveData(true)
     val isSearchInDollar = _isSearchInDollar
 
-    private val _searchEstate = MutableLiveData(Estate())
-    val searchEstate = _searchEstate
+    private val searchEstate = Estate()
+    private var search = false
 
-    var query = "SELECT * FROM estate"
-
-    fun getEstates(): LiveData<List<EstateWithImages>> {
-        return estateRepository.getEstates().asLiveData()
+    fun getEstates() {
+        viewModelScope.launch {
+            estateRepository.searchEstates(searchEstate.getRequest(search)).collect {
+                _estates.postValue(it)
+            }
+        }
+        //return estateRepository.getEstates().asLiveData()
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
@@ -75,48 +78,40 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
         }
     }
 
-    fun closeDetails() {
-        _closeDetails.postValue(true)
-        //_closeDetails.postValue(false)
+    fun search() {
+        search = true
     }
 
     fun setSearch(value: String, field: Int) {
         when(field) {
-            Estate.CITY -> _searchEstate.value?.city = value
-            Estate.ZIPCODE -> _searchEstate.value?.zipCode = value
-            Estate.COUNTRY -> _searchEstate.value?.country = value
-            Estate.AGENT -> _searchEstate.value?.agent = value
+            Estate.CITY -> searchEstate.city = value
+            Estate.ZIPCODE -> searchEstate.zipCode = value
+            Estate.COUNTRY -> searchEstate.country = value
+            Estate.AGENT -> searchEstate.agent = value
         }
     }
 
     fun setSearch(value: Int, field: Int) {
         when(field) {
-            Estate.TYPE -> _searchEstate.value?.type = value
-            Estate.PRICE -> _searchEstate.value?.priceDollar = value
-            Estate.AREA -> _searchEstate.value?.area = value
-            Estate.ROOMS -> _searchEstate.value?.nbRooms = value
-            Estate.BEDROOMS -> _searchEstate.value?.nbBedrooms = value
-            Estate.BATHROOMS -> _searchEstate.value?.nbBathrooms = value
+            Estate.TYPE -> searchEstate.type = value
+            Estate.PRICE -> searchEstate.priceDollar = value
+            Estate.AREA -> searchEstate.area = value
+            Estate.ROOMS -> searchEstate.nbRooms = value
+            Estate.BEDROOMS -> searchEstate.nbBedrooms = value
+            Estate.BATHROOMS -> searchEstate.nbBathrooms = value
         }
     }
 
     fun setSearch(value: Boolean, field: Int) {
         when(field) {
-            Estate.SCHOOL -> _searchEstate.value?.nearbySchool = value
-            Estate.SHOP -> _searchEstate.value?.nearbyShop = value
-            Estate.PARK -> _searchEstate.value?.nearbyPark = value
+            Estate.SCHOOL -> searchEstate.nearbySchool = value
+            Estate.SHOP -> searchEstate.nearbyShop = value
+            Estate.PARK -> searchEstate.nearbyPark = value
         }
     }
 
     fun invertCurrency() {
         _isSearchInDollar.value = !_isSearchInDollar.value!!
-    }
-
-    fun enterSearch() {
-        viewModelScope.launch {
-            val temp = estateRepository.searchEstates(_searchEstate.value!!.getRequest())
-            temp.let { _estates.postValue(it) }
-        }
     }
 
 }

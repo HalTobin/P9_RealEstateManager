@@ -33,7 +33,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
 
     private fun setListenersAndObservers() {
         // Setup observer for list of estate
-        mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
+        /*mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
             refreshRecycler(estates)
             if(estates.isEmpty()) {
                 binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)
@@ -42,7 +42,8 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
                 binding?.listEstateNoEstateImage?.load(0x00000000)
                 binding?.listEstateNoEstateText?.text = " "
             }
-        }
+        }*/
+        mainViewModel.getEstates()
         mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
             refreshRecycler(estates)
             if(estates.isEmpty()) {
@@ -82,7 +83,6 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
 
     override fun onClick(estateId: Int) {
         mainViewModel.selectEstate(estateId)
-        //this@ListFragment.activity?.let { it1 -> MainActivity.navigateToEstateDetailsActivity(it1, estateId) }
     }
 
 }

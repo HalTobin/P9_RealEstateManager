@@ -34,7 +34,6 @@ import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import lib.android.imagepicker.ImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     OnMapReadyCallback,
     ImagePicker.OnImageSelectedListener,
@@ -52,9 +51,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_edit_estate)
-
-        binding = ActivityAddEditEstateBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
         setUpListenersAndObservers()
@@ -83,11 +79,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
                 if(s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
             }
         })
-
-        // Observer for the Estate's title
-        addEditEstateViewModel.title.observe(this) {
-            if(it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(it)
-        }
 
         // Textfield listener for the Estate's type
         binding?.addEditEstateTitle?.addTextChangedListener(object : TextWatcher {

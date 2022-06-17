@@ -10,7 +10,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
-import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.context.startKoin
+
+//import org.koin.core.context.GlobalContext.startKoin
 
 class RealEstateManagerApp: MultiDexApplication() {
 
@@ -27,7 +29,7 @@ class RealEstateManagerApp: MultiDexApplication() {
             androidLogger() // Use AndroidLogger as Koin Logger (default Level.INFO
             androidContext(this@RealEstateManagerApp) // Use Context From RealEstateManagerApp
             androidFileProperties() // Load properties from assets/koin.properties file
-            fragmentFactory() // Setup a KoinFragmentFactory instance
+            //fragmentFactory() // Setup a KoinFragmentFactory instance
             koin.loadModules(modules)
         }
     }

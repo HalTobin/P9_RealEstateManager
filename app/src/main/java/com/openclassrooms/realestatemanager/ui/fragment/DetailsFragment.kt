@@ -1,11 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.dispose
 import coil.load
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -34,9 +36,12 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private var map: GoogleMap? = null
     private var marker: Marker? = null
 
+    private var options = arrayOf<CharSequence>("", "")
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentEstateDetailsBinding.inflate(layoutInflater)
 
+        options[1] = getString(R.string.estate_details_edit_estate_button_edit)
         initMapView(savedInstanceState)
         initRecycler()
 
@@ -63,33 +68,37 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
                 binding?.estateDetailsIsPark?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_done))
             else binding?.estateDetailsIsPark?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_cross))
             map!!.navigateTo(Coordinates(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!), 16f)
+            if(estate.estate.sold!!) {
+                binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
+                options[0] = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
+            }
+            else {
+                binding?.estateDetailsIsSoldImage?.load(0x00000000)
+                options[0] = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
+            }
             if(marker != null) marker!!.remove()
             map!!.addMarker(
                 MarkerOptions()
                     .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
             )?.let { marker = it }
 
-            if(estate.estate.sold!!) {
-                binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
-                binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
-            }
-            else {
-                binding?.estateDetailsIsSoldImage?.load(0x00000000)
-                binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
-            }
-
             binding?.estateDetailsEditButton?.setOnClickListener {
-                estate.estate.id?.let { it1 -> navigateToAddEditActivity(requireActivity(), it1) }
+                estate.estate.id?.let { it1 -> editDialog(it1) }
             }
         }
 
-        binding?.estateDetailsSoldButton?.setOnClickListener {
-            mainViewModel.updateSoldState()
-        }
+    }
 
-        binding?.estateDetailsCloseButton?.setOnClickListener {
-            mainViewModel.closeDetails()
+    private fun editDialog(id: Int) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
+        builder.setItems(options) { _, item ->
+            when(item) {
+                UPDATE_SOLD_STATE -> mainViewModel.updateSoldState()
+                EDIT_ESTATE -> navigateToAddEditActivity(requireActivity(), id)
+            }
         }
+        builder.show()
     }
 
     private fun initRecycler() {
@@ -122,6 +131,11 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     override fun onImageClick(imageWithDescription: ImageWithDescription) {
         //TODO - Display the selected image in fullscreen
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val UPDATE_SOLD_STATE = 0
+        const val EDIT_ESTATE = 1
     }
 
 }

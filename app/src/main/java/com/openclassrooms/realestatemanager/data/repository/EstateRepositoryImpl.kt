@@ -18,7 +18,7 @@ class EstateRepositoryImpl(private val dao: EstateDao): EstateRepository {
         return dao.getEstateById(id)
     }
 
-    override suspend fun searchEstates(query: SimpleSQLiteQuery) : List<EstateWithImages>{
+    override fun searchEstates(query: SimpleSQLiteQuery) : Flow<List<EstateWithImages>>{
         return dao.searchEstates(query)
     }
 

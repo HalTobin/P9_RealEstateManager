@@ -17,7 +17,7 @@ interface EstateDao {
     fun getEstates(): Flow<List<EstateWithImages>>
 
     @RawQuery
-    suspend fun searchEstates(query: SupportSQLiteQuery): List<EstateWithImages>
+    fun searchEstates(query: SupportSQLiteQuery): Flow<List<EstateWithImages>>
 
     @Query("SELECT * FROM estate WHERE id = :id")
     fun getEstateById(id: Int): Flow<EstateWithImages>

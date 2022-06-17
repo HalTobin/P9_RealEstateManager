@@ -9,7 +9,7 @@ interface EstateRepository {
 
     fun getEstates(): Flow<List<EstateWithImages>>
 
-    suspend fun searchEstates(query: SimpleSQLiteQuery) : List<EstateWithImages>
+    fun searchEstates(query: SimpleSQLiteQuery) : Flow<List<EstateWithImages>>
 
     fun getEstate(id: Int): Flow<EstateWithImages>
 
