@@ -262,8 +262,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             })
 
+            dialogLayout.search_estate_reset.setOnClickListener {
+                mainViewModel.stopSearch()
+            }
+
             dialogLayout.search_estate_search.setOnClickListener {
-                mainViewModel.search()
+                mainViewModel.startSearch()
             }
         }
     }
@@ -279,7 +283,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun removeDetailsFragment() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.remove(detailsFragment)
-        //fragmentTransaction.remove(R.id.main_fragment_map_details, detailsFragment)
         fragmentTransaction.commit()
     }
 

@@ -9,7 +9,6 @@ import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.util.JavaFusedLocationProviderClient
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val estateRepository: EstateRepository) : ViewModel() {
@@ -19,7 +18,7 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     private val _estate = MutableLiveData<EstateWithImages>()
     val estate = _estate
 
-    private val _estates = MutableLiveData<List<EstateWithImages>>()
+    private val _estates = MediatorLiveData<List<EstateWithImages>>()
     val estates = _estates
 
     private val _coordinates = MutableLiveData<Coordinates>()
@@ -37,13 +36,8 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
     private val searchEstate = Estate()
     private var search = false
 
-    fun getEstates() {
-        viewModelScope.launch {
-            estateRepository.searchEstates(searchEstate.getRequest(search)).collect {
-                _estates.postValue(it)
-            }
-        }
-        //return estateRepository.getEstates().asLiveData()
+    init {
+        _estates.addSource(estateRepository.getEstates().asLiveData()) { value -> _estates.setValue(value) }
     }
 
     private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
@@ -78,8 +72,18 @@ class MainViewModel(private val estateRepository: EstateRepository) : ViewModel(
         }
     }
 
-    fun search() {
+    fun startSearch() {
         search = true
+        _estates.addSource(estateRepository.searchEstates(searchEstate.getRequest()).asLiveData()) { value -> _estates.setValue(value) }
+        _estates.removeSource(estateRepository.getEstates().asLiveData())
+    }
+
+    fun stopSearch() {
+        if(search) {
+            search = false
+            _estates.addSource(estateRepository.getEstates().asLiveData()) { value -> _estates.setValue(value) }
+            _estates.removeSource(estateRepository.searchEstates(searchEstate.getRequest()).asLiveData())
+        }
     }
 
     fun setSearch(value: String, field: Int) {
