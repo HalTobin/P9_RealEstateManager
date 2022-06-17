@@ -18,6 +18,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentEstateDetailsBin
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateTypeFromInt
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity.Companion.navigateToAddEditActivity
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
@@ -45,7 +46,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private fun setUpListenersAndObservers() {
         mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshRecycler(estate.images)
-            binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type).plus(" - ").plus(estate.estate.title)
+            binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ").plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
             binding?.estateDetailsRooms?.text = estate.estate.nbRooms.toString()
@@ -68,13 +69,17 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
                     .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
             )?.let { marker = it }
 
-            if(estate.estate.sold) {
+            if(estate.estate.sold!!) {
                 binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
                 binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
             }
             else {
                 binding?.estateDetailsIsSoldImage?.load(0x00000000)
                 binding?.estateDetailsSoldButton?.title = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
+            }
+
+            binding?.estateDetailsEditButton?.setOnClickListener {
+                estate.estate.id?.let { it1 -> navigateToAddEditActivity(requireActivity(), it1) }
             }
         }
 

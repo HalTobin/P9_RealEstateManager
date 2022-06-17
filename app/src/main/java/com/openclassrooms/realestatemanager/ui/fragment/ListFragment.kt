@@ -34,7 +34,16 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
     private fun setListenersAndObservers() {
         // Setup observer for list of estate
         mainViewModel.getEstates().observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
-            val dummyList = mutableListOf<EstateWithImages>()
+            refreshRecycler(estates)
+            if(estates.isEmpty()) {
+                binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)
+                binding?.listEstateNoEstateText?.text = getString(R.string.estate_list_no_estate)
+            } else {
+                binding?.listEstateNoEstateImage?.load(0x00000000)
+                binding?.listEstateNoEstateText?.text = " "
+            }
+        }
+        mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
             refreshRecycler(estates)
             if(estates.isEmpty()) {
                 binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)

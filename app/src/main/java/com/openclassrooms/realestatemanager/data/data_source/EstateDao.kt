@@ -1,12 +1,11 @@
 package com.openclassrooms.realestatemanager.data.data_source
 
-import android.content.ClipData.Item
 import android.database.Cursor
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import kotlinx.coroutines.flow.Flow
-
 
 @Dao
 interface EstateDao {
@@ -16,6 +15,9 @@ interface EstateDao {
 
     @Query("SELECT * FROM estate")
     fun getEstates(): Flow<List<EstateWithImages>>
+
+    @RawQuery
+    suspend fun searchEstates(query: SupportSQLiteQuery): List<EstateWithImages>
 
     @Query("SELECT * FROM estate WHERE id = :id")
     fun getEstateById(id: Int): Flow<EstateWithImages>

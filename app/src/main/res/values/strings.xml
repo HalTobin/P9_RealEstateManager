@@ -55,6 +55,8 @@
 
     <string name="search">Chercher un bien immobilier</string>
 
+    <string name="search_estate_budget">Budget</string>
+
     <string name="search_dialog_search">Chercher</string>
     <string name="search_dialog_reset">Annuler</string>
     <string name="search_dialog_cancel">Retour</string>

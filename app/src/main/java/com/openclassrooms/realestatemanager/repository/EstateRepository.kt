@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.repository
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateWithImages
 import kotlinx.coroutines.flow.Flow
@@ -7,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 interface EstateRepository {
 
     fun getEstates(): Flow<List<EstateWithImages>>
+
+    suspend fun searchEstates(query: SimpleSQLiteQuery) : List<EstateWithImages>
 
     fun getEstate(id: Int): Flow<EstateWithImages>
 

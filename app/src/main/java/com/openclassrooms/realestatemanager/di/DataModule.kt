@@ -52,6 +52,7 @@ object DataModule {
 
         single {
             Room.databaseBuilder(androidApplication(), EstateDatabase::class.java, EstateDatabase.DATABASE_NAME)
+                .fallbackToDestructiveMigration()
                 .build()
         }
 

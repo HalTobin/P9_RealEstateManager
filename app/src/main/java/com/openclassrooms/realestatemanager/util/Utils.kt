@@ -34,6 +34,10 @@ object Utils {
         return convertDollarToEuro(this)
     }
 
+    fun String.isValid(): Boolean {
+        return@isValid this != ""
+    }
+
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE

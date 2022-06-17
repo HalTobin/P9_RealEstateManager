@@ -39,7 +39,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, 
 
         // Set up the onClickListener to open the EstateDetailsActivity
         holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
-        if(myEstate.estate.sold) { holder.binding.itemEstateSold.load(R.drawable.sold) }
+        if(myEstate.estate.sold == true) { holder.binding.itemEstateSold.load(R.drawable.sold) }
     }
 
     override fun getItemCount(): Int {

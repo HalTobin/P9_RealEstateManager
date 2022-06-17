@@ -6,18 +6,20 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
+import com.openclassrooms.realestatemanager.util.Utils.isValid
 import java.util.*
 
 @Entity
 data class Estate(@PrimaryKey val id: Int? = null,
-                  var title: String,
-                  var type: Int,
-                  var address: String,
-                  var city: String,
-                  var zipCode: String = "",
-                  var country: String,
+                  var title: String? = null,
+                  var type: Int? = null,
+                  var address: String? = null,
+                  var city: String? = "",
+                  var zipCode: String? = "",
+                  var country: String? = "",
                   var xCoordinate: Double? = null,
                   var yCoordinate: Double? = null,
                   var priceDollar: Int? = null,
@@ -28,18 +30,116 @@ data class Estate(@PrimaryKey val id: Int? = null,
                   var nearbySchool:Boolean? = false,
                   var nearbyShop:Boolean? = false,
                   var nearbyPark:Boolean? = false,
-                  var sold: Boolean = false,
+                  var sold: Boolean? = false,
                   var entryDate: Long? = null,
                   var soldDate: Long? = null,
-                  var agent: String = "",
-                  var description: String = "") {
+                  var agent: String? = null,
+                  var description: String? = null) {
 
-    fun getFullAddress(): String? {
+    fun getFullAddress(): String {
         return fullAddress(address!!, zipCode, city!!, country!!)
     }
 
     fun getAddressInPresentation(): String {
         return address.plus("\n").plus(zipCode).plus(" ").plus(city).plus("\n").plus(country)
+    }
+
+    fun getRequest(): SimpleSQLiteQuery {
+        var queryString = "SELECT * FROM estate"
+        val args = arrayListOf<Any>()
+        var conditions = false
+
+        if(type != null){
+            queryString += " WHERE type = :$type"
+            args.add(type!!)
+            conditions = true
+        }
+
+        if(country!!.isValid()){
+            queryString += " WHERE type = :$country"
+            args.add(country!!)
+            conditions = true
+        }
+
+        if(city!!.isValid()){
+            queryString += " WHERE type = :$city"
+            args.add(city!!)
+            conditions = true
+        }
+
+        if(zipCode!!.isValid()){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "zipCode = :$zipCode"
+            args.add(zipCode!!)
+        }
+
+        if(sold != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "sold = :$sold"
+            args.add(sold!!)
+        }
+
+        if (priceDollar != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "priceDollar <= :${priceDollar}"
+            args.add(priceDollar!!)
+        }
+
+        if (area != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "area >= :$area"
+            args.add(area!!)
+        }
+
+        if (nbRooms != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nbRooms >= :$nbRooms"
+            args.add(nbRooms!!)
+        }
+
+        if (nbBedrooms != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nbBedroom >= :$nbBedrooms"
+            args.add(nbBedrooms!!)
+        }
+
+        if (nbBathrooms != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nbBathrooms >= :$nbBathrooms"
+            args.add(nbBathrooms!!)
+        }
+
+        if (nearbyPark != false){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nearbyPark = :$nearbyPark"
+            args.add(nearbyPark!!)
+        }
+
+        if (nearbySchool != false){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nearbySchool = :$nearbySchool"
+            args.add(nearbySchool!!)
+        }
+
+        if (nearbyShop != false){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "nearbyShop = :$nearbyShop"
+            args.add(nearbyShop!!)
+        }
+
+        if (soldDate != null){
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "soldDate >= ?"
+            args.add(soldDate!!)
+        }
+
+        if (entryDate != null){
+            queryString += if (conditions) " AND " else " WHERE "
+            queryString += "entryDate >= ?"
+            args.add(entryDate!!)
+        }
+        println("REQUEST : $queryString")
+        return SimpleSQLiteQuery(queryString, args.toArray())
     }
 
     companion object {
@@ -53,6 +153,21 @@ data class Estate(@PrimaryKey val id: Int? = null,
 
         const val UNCOMPLETED: Int = 10
         const val CANT_FIND_LOCATION: Int = 11
+
+        const val TYPE = 100
+        const val CITY = 101
+        const val ZIPCODE = 102
+        const val COUNTRY = 103
+        const val PRICE = 104
+        const val AREA = 105
+        const val ROOMS = 106
+        const val BEDROOMS = 107
+        const val BATHROOMS = 108
+        const val SCHOOL = 109
+        const val SHOP = 110
+        const val PARK = 111
+        const val AGENT = 112
+
 
         fun isFilled(title: String?, address: String?, city: String?, country: String?, coordinates: Coordinates?, priceDollar: Int?, area: Int?, nbRooms: Int?, nbBathrooms: Int?, nbBedrooms: Int?, agent: String?, description: String?): Boolean {
             var isFilled = true

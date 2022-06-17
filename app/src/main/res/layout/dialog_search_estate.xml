@@ -122,7 +122,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_estate_price"
-            android:hint="@string/estate_price"
+            android:hint="@string/search_estate_budget"
             android:inputType="number"
             android:singleLine="true"
             android:layout_width="match_parent"
