@@ -45,14 +45,16 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
             if(myImage.imageUrl.isAVideo()) {
                 val mSize = Size(192, 192)
                 val ca = CancellationSignal()
+
+                // Get a thumbnail from the video
                 val thumbnail = ThumbnailUtils.createVideoThumbnail(File(myImage.imageUrl), mSize, ca)
 
+                // Load the drawable resource "ic_play"
                 val play: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_play)
 
                 val canvas = Canvas(thumbnail)
-                if(play != null) {
-                    canvas.drawBitmap((play.toBitmap())!!, 20f, 50f, null)
-                }
+                // Draw "ic_play" on top of the thumbnail
+                if(play != null) canvas.drawBitmap((play.toBitmap())!!, 20f, 50f, null)
 
                 holder.binding.imageWithDescriptionImage.load(thumbnail)
             }

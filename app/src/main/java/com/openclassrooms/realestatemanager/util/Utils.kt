@@ -98,6 +98,7 @@ object Utils {
         return this.removeRange(0, this.length-4)
     }
 
+    // Return a Bitmap from a Drawable object
     fun Drawable.toBitmap(): Bitmap? {
         if (this is BitmapDrawable) {
             return this.bitmap
