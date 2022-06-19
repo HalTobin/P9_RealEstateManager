@@ -42,6 +42,7 @@ import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.util.Utils.copyToInternal
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.net.URI
@@ -60,6 +61,14 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     var options = GoogleMapOptions().liteMode(true)
 
     private var latestTmpUri: Uri? = null
+
+    private val captureVideoResult = registerForActivityResult(ActivityResultContracts.CaptureVideo()) { isSuccess ->
+        if (isSuccess) {
+            latestTmpUri?.let { uri ->
+                showInputTextDialog(uri.copyToInternal(this).path)
+            }
+        }
+    }
 
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
@@ -389,19 +398,29 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     private fun selectImage() {
-        val options = arrayOf<CharSequence>(getString(R.string.add_edit_estate_save_take_picture_item), getString(R.string.add_edit_estate_save_from_gallery_item))
+        val options = arrayOf<CharSequence>(getString(R.string.add_edit_estate_save_capture_video_item), getString(R.string.add_edit_estate_save_take_picture_item), getString(R.string.add_edit_estate_save_from_gallery_item))
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
+            if (options[item] == getString(R.string.add_edit_estate_save_capture_video_item)) captureVideo()
             if (options[item] == getString(R.string.add_edit_estate_save_take_picture_item)) takePicture()
             if (options[item] == getString(R.string.add_edit_estate_save_from_gallery_item)) selectImageFromGallery()
         }
         builder.show()
     }
 
+    private fun captureVideo() {
+        lifecycleScope.launchWhenStarted {
+            getTmpFileUri(".mp4").let { uri ->
+                latestTmpUri = uri
+                captureVideoResult.launch(uri)
+            }
+        }
+    }
+
     private fun takePicture() {
         lifecycleScope.launchWhenStarted {
-            getTmpFileUri().let { uri ->
+            getTmpFileUri(".jpg").let { uri ->
                 latestTmpUri = uri
                 takeImageResult.launch(uri)
             }
@@ -410,8 +429,8 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
     private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/*")
 
-    private fun getTmpFileUri(): Uri {
-        val tmpFile = File.createTempFile("tmp_image_file", ".jpg", cacheDir).apply {
+    private fun getTmpFileUri(suffix: String): Uri {
+        val tmpFile = File.createTempFile("tmp_image_file", suffix, cacheDir).apply {
             createNewFile()
             deleteOnExit()
         }

@@ -32,7 +32,8 @@
     <string name="estate_bedrooms">Chambres</string>
     <string name="estate_bathrooms">Salles de bain</string>
 
-    <string name="add_edit_estate_save_choose_image_title">Prendre une photo</string>
+    <string name="add_edit_estate_save_choose_image_title">Intégrer un média</string>
+    <string name="add_edit_estate_save_capture_video_item">Enregistrer une vidéo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
     <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
     <string name="add_edit_estate_image_dialog_text">Description</string>
