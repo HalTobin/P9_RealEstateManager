@@ -1,12 +1,27 @@
 package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.drawable.Drawable
+import android.media.ThumbnailUtils
+import android.os.CancellationSignal
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListImagesWithDescriptionBinding
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.util.Utils.getSuffix
+import com.openclassrooms.realestatemanager.util.Utils.isAVideo
+import com.openclassrooms.realestatemanager.util.Utils.isAnImage
+import com.openclassrooms.realestatemanager.util.Utils.toBitmap
+import java.io.File
+
 
 class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, context: Context, listener: OnItemClick) :
     RecyclerView.Adapter<ListImageWithDescriptionAdapter.ViewHolder>() {
@@ -26,7 +41,21 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
         holder.binding.imageWithDescriptionDescription.text = myImage.description
 
         if(myImage.imageUrl.isNotEmpty()) {
-            holder.binding.imageWithDescriptionImage.load(myImage.imageUrl)
+            if(myImage.imageUrl.isAnImage()) holder.binding.imageWithDescriptionImage.load(myImage.imageUrl)
+            if(myImage.imageUrl.isAVideo()) {
+                val mSize = Size(192, 192)
+                val ca = CancellationSignal()
+                val thumbnail = ThumbnailUtils.createVideoThumbnail(File(myImage.imageUrl), mSize, ca)
+
+                val play: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_play)
+
+                val canvas = Canvas(thumbnail)
+                if(play != null) {
+                    canvas.drawBitmap((play.toBitmap())!!, 20f, 50f, null)
+                }
+
+                holder.binding.imageWithDescriptionImage.load(thumbnail)
+            }
         }
 
         // Set up the onClickListener to open the RestaurantDetailsActivity

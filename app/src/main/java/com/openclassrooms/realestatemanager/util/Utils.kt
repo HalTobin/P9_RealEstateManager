@@ -1,19 +1,20 @@
 package com.openclassrooms.realestatemanager.util
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.net.wifi.WifiManager
 import android.provider.OpenableColumns
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.net.URI
-import java.nio.file.Path
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -44,14 +45,6 @@ object Utils {
     fun String.isValid(): Boolean {
         return@isValid this != ""
     }
-
-    /*fun copyToInternal(context: Context, sourcePath: Uri): String {
-        val mySource = File(sourcePath.path!!)
-        val myDestination = File(context.filesDir.toPath().toString().plus("Images/IMG_").plus(System.currentTimeMillis()))
-        createFileFromContentUri(context, sourcePath)
-        //mySource.copyTo(myDestination)
-        return myDestination.path
-    }*/
 
     fun Uri.copyToInternal(context: Context) : File{
         var fileName = "IMG_".plus(System.currentTimeMillis())
@@ -90,6 +83,31 @@ object Utils {
                 output.flush()
             }
         }
+    }
+
+    fun String.isAnImage(): Boolean {
+        return this.getSuffix().lowercase() == ".jpg" || this.getSuffix().lowercase() == ".png"
+    }
+
+    fun String.isAVideo(): Boolean {
+        return this.getSuffix().lowercase() == ".mp4"
+    }
+
+    fun String.getSuffix(): String {
+        println("REMOVE RANGE - " + this.removeRange(0, this.length-4))
+        return this.removeRange(0, this.length-4)
+    }
+
+    fun Drawable.toBitmap(): Bitmap? {
+        if (this is BitmapDrawable) {
+            return this.bitmap
+        }
+        val bitmap =
+            Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        this.setBounds(0, 0, this.intrinsicWidth, this.intrinsicHeight)
+        this.draw(canvas)
+        return bitmap
     }
 
     /**

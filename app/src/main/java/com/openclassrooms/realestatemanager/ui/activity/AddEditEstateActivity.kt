@@ -434,8 +434,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             createNewFile()
             deleteOnExit()
         }
-
-        //return tmpFile.path.toUri()
         return FileProvider.getUriForFile(applicationContext, "${BuildConfig.APPLICATION_ID}.fileprovider", tmpFile)
     }
 
