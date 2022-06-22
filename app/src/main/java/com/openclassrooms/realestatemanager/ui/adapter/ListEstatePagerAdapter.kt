@@ -1,12 +1,9 @@
 package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
-import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
-import coil.clear
-import coil.dispose
 import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
@@ -36,8 +33,8 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, 
             if(isDollar) myEstate.estate.priceDollar?.toString().plus("$")
             else myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
 
-        if(myEstate.images!!.isNotEmpty()) {
-            holder.binding.itemEstateImage.load(myEstate.images!![0].imageUrl)
+        if(myEstate.images.isNotEmpty()) {
+            holder.binding.itemEstateImage.load(myEstate.images[0].imageUrl)
         }
 
         // Set up the onClickListener to open the EstateDetailsActivity

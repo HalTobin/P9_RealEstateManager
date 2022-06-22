@@ -71,6 +71,7 @@
         android:layout_height="96dp"
         android:layout_marginEnd="8dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/sold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_estate_name"
         app:layout_constraintEnd_toEndOf="parent"

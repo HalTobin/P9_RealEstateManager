@@ -1,19 +1,28 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
+import android.net.Uri
 import android.os.Bundle
+import android.os.CancellationSignal
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.dispose
 import coil.load
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateDetailsBinding
@@ -24,8 +33,13 @@ import com.openclassrooms.realestatemanager.ui.activity.MainActivity.Companion.n
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
+import com.openclassrooms.realestatemanager.util.Utils.isAnImage
+import com.openclassrooms.realestatemanager.util.Utils.toBitmap
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
+import com.stfalcon.imageviewer.StfalconImageViewer
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.io.File
+
 
 class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
 
@@ -37,6 +51,8 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private var marker: Marker? = null
 
     private var options = arrayOf<CharSequence>("", "")
+
+    private lateinit var previewList: List<ImageWithDescription>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentEstateDetailsBinding.inflate(layoutInflater)
@@ -51,6 +67,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private fun setUpListenersAndObservers() {
         mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshRecycler(estate.images)
+            previewList = estate.images
             binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ").plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
@@ -129,13 +146,68 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     }
 
     override fun onImageClick(imageWithDescription: ImageWithDescription) {
-        //TODO - Display the selected image in fullscreen
-        TODO("Not yet implemented")
+        StfalconImageViewer.Builder(context, previewList) { view, image ->
+            // If this is an picture, then it is directly displayed
+            // Else, it means that this is a video, and we generate a thumbnail and add an icon on it, before displaying the result
+            if (image.imageUrl.isAnImage()) view.load(image.imageUrl)
+            else {
+                val metaRetriever = MediaMetadataRetriever()
+                metaRetriever.setDataSource(image.imageUrl)
+                val height =
+                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                        ?.toInt()
+                val width =
+                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                        ?.toInt()
+
+                lateinit var mSize: Size
+                if ((width != null) && (height != null)) mSize = Size(width, height)
+                val ca = CancellationSignal()
+
+                // Get a thumbnail from the video
+                val thumbnail = ThumbnailUtils.createVideoThumbnail(File(image.imageUrl), mSize, ca)
+
+                // Load the drawable resource "ic_play"
+                val play: Drawable? = getDrawable(requireContext(), R.drawable.ic_video_media)
+
+                val canvas = Canvas(thumbnail)
+                // Draw "ic_play" on top of the thumbnail
+                if (play != null) canvas.drawBitmap(
+                    (play.toBitmap())!!,
+                    canvas.width - 80f,
+                    20f,
+                    null
+                )
+
+                view.load(thumbnail)
+
+                // Open an Intent to read the video
+                view.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(
+                        FileProvider.getUriForFile(
+                            requireContext(),
+                            "${BuildConfig.APPLICATION_ID}.fileprovider",
+                            File(image.imageUrl)
+                        ), "video/mp4"
+                    )
+                    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    view.context.startActivity(intent)
+                }
+            }
+        }.allowZooming(false)
+            //.withOverlayView(View(R.layout.overlay_imageview))
+            .show()
+            .setCurrentPosition(previewList.indexOf(imageWithDescription))
     }
 
     companion object {
         const val UPDATE_SOLD_STATE = 0
         const val EDIT_ESTATE = 1
+
+        fun Int.findStartPosition() : Float {
+            return (this - 20).toFloat()
+        }
     }
 
 }

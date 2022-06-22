@@ -15,6 +15,7 @@ import java.io.InputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -26,25 +27,16 @@ object Utils {
      * @param dollars
      * @return
      */
-    fun convertDollarToEuro(dollars: Int): Int {
-        return Math.round(dollars * 0.95).toInt()
-    }
+    fun convertDollarToEuro(dollars: Int): Int = (dollars * 0.95).roundToInt()
 
-    fun convertEuroToDollar(euros: Int): Int {
-        return Math.round(euros * 1.05).toInt()
-    }
+    fun convertEuroToDollar(euros: Int): Int = (euros * 1.05).roundToInt()
 
-    fun Int.fromEuroToDollar(): Int {
-        return convertEuroToDollar(this)
-    }
+    fun Int.fromEuroToDollar(): Int = convertEuroToDollar(this)
 
-    fun Int.fromDollarToEuro(): Int {
-        return convertDollarToEuro(this)
-    }
+    fun Int.fromDollarToEuro(): Int = convertDollarToEuro(this)
 
-    fun String.isValid(): Boolean {
-        return@isValid this != ""
-    }
+
+    fun String.isValid(): Boolean = this != ""
 
     fun Uri.copyToInternal(context: Context) : File{
         var fileName = "IMG_".plus(System.currentTimeMillis())
@@ -85,18 +77,11 @@ object Utils {
         }
     }
 
-    fun String.isAnImage(): Boolean {
-        return this.getSuffix().lowercase() == ".jpg" || this.getSuffix().lowercase() == ".png"
-    }
+    fun String.isAnImage(): Boolean = (this.getSuffix().lowercase() == ".jpg" || this.getSuffix().lowercase() == ".png")
 
-    fun String.isAVideo(): Boolean {
-        return this.getSuffix().lowercase() == ".mp4"
-    }
+    fun String.isAVideo(): Boolean = this.getSuffix().lowercase() == ".mp4"
 
-    fun String.getSuffix(): String {
-        println("REMOVE RANGE - " + this.removeRange(0, this.length-4))
-        return this.removeRange(0, this.length-4)
-    }
+    fun String.getSuffix(): String = this.removeRange(0, this.length-4)
 
     // Return a Bitmap from a Drawable object
     fun Drawable.toBitmap(): Bitmap? {

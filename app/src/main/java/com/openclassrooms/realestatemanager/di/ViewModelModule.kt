@@ -32,6 +32,4 @@ object ViewModelModule {
         coordinatesRepository: CoordinatesRepository
     ): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, imageRepository, coordinatesRepository)
 
-
-
 }
