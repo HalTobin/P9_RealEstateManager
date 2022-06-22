@@ -33,13 +33,9 @@ import com.openclassrooms.realestatemanager.ui.activity.MainActivity.Companion.n
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
-import com.openclassrooms.realestatemanager.util.Utils.isAnImage
-import com.openclassrooms.realestatemanager.util.Utils.toBitmap
+import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
-import com.stfalcon.imageviewer.StfalconImageViewer
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.io.File
-
 
 class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
 
@@ -51,8 +47,6 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private var marker: Marker? = null
 
     private var options = arrayOf<CharSequence>("", "")
-
-    private lateinit var previewList: List<ImageWithDescription>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentEstateDetailsBinding.inflate(layoutInflater)
@@ -67,7 +61,6 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private fun setUpListenersAndObservers() {
         mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshRecycler(estate.images)
-            previewList = estate.images
             binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ").plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
@@ -145,10 +138,12 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         setUpListenersAndObservers()
     }
 
-    override fun onImageClick(imageWithDescription: ImageWithDescription) {
-        StfalconImageViewer.Builder(context, previewList) { view, image ->
+    override fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>) {
+        /*val overlayView: View = LayoutInflater.from(context).inflate(R.layout.overlay_imageview, null, false)
+
+       StfalconImageViewer.Builder(context, previewList) { view, image ->
             // If this is an picture, then it is directly displayed
-            // Else, it means that this is a video, and we generate a thumbnail and add an icon on it, before displaying the result
+            // Else, it means that this is a video, and we generate a thumbnail to display
             if (image.imageUrl.isAnImage()) view.load(image.imageUrl)
             else {
                 val metaRetriever = MediaMetadataRetriever()
@@ -167,18 +162,6 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
                 // Get a thumbnail from the video
                 val thumbnail = ThumbnailUtils.createVideoThumbnail(File(image.imageUrl), mSize, ca)
 
-                // Load the drawable resource "ic_play"
-                val play: Drawable? = getDrawable(requireContext(), R.drawable.ic_video_media)
-
-                val canvas = Canvas(thumbnail)
-                // Draw "ic_play" on top of the thumbnail
-                if (play != null) canvas.drawBitmap(
-                    (play.toBitmap())!!,
-                    canvas.width - 80f,
-                    20f,
-                    null
-                )
-
                 view.load(thumbnail)
 
                 // Open an Intent to read the video
@@ -196,18 +179,20 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
                 }
             }
         }.allowZooming(false)
-            //.withOverlayView(View(R.layout.overlay_imageview))
+            .withOverlayView(overlayView)
+            .withImageChangeListener { position ->
+                if(previewList[position].imageUrl.isAVideo()) overlayView.overlay_imageview_is_a_video.load(R.drawable.ic_video_media)
+                else overlayView.overlay_imageview_is_a_video.load(0x00000000)
+                overlayView.overlay_imageview_description.text = previewList[position].description
+            }
             .show()
-            .setCurrentPosition(previewList.indexOf(imageWithDescription))
+            .setCurrentPosition(previewList.indexOf(imageWithDescription))*/
+        Utils.openImageViewer(requireContext(), images, images.indexOf(imageWithDescription))
     }
 
     companion object {
         const val UPDATE_SOLD_STATE = 0
         const val EDIT_ESTATE = 1
-
-        fun Int.findStartPosition() : Float {
-            return (this - 20).toFloat()
-        }
     }
 
 }

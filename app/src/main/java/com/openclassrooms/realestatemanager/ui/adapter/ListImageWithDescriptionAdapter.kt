@@ -61,7 +61,7 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
         }
 
         // Set up the onClickListener to open the RestaurantDetailsActivity
-        holder.itemView.setOnClickListener { mCallback!!.onImageClick(myImage) }
+        holder.itemView.setOnClickListener { mCallback!!.onImageClick(myImage, images!!) }
     }
 
     override fun getItemCount(): Int {
@@ -84,6 +84,6 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
     }
 
     interface OnItemClick {
-        fun onImageClick(imageWithDescription: ImageWithDescription)
+        fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>)
     }
 }

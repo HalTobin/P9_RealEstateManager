@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/overlay_imageview_is_a_video"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -16,7 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="48sp"
+        android:textSize="36sp"
+        android:textColor="@color/white"
+        android:background="@color/transparent_black"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

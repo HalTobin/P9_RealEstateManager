@@ -40,6 +40,7 @@ import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionA
 import com.openclassrooms.realestatemanager.util.EstateNotification
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
+import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.util.Utils.copyToInternal
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import kotlinx.coroutines.launch
@@ -531,8 +532,15 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
-    override fun onImageClick(imageWithDescription: ImageWithDescription) {
-        showDeleteImageDialog(imageWithDescription)
+    override fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>) {
+        val options = arrayOf<CharSequence>(getString(R.string.visualize), getString(R.string.delete))
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
+        builder.setItems(options) { _, item ->
+            if (options[item] == getString(R.string.visualize)) Utils.openImageViewer(this, images, images.indexOf(imageWithDescription))
+            if (options[item] == getString(R.string.delete)) showDeleteImageDialog(imageWithDescription)
+        }
+        builder.show()
     }
 
     companion object {
