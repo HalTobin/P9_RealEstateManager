@@ -15,7 +15,10 @@ class GetCoordinatesDeserializer : JsonDeserializer<Coordinates?> {
         val jsonObject = json.asJsonObject
         try {
             val resultJson: JsonObject? = jsonObject.get("data").asJsonArray[0].asJsonObject
-            if (resultJson != null) temp = Coordinates(resultJson.get("latitude").asDouble, resultJson.get("longitude").asDouble)
+            if (resultJson != null) temp = Coordinates(
+                resultJson.get("latitude").asDouble,
+                resultJson.get("longitude").asDouble
+            )
         } catch (e: Exception) {
             println("API : DETAILS ERROR : " + e.message + " " + json.toString())
         }

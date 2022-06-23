@@ -139,54 +139,6 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     }
 
     override fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>) {
-        /*val overlayView: View = LayoutInflater.from(context).inflate(R.layout.overlay_imageview, null, false)
-
-       StfalconImageViewer.Builder(context, previewList) { view, image ->
-            // If this is an picture, then it is directly displayed
-            // Else, it means that this is a video, and we generate a thumbnail to display
-            if (image.imageUrl.isAnImage()) view.load(image.imageUrl)
-            else {
-                val metaRetriever = MediaMetadataRetriever()
-                metaRetriever.setDataSource(image.imageUrl)
-                val height =
-                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                        ?.toInt()
-                val width =
-                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                        ?.toInt()
-
-                lateinit var mSize: Size
-                if ((width != null) && (height != null)) mSize = Size(width, height)
-                val ca = CancellationSignal()
-
-                // Get a thumbnail from the video
-                val thumbnail = ThumbnailUtils.createVideoThumbnail(File(image.imageUrl), mSize, ca)
-
-                view.load(thumbnail)
-
-                // Open an Intent to read the video
-                view.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.setDataAndType(
-                        FileProvider.getUriForFile(
-                            requireContext(),
-                            "${BuildConfig.APPLICATION_ID}.fileprovider",
-                            File(image.imageUrl)
-                        ), "video/mp4"
-                    )
-                    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    view.context.startActivity(intent)
-                }
-            }
-        }.allowZooming(false)
-            .withOverlayView(overlayView)
-            .withImageChangeListener { position ->
-                if(previewList[position].imageUrl.isAVideo()) overlayView.overlay_imageview_is_a_video.load(R.drawable.ic_video_media)
-                else overlayView.overlay_imageview_is_a_video.load(0x00000000)
-                overlayView.overlay_imageview_description.text = previewList[position].description
-            }
-            .show()
-            .setCurrentPosition(previewList.indexOf(imageWithDescription))*/
         Utils.openImageViewer(requireContext(), images, images.indexOf(imageWithDescription))
     }
 

@@ -13,7 +13,6 @@ android {
     defaultConfig {
         applicationId "com.openclassrooms.realestatemanager"
         minSdkVersion 21
-        //TODO - Change minSdkVersion to 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"

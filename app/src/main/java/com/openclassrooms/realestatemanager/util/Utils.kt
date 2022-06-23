@@ -72,6 +72,7 @@ object Utils {
 
         val iStream : InputStream = context.contentResolver.openInputStream(this)!!
         val outputDir = File(context.filesDir.toPath().toString().plus("/Images/"))
+        if(!outputDir.exists()) outputDir.mkdir()
         val outputFile = File(outputDir, fileName)
         copyStreamToFile(iStream, outputFile)
         iStream.close()

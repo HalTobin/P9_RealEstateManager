@@ -1,19 +1,25 @@
 package com.openclassrooms.realestatemanager.viewModel
 
 import androidx.lifecycle.*
+import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 
-class AddEditEstateViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository, private val coordinatesRepository: CoordinatesRepository) : ViewModel() {
+class AddEditEstateViewModel(private val estateRepository: EstateRepository,
+                             private val imageRepository: ImageRepository,
+                             private val coordinatesRepository: CoordinatesRepository,
+                             private val agentRepository: AgentRepository) : ViewModel() {
 
     private val _title = MutableLiveData("")
     val title = _title
@@ -60,7 +66,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
     private val _nearbySchool = MutableLiveData(false)
     val nearbySchool = _nearbySchool
 
-    private val _agent = MutableLiveData("")
+    private val _agent = MutableLiveData<Int>()
     val agent = _agent
 
     private val _description = MutableLiveData("")
@@ -90,6 +96,10 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     private var currentEstateId: Int? = null
 
+    fun getListOfAgent(): LiveData<List<Agent>> {
+        return agentRepository.getAgents().asLiveData()
+    }
+
     fun searchLocation() {
         viewModelScope.launch {
             if(getCurrentFullAddress() != null) {
@@ -106,6 +116,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
             estateRepository.getEstate(estateId).collect {
                 currentEstateId = it.estate.id
                 _title.postValue(it.estate.title)
+                _type.postValue(it.estate.type)
                 _country.postValue(it.estate.country)
                 _city.postValue(it.estate.city)
                 _zip.postValue(it.estate.zipCode)
@@ -119,7 +130,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                 _nearbyPark.postValue(it.estate.nearbyPark!!)
                 _nearbyShop.postValue(it.estate.nearbyShop!!)
                 _nearbySchool.postValue(it.estate.nearbySchool!!)
-                _agent.postValue(it.estate.agent)
+                _agent.postValue(it.estate.agentId)
                 _description.postValue(it.estate.description)
                 _nbRooms.postValue(it.estate.nbRooms!!)
                 _nbBathrooms.postValue(it.estate.nbBathrooms!!)
@@ -183,7 +194,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
 
     fun setShop(shop: Boolean) { _nearbyShop.value = shop }
 
-    fun setAgent(agent: String) { _agent.value = agent }
+    fun setAgent(agentId: Int) { _agent.value = agentId }
 
     fun setDescription(description: String) { _description.value = description }
 
@@ -222,7 +233,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository, pri
                     sold = _sold.value!!,
                     entryDate = _entryDate.value,
                     soldDate = _soldDate.value,
-                    agent = _agent.value!!,
+                    agentId = _agent.value!!,
                     description = _description.value!!)).toInt()
 
                 for(imageWithDescription in pictureList) {

@@ -1,12 +1,11 @@
 package com.openclassrooms.realestatemanager.provider
 
-import android.content.ClipData.Item
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
-import com.openclassrooms.realestatemanager.data.data_source.EstateDatabase
+import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.model.Estate
 import org.koin.android.ext.android.inject
 

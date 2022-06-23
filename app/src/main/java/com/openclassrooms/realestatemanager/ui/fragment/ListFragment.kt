@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateListBinding
-import com.openclassrooms.realestatemanager.model.EstateWithImages
+import com.openclassrooms.realestatemanager.model.EstateUI
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.ArrayList
 
@@ -32,7 +32,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
     }
 
     private fun setListenersAndObservers() {
-        mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<EstateWithImages> ->
+        mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<EstateUI> ->
             refreshRecycler(estates)
             if(estates.isEmpty()) {
                 binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)
@@ -60,7 +60,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
         binding!!.listEstateRecycler.adapter = mAdapter
     }
 
-    private fun refreshRecycler(myList: List<EstateWithImages>) {
+    private fun refreshRecycler(myList: List<EstateUI>) {
         mAdapter!!.updateList(myList)
     }
 

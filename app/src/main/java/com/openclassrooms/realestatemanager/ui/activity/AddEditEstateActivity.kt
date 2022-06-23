@@ -3,23 +3,17 @@ package com.openclassrooms.realestatemanager.ui.activity
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.GoogleMap
@@ -33,6 +27,7 @@ import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityAddEditEstateBinding
+import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateTypes
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
@@ -43,11 +38,8 @@ import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.util.Utils.copyToInternal
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
-import java.net.URI
-
 
 class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     OnMapReadyCallback,
@@ -63,194 +55,132 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
     private var latestTmpUri: Uri? = null
 
-    private val captureVideoResult = registerForActivityResult(ActivityResultContracts.CaptureVideo()) { isSuccess ->
-        if (isSuccess) {
-            latestTmpUri?.let { uri ->
+    private val captureVideoResult =
+        registerForActivityResult(ActivityResultContracts.CaptureVideo()) { isSuccess ->
+            if (isSuccess) {
+                latestTmpUri?.let { uri ->
+                    showInputTextDialog(uri.copyToInternal(this).path)
+                }
+            }
+        }
+
+    private val takeImageResult =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+            if (isSuccess) {
+                latestTmpUri?.let { uri ->
+                    showInputTextDialog(uri.copyToInternal(this).path)
+                }
+            }
+        }
+
+    private val selectImageFromGalleryResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
                 showInputTextDialog(uri.copyToInternal(this).path)
             }
         }
-    }
-
-    private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
-        if (isSuccess) {
-            latestTmpUri?.let { uri ->
-                showInputTextDialog(uri.copyToInternal(this).path)
-            }
-        }
-    }
-
-    private val selectImageFromGalleryResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            showInputTextDialog(uri.copyToInternal(this).path)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding!!.root)
 
-        setUpListenersAndObservers()
+        setUpListeners()
+        setUpObservers()
         initMapView(savedInstanceState)
         initRecycler()
-        initSpinner()
+        initEstateTypeSpinner()
 
         val estateToLoadId = this.intent.getIntExtra("estate_id", -1)
-        if(estateToLoadId != -1) addEditEstateViewModel.loadEstate(estateToLoadId)
+        if (estateToLoadId != -1) addEditEstateViewModel.loadEstate(estateToLoadId)
     }
 
     override fun onBackPressed() {
         exitConfirmationDialog()
     }
 
-    private fun setUpListenersAndObservers() {
+    //TODO - Change addTextChangedListener with .doAfterTextChanged
+    private fun setUpListeners() {
 
         // Textfield listener for the Estate's title
-        binding?.addEditEstateTitle?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
+        binding?.addEditEstateTitle?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setTitle(it.toString())
             }
-        })
+        }
 
         // Textfield listener for the Estate's type
-        binding?.addEditEstateTitle?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setTitle(s.toString())
+        binding?.addEditEstateType?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setType(
+                    getEstateTypes(this@AddEditEstateActivity).indexOf(
+                        it.toString()
+                    )
+                )
             }
-        })
 
-        // Observer for the Estate's type
-        addEditEstateViewModel.title.observe(this) {
-            if(it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(it)
         }
 
         // TextField listener for the Estate's country
-        binding?.addEditEstateCountry?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setCountry(s.toString())
+        binding?.addEditEstateCountry?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setCountry(it.toString())
             }
-        })
-
-        // Observer for the Estate's country
-        addEditEstateViewModel.country.observe(this) {
-            if(it != binding?.addEditEstateCountry?.text.toString()) binding?.addEditEstateCountry?.setText(it)
         }
 
         // TextField listener for the Estate's city
-        binding?.addEditEstateCity?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setCity(s.toString())
+        binding?.addEditEstateCity?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setCity(it.toString())
             }
-        })
-
-        // Observer for the Estate's city
-        addEditEstateViewModel.city.observe(this) {
-            if(it != binding?.addEditEstateCity?.text.toString()) binding?.addEditEstateCity?.setText(it)
         }
 
         // TextField listener for the Estate's zip code
-        binding?.addEditEstateZip?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setZip(s.toString())
+        binding?.addEditEstateZip?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setZip(it.toString())
             }
-        })
-
-        // Observer for the Estate's zip Code
-        addEditEstateViewModel.zip.observe(this) {
-            if(it != binding?.addEditEstateZip?.text.toString()) binding?.addEditEstateZip?.setText(it)
         }
 
         // TextField listener for the Estate's address
-        binding?.addEditEstateAddress?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setAddress(s.toString())
+        binding?.addEditEstateAddress?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setAddress(it.toString())
             }
-        })
-
-        // Observer for the Estate's address
-        addEditEstateViewModel.address.observe(this) {
-            if(it != binding?.addEditEstateAddress?.text.toString()) binding?.addEditEstateAddress?.setText(it)
         }
 
         // TextField listener for the Estate's area
-        binding?.addEditEstateArea?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setArea(s.toString())
+        binding?.addEditEstateArea?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setArea(it.toString())
             }
-        })
-
-        // Observer for the Estate's area
-        addEditEstateViewModel.area.observe(this) {
-            if(it.toString() != binding?.addEditEstateArea?.text.toString()) binding?.addEditEstateArea?.setText(it.toString())
         }
 
         // TextField listener for the Estate's price
-        binding?.addEditEstatePrice?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setPrice(s.toString())
+        binding?.addEditEstatePrice?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setPrice(it.toString())
             }
-        })
-
-        // Observer for the Estate's price
-        addEditEstateViewModel.price.observe(this) {
-            if(it.toString() != binding?.addEditEstatePrice?.text.toString()) binding?.addEditEstatePrice?.setText(it.toString())
         }
 
         // TextField listener for the Estate's numbers of rooms
-        binding?.addEditEstateNbRooms?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setRooms(s.toString())
+        binding?.addEditEstateNbRooms?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setRooms(it.toString())
             }
-        })
-
-        // Observer for the Estate's numbers of room
-        addEditEstateViewModel.nbRooms.observe(this) {
-            if(it.toString() != binding?.addEditEstateNbRooms?.text.toString()) binding?.addEditEstateNbRooms?.setText(it.toString())
         }
 
         // TextField listener for the Estate's numbers of bedrooms
-        binding?.addEditEstateNbBedrooms?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setBedrooms(s.toString())
+        binding?.addEditEstateNbBedrooms?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setBedrooms(it.toString())
             }
-        })
-
-        // Observer for the Estate's numbers of bedrooms
-        addEditEstateViewModel.nbBedrooms.observe(this) {
-            if(it.toString() != binding?.addEditEstateNbBedrooms?.text.toString()) binding?.addEditEstateNbBedrooms?.setText(it.toString())
         }
 
         // TextField listener for the Estate's numbers of bathrooms
-        binding?.addEditEstateNbBathrooms?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setBathrooms(s.toString())
+        binding?.addEditEstateNbBathrooms?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setBathrooms(it.toString())
             }
-        })
-
-        // Observer for the Estate's numbers of bathroom
-        addEditEstateViewModel.nbBathrooms.observe(this) {
-            if(it.toString() != binding?.addEditEstateNbBathrooms?.text.toString()) binding?.addEditEstateNbBathrooms?.setText(it.toString())
         }
 
         // Checkbox listener to indicate if there is a park near the Estate
@@ -258,19 +188,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             addEditEstateViewModel.setPark(isChecked)
         }
 
-        // Observer for the Estate's park checkbox
-        addEditEstateViewModel.nearbyPark.observe(this) {
-            if(it != binding?.addEditEstateCheckPark?.isChecked) binding?.addEditEstateCheckPark?.isChecked = it
-        }
-
         // Checkbox listener to indicate if there is a school near the Estate
         binding?.addEditEstateCheckSchool?.setOnCheckedChangeListener { _, isChecked ->
             addEditEstateViewModel.setSchool(isChecked)
-        }
-
-        // Observer for the Estate's school checkbox
-        addEditEstateViewModel.nearbySchool.observe(this) {
-            if(it != binding?.addEditEstateCheckSchool?.isChecked) binding?.addEditEstateCheckSchool?.isChecked = it
         }
 
         // Checkbox listener to indicate if there is a shop near the Estate
@@ -278,37 +198,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             addEditEstateViewModel.setShop(isChecked)
         }
 
-        // Observer for the Estate's shop checkbox
-        addEditEstateViewModel.nearbyShop.observe(this) {
-            if(it != binding?.addEditEstateCheckShop?.isChecked) binding?.addEditEstateCheckShop?.isChecked = it
-        }
-
-        // TextField listener for the Estate's agent
-        binding?.addEditEstateAgent?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setAgent(s.toString())
-            }
-        })
-
-        // Observer for the Estate's agent
-        addEditEstateViewModel.agent.observe(this) {
-            if(it != binding?.addEditEstateAgent?.text.toString()) binding?.addEditEstateAgent?.setText(it)
-        }
-
         // TextField listener for the Estate's description
-        binding?.addEditEstateDescription?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if(s.isNotEmpty()) addEditEstateViewModel.setDescription(s.toString())
+        binding?.addEditEstateDescription?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty()) addEditEstateViewModel.setDescription(it.toString())
             }
-        })
-
-        // Observer for the Estate's numbers of bathroom
-        addEditEstateViewModel.description.observe(this) {
-            if(it != binding?.addEditEstateDescription?.text.toString()) binding?.addEditEstateDescription?.setText(it.toString())
         }
 
         // Click listener to find the Estate's location
@@ -316,25 +210,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             addEditEstateViewModel.searchLocation()
         }
 
-        // Observe the Estate's coordinates
-        addEditEstateViewModel.coordinates.observe(this) { coordinates ->
-            map?.navigateTo(coordinates, 16f)
-            if(marker != null) marker!!.remove()
-            map!!.addMarker(
-                MarkerOptions()
-                    .position(LatLng(coordinates.xCoordinate, coordinates.yCoordinate))
-            )?.let { marker = it }
-        }
-
         // Click listener to change currency
         binding?.addEditEstateCurrency?.setOnClickListener {
             addEditEstateViewModel.changeCurrency()
-        }
-
-        // Observe the used currency
-        addEditEstateViewModel.isDollar.observe(this) { isDollar ->
-            if(isDollar) binding?.addEditEstateCurrency?.text = "$"
-            else binding?.addEditEstateCurrency?.text = "€"
         }
 
         // Click listener to save the Estate
@@ -347,6 +225,135 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             selectImage()
         }
 
+    }
+
+    private fun setUpObservers() {
+
+        // Observer for the Estate's type
+        addEditEstateViewModel.title.observe(this) {
+            if (it != binding?.addEditEstateTitle?.text.toString()) binding?.addEditEstateTitle?.setText(
+                it
+            )
+        }
+
+        // Observer for the Type's type
+        addEditEstateViewModel.type.observe(this) {
+            if (it != getEstateTypes(this@AddEditEstateActivity).indexOf(binding?.addEditEstateType?.text.toString())) {
+                binding?.addEditEstateType?.setText(
+                    getEstateTypes(this@AddEditEstateActivity)[it],
+                    false
+                )
+            }
+        }
+
+        // Observer for the Estate's country
+        addEditEstateViewModel.country.observe(this) {
+            if (it != binding?.addEditEstateCountry?.text.toString()) binding?.addEditEstateCountry?.setText(
+                it
+            )
+        }
+
+        // Observer for the Estate's city
+        addEditEstateViewModel.city.observe(this) {
+            if (it != binding?.addEditEstateCity?.text.toString()) binding?.addEditEstateCity?.setText(
+                it
+            )
+        }
+
+        // Observer for the Estate's zip Code
+        addEditEstateViewModel.zip.observe(this) {
+            if (it != binding?.addEditEstateZip?.text.toString()) binding?.addEditEstateZip?.setText(
+                it
+            )
+        }
+
+        // Observer for the Estate's address
+        addEditEstateViewModel.address.observe(this) {
+            if (it != binding?.addEditEstateAddress?.text.toString()) binding?.addEditEstateAddress?.setText(
+                it
+            )
+        }
+
+        // Observer for the Estate's area
+        addEditEstateViewModel.area.observe(this) {
+            if (it.toString() != binding?.addEditEstateArea?.text.toString()) binding?.addEditEstateArea?.setText(
+                it.toString()
+            )
+        }
+
+        // Observer for the Estate's price
+        addEditEstateViewModel.price.observe(this) {
+            if (it.toString() != binding?.addEditEstatePrice?.text.toString()) binding?.addEditEstatePrice?.setText(
+                it.toString()
+            )
+        }
+
+        // Observer for the Estate's numbers of room
+        addEditEstateViewModel.nbRooms.observe(this) {
+            if (it.toString() != binding?.addEditEstateNbRooms?.text.toString()) binding?.addEditEstateNbRooms?.setText(
+                it.toString()
+            )
+        }
+
+        // Observer for the Estate's numbers of bedrooms
+        addEditEstateViewModel.nbBedrooms.observe(this) {
+            if (it.toString() != binding?.addEditEstateNbBedrooms?.text.toString()) binding?.addEditEstateNbBedrooms?.setText(
+                it.toString()
+            )
+        }
+
+        // Observer for the Estate's numbers of bathroom
+        addEditEstateViewModel.nbBathrooms.observe(this) {
+            if (it.toString() != binding?.addEditEstateNbBathrooms?.text.toString()) binding?.addEditEstateNbBathrooms?.setText(
+                it.toString()
+            )
+        }
+
+        // Observer for the Estate's park checkbox
+        addEditEstateViewModel.nearbyPark.observe(this) {
+            if (it != binding?.addEditEstateCheckPark?.isChecked) binding?.addEditEstateCheckPark?.isChecked =
+                it
+        }
+
+        // Observer for the Estate's school checkbox
+        addEditEstateViewModel.nearbySchool.observe(this) {
+            if (it != binding?.addEditEstateCheckSchool?.isChecked) binding?.addEditEstateCheckSchool?.isChecked =
+                it
+        }
+
+        // Observer for the Estate's shop checkbox
+        addEditEstateViewModel.nearbyShop.observe(this) {
+            if (it != binding?.addEditEstateCheckShop?.isChecked) binding?.addEditEstateCheckShop?.isChecked =
+                it
+        }
+
+        addEditEstateViewModel.getListOfAgent().observe(this) { agentsLive ->
+            initAgentSpinner(agentsLive)
+        }
+
+        // Observer for the Estate's numbers of bathroom
+        addEditEstateViewModel.description.observe(this) {
+            if (it != binding?.addEditEstateDescription?.text.toString()) binding?.addEditEstateDescription?.setText(
+                it.toString()
+            )
+        }
+
+        // Observe the Estate's coordinates
+        addEditEstateViewModel.coordinates.observe(this) { coordinates ->
+            map?.navigateTo(coordinates, 16f)
+            if (marker != null) marker!!.remove()
+            map!!.addMarker(
+                MarkerOptions()
+                    .position(LatLng(coordinates.xCoordinate, coordinates.yCoordinate))
+            )?.let { marker = it }
+        }
+
+        // Observe the used currency
+        addEditEstateViewModel.isDollar.observe(this) { isDollar ->
+            if (isDollar) binding?.addEditEstateCurrency?.text = "$"
+            else binding?.addEditEstateCurrency?.text = "€"
+        }
+
         // Observe the list of ImageWithDescription
         addEditEstateViewModel.pictures.observe(this) { pictures ->
             refreshRecycler(pictures)
@@ -354,7 +361,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
         // Observe if a warning has been posted
         addEditEstateViewModel.warning.observe(this) { warning ->
-            when(warning) {
+            when (warning) {
                 Estate.UNCOMPLETED -> showToast(R.string.add_edit_estate_uncomplete)
                 Estate.CANT_FIND_LOCATION -> showToast(R.string.add_edit_estate_cant_find_location)
             }
@@ -363,8 +370,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         // Observe if the activity must be closed
         addEditEstateViewModel.mustClose.observe(this) { mustClose ->
             EstateNotification.createNotification(this)
-            if(mustClose) finish()
+            if (mustClose) finish()
         }
+
     }
 
     private fun initMapView(savedInstanceState: Bundle?) {
@@ -386,8 +394,10 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         val dialogClickListener =
             DialogInterface.OnClickListener { _, which ->
                 when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> { super.onBackPressed() }
-                    DialogInterface.BUTTON_NEGATIVE -> {  }
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        super.onBackPressed()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {}
                 }
             }
 
@@ -399,7 +409,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     private fun selectImage() {
-        val options = arrayOf<CharSequence>(getString(R.string.add_edit_estate_save_capture_video_item), getString(R.string.add_edit_estate_save_take_picture_item), getString(R.string.add_edit_estate_save_from_gallery_item))
+        val options = arrayOf<CharSequence>(
+            getString(R.string.add_edit_estate_save_capture_video_item),
+            getString(R.string.add_edit_estate_save_take_picture_item),
+            getString(R.string.add_edit_estate_save_from_gallery_item)
+        )
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
@@ -428,20 +442,29 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
-    private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/*")
+    //TODO - Videos doesn't appear
+    private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/* video/*")
 
     private fun getTmpFileUri(suffix: String): Uri {
         val tmpFile = File.createTempFile("tmp_image_file", suffix, cacheDir).apply {
             createNewFile()
             deleteOnExit()
         }
-        return FileProvider.getUriForFile(applicationContext, "${BuildConfig.APPLICATION_ID}.fileprovider", tmpFile)
+        return FileProvider.getUriForFile(
+            applicationContext,
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            tmpFile
+        )
     }
 
     private fun initRecycler() {
         mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this, this)
         binding!!.addEditEstateListImages.apply {
-            layoutManager = LinearLayoutManager(this@AddEditEstateActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                this@AddEditEstateActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
             adapter = mAdapter
         }
     }
@@ -450,10 +473,10 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         mAdapter!!.updateList(myList)
     }
 
-    private fun initSpinner() {
+    private fun initEstateTypeSpinner() {
         val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
             this,
-            R.layout.item_spinner_estate_type,
+            R.layout.item_spinner,
             getEstateTypes(this)
         )
 
@@ -461,12 +484,70 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
         binding?.addEditEstateType?.setAdapter(spinnerAdapter)
         // When user select a List-Item.
-        binding?.addEditEstateType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                addEditEstateViewModel.setType(position)
+        binding?.addEditEstateType?.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    addEditEstateViewModel.setType(position)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+    }
+
+    private fun initAgentSpinner(myAgents: List<Agent>) {
+
+        val agentsFullName = mutableListOf<String>()
+        //agents = myAgents
+        myAgents.forEach {
+            agentsFullName.add(it.getFullName())
+        }
+
+        val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            R.layout.item_spinner,
+            agentsFullName
+        )
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        binding?.addEditEstateAgent?.setAdapter(spinnerAdapter)
+        // When user select a List-Item.
+        binding?.addEditEstateAgent?.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    addEditEstateViewModel.setAgent(myAgents[position].id!!)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        // TextField listener for the Estate's agent
+        /*binding?.addEditEstateAgent?.doAfterTextChanged { text ->
+            text?.let {
+                if (it.isNotEmpty())
+                    Agent.getAgentByFullName(myAgents, text.toString())?.id?.let { it1 ->
+                        addEditEstateViewModel.setAgent(it1)
+                    }
+            }
+        }*/
+
+        // Observer for the Estate's agent
+        addEditEstateViewModel.agent.observe(this) {
+            Agent.getAgentById(myAgents, it)?.let { it1 ->
+                if (it1.getFullName() != binding?.addEditEstateAgent?.text.toString()) {
+                    binding?.addEditEstateAgent?.setText(it1.getFullName(), false)
+                }
+            }
         }
     }
 
@@ -490,10 +571,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     @SuppressLint("InflateParams")
-    private fun showInputTextDialog(imagePath: String){
+    private fun showInputTextDialog(imagePath: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val dialogLayout = layoutInflater.inflate(R.layout.dialog_text_input, null)
-        val input = dialogLayout.findViewById<TextInputEditText>(R.id.add_edit_estate_add_image_dialog_text)
+        val input =
+            dialogLayout.findViewById<TextInputEditText>(R.id.add_edit_estate_add_image_dialog_text)
 
         with(builder) {
             setView(dialogLayout)
@@ -509,7 +591,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     @SuppressLint("InflateParams")
-    private fun showDeleteImageDialog(imageWithDescription: ImageWithDescription){
+    private fun showDeleteImageDialog(imageWithDescription: ImageWithDescription) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val dialogLayout = layoutInflater.inflate(R.layout.dialog_delete_confirmation, null)
 
@@ -532,19 +614,25 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
-    override fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>) {
-        val options = arrayOf<CharSequence>(getString(R.string.visualize), getString(R.string.delete))
+    override fun onImageClick(
+        imageWithDescription: ImageWithDescription,
+        images: List<ImageWithDescription>
+    ) {
+        val options =
+            arrayOf<CharSequence>(getString(R.string.visualize), getString(R.string.delete))
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
-            if (options[item] == getString(R.string.visualize)) Utils.openImageViewer(this, images, images.indexOf(imageWithDescription))
-            if (options[item] == getString(R.string.delete)) showDeleteImageDialog(imageWithDescription)
+            if (options[item] == getString(R.string.visualize)) Utils.openImageViewer(
+                this,
+                images,
+                images.indexOf(imageWithDescription)
+            )
+            if (options[item] == getString(R.string.delete)) showDeleteImageDialog(
+                imageWithDescription
+            )
         }
         builder.show()
-    }
-
-    companion object {
-        const val CAMERA_ACTION_CODE = 1
     }
 
 }

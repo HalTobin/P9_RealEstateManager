@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.repository
 
-import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.EstateWithImages
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import kotlinx.coroutines.flow.Flow
 

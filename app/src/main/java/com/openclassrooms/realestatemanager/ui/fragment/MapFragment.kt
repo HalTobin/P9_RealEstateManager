@@ -1,17 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
 import android.Manifest
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.karumi.dexter.Dexter
@@ -21,7 +17,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
-import com.openclassrooms.realestatemanager.model.EstateWithImages
+import com.openclassrooms.realestatemanager.model.EstateUI
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
@@ -71,7 +67,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
         setUpListenersAndObservers()
     }
 
-    private fun refreshMarkers(estates: List<EstateWithImages>?) {
+    private fun refreshMarkers(estates: List<EstateUI>?) {
         // Delete old markers
         for (marker in markers) {
             marker.remove()
@@ -115,7 +111,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
     // Setup listeners and observers of MapFragment
     private fun setUpListenersAndObservers() {
         // Set an observer to get Estate
-        mainViewModel.estates.observe(this) { estates: List<EstateWithImages> ->
+        mainViewModel.estates.observe(this) { estates: List<EstateUI> ->
             refreshMarkers(estates)
         }
         /*getEstatesJob?.cancel()

@@ -3,22 +3,21 @@ package com.openclassrooms.realestatemanager.data.repository
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
 import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.EstateWithImages
+import com.openclassrooms.realestatemanager.model.EstateUI
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class EstateRepositoryImpl(private val dao: EstateDao): EstateRepository {
 
-    override fun getEstates(): Flow<List<EstateWithImages>> {
+    override fun getEstates(): Flow<List<EstateUI>> {
         return dao.getEstates()
     }
 
-    override fun getEstate(id: Int): Flow<EstateWithImages> {
+    override fun getEstate(id: Int): Flow<EstateUI> {
         return dao.getEstateById(id)
     }
 
-    override fun searchEstates(query: SimpleSQLiteQuery) : Flow<List<EstateWithImages>>{
+    override fun searchEstates(query: SimpleSQLiteQuery) : Flow<List<EstateUI>>{
         return dao.searchEstates(query)
     }
 

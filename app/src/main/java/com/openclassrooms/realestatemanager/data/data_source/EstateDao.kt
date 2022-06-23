@@ -4,7 +4,7 @@ import android.database.Cursor
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.EstateWithImages
+import com.openclassrooms.realestatemanager.model.EstateUI
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,13 +14,13 @@ interface EstateDao {
     fun getEstateWithCursor(id: Int): Cursor
 
     @Query("SELECT * FROM estate")
-    fun getEstates(): Flow<List<EstateWithImages>>
+    fun getEstates(): Flow<List<EstateUI>>
 
     @RawQuery
-    fun searchEstates(query: SupportSQLiteQuery): Flow<List<EstateWithImages>>
+    fun searchEstates(query: SupportSQLiteQuery): Flow<List<EstateUI>>
 
     @Query("SELECT * FROM estate WHERE id = :id")
-    fun getEstateById(id: Int): Flow<EstateWithImages>
+    fun getEstateById(id: Int): Flow<EstateUI>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEstate(estate: Estate): Long

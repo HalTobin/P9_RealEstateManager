@@ -5,13 +5,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.openclassrooms.realestatemanager.api.GetCoordinatesDeserializer
+import com.openclassrooms.realestatemanager.data.data_source.AgentDao
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
-import com.openclassrooms.realestatemanager.data.data_source.EstateDatabase
+import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.data_source.ImageDao
+import com.openclassrooms.realestatemanager.data.repository.AgentRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.CoordinatesRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.ImageRepositoryImpl
 import com.openclassrooms.realestatemanager.model.Coordinates
+import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
@@ -23,6 +26,7 @@ import org.koin.dsl.module
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object DataModule {
 
@@ -42,9 +46,17 @@ object DataModule {
         }
 
         single {
+            provideAgentRepository(get())
+        }
+
+        single {
             Retrofit
                 .Builder()
-                .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor()).build())
+                .client(OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor())
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .build())
                 .baseUrl(POSITION_STACK_BASE_URL)
                 .addConverterFactory(createGsonConverter())
                 .build()
@@ -53,6 +65,7 @@ object DataModule {
         single {
             Room.databaseBuilder(androidApplication(), EstateDatabase::class.java, EstateDatabase.DATABASE_NAME)
                 .fallbackToDestructiveMigration()
+                .addCallback(EstateDatabase.prepopulateDatabase())
                 .build()
         }
 
@@ -63,12 +76,18 @@ object DataModule {
         single {
             provideImageDao(database = get())
         }
+
+        single {
+            provideAgentDao(database = get())
+        }
     }
 
 
     private fun provideEstateDao(database: EstateDatabase): EstateDao = database.estateDao
 
     private fun provideImageDao(database: EstateDatabase): ImageDao = database.imageDao
+
+    private fun provideAgentDao(database: EstateDatabase): AgentDao = database.agentDao
 
     private fun provideEstateRepository(estateDao: EstateDao): EstateRepository =
         EstateRepositoryImpl(estateDao)
@@ -78,6 +97,9 @@ object DataModule {
 
     private fun provideCoordinatesRepository(retrofit: Retrofit): CoordinatesRepository =
         CoordinatesRepositoryImpl(retrofit)
+
+    private fun provideAgentRepository(agentDao: AgentDao): AgentRepository =
+        AgentRepositoryImpl(agentDao)
 
     // This allow the use of a custom deserializer (GetCoordinatesDeserializer)
     private fun createGsonConverter(): Converter.Factory {

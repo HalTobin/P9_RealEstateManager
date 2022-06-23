@@ -12,10 +12,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.textfield.TextInputEditText
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -31,12 +32,9 @@ import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.dialog_search_estate.view.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
-
-    var context: Context? = null
 
     private val mainViewModel: MainViewModel by viewModel()
 
@@ -48,9 +46,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding!!.root)
 
-        this.context = this
-
-        if(isLarge()) {
+        if (isLarge()) {
             setUpClassicLayout()
         } else {
             setUpForLargeLayout()
@@ -62,11 +58,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun onBackPressed() {
-        if(!isLarge()) {
+        if (!isLarge()) {
             removeDetailsFragment()
             //setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        } else {
+            super.onBackPressed()
         }
-        else { super.onBackPressed() }
     }
 
     // Allow navigation between fragments (List, Map)
@@ -107,13 +104,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding?.mainAppbar?.mainSearch?.setOnClickListener { showSearchDialog() }
 
         mainViewModel.closeDetails.observe(this) {
-            if(it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+            if (it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
         }
     }
 
     // Check permissions
     private fun checkAndAskPermission() {
-        Dexter.withContext(context).withPermissions(
+        Dexter.withContext(this).withPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -127,7 +124,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 list: List<PermissionRequest>,
                 permissionToken: PermissionToken
             ) {
-                //isPermissionGranted = false
                 permissionToken.continuePermissionRequest()
             }
         }).check()
@@ -149,7 +145,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             val spinnerAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
                 this@MainActivity,
-                R.layout.item_spinner_estate_type,
+                R.layout.item_spinner,
                 Estate.getEstateTypes(this@MainActivity)
             )
 
@@ -157,52 +153,56 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             dialogLayout.search_estate_type.setAdapter(spinnerAdapter)
             // When user select a List-Item.
-            dialogLayout.search_estate_type?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    mainViewModel.setSearch(position, Estate.TYPE)
+            dialogLayout.search_estate_type?.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        mainViewModel.setSearch(position, Estate.TYPE)
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
                 }
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            //TODO - Change addTextChangedListener with .doAfterTextChanged
+            dialogLayout.search_estate_country.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        it.toString(),
+                        Estate.COUNTRY
+                    )
+                }
             }
 
-            dialogLayout.search_estate_country.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString(), Estate.COUNTRY)
+            dialogLayout.search_estate_city.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(it.toString(), Estate.CITY)
                 }
-            })
+            }
 
-            dialogLayout.search_estate_city.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString(), Estate.CITY)
+            dialogLayout.search_estate_zip.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(it.toString(), Estate.ZIPCODE)
                 }
-            })
+            }
 
-            dialogLayout.search_estate_zip.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString(), Estate.ZIPCODE)
+            dialogLayout.search_estate_area.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(it.toString().toInt(), Estate.AREA)
                 }
-            })
+            }
 
-            dialogLayout.search_estate_area.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.AREA)
+            dialogLayout.search_estate_price.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        it.toString().toInt(),
+                        Estate.PRICE
+                    )
                 }
-            })
-
-            dialogLayout.search_estate_price.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.PRICE)
-                }
-            })
+            }
 
             // Observe the used currency
             dialogLayout.search_estate_currency.setOnClickListener() {
@@ -211,33 +211,36 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             // Observe the used currency
             mainViewModel.isSearchInDollar.observe(this@MainActivity) { isDollar ->
-                if(isDollar) dialogLayout.search_estate_currency.text = "$"
+                if (isDollar) dialogLayout.search_estate_currency.text = "$"
                 else dialogLayout.search_estate_currency.text = "€"
             }
 
-            dialogLayout.search_estate_nbRooms.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.ROOMS)
+            dialogLayout.search_estate_nbRooms.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        it.toString().toInt(),
+                        Estate.ROOMS
+                    )
                 }
-            })
+            }
 
-            dialogLayout.search_estate_nbBedrooms.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.BEDROOMS)
+            dialogLayout.search_estate_nbBedrooms.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        it.toString().toInt(),
+                        Estate.BEDROOMS
+                    )
                 }
-            })
+            }
 
-            dialogLayout.search_estate_nbBathrooms.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.BATHROOMS)
+            dialogLayout.search_estate_nbBathrooms.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        it.toString().toInt(),
+                        Estate.BATHROOMS
+                    )
                 }
-            })
+            }
 
             // Checkbox listener to indicate if there is a park near the Estate
             dialogLayout.search_estate_check_park.setOnCheckedChangeListener { _, isChecked ->
@@ -254,13 +257,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 mainViewModel.setSearch(isChecked, Estate.SHOP)
             }
 
-            dialogLayout.search_estate_agent.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.isNotEmpty()) mainViewModel.setSearch(s.toString().toInt(), Estate.AGENT)
+            dialogLayout.search_estate_agent.doAfterTextChanged { text ->
+                text?.let {
+                    if (it.isNotEmpty()) mainViewModel.setSearch(
+                        text.toString().toInt(),
+                        Estate.AGENT
+                    )
                 }
-            })
+            }
 
             dialogLayout.search_estate_reset.setOnClickListener {
                 mainViewModel.stopSearch()
@@ -288,7 +292,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     companion object {
         // Setup fragment
-        fun setFragment(fragmentManager: FragmentManager, target: Int, fragment: Fragment,) {
+        fun setFragment(fragmentManager: FragmentManager, target: Int, fragment: Fragment) {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(target, fragment)
             fragmentTransaction.commit()

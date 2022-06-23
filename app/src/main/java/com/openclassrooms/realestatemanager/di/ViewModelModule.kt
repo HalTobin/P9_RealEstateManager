@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.di
 
+import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
@@ -18,7 +19,7 @@ object ViewModelModule {
         }
 
         viewModel {
-            provideAddEditEstateViewModel(estateRepository = get(), imageRepository = get(), coordinatesRepository = get())
+            provideAddEditEstateViewModel(estateRepository = get(), imageRepository = get(), coordinatesRepository = get(), agentRepository = get())
         }
 
     }
@@ -29,7 +30,8 @@ object ViewModelModule {
     private fun provideAddEditEstateViewModel(
         estateRepository: EstateRepository,
         imageRepository: ImageRepository,
-        coordinatesRepository: CoordinatesRepository
-    ): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, imageRepository, coordinatesRepository)
+        coordinatesRepository: CoordinatesRepository,
+        agentRepository: AgentRepository
+    ): AddEditEstateViewModel = AddEditEstateViewModel(estateRepository, imageRepository, coordinatesRepository, agentRepository)
 
 }

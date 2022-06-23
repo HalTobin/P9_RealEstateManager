@@ -7,16 +7,16 @@ import android.view.LayoutInflater
 import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
-import com.openclassrooms.realestatemanager.model.EstateWithImages
+import com.openclassrooms.realestatemanager.model.EstateUI
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import java.util.ArrayList
 
-class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, context: Context, listener: OnItemClick) :
+class ListEstatePagerAdapter(items: List<EstateUI>?, isDollar: Boolean, context: Context, listener: OnItemClick) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
 
     private val context: Context
     private var isDollar = false
-    private var estates: List<EstateWithImages>? = ArrayList()
+    private var estates: List<EstateUI>? = ArrayList()
     private val mCallback: OnItemClick?
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,7 +52,7 @@ class ListEstatePagerAdapter(items: List<EstateWithImages>?, isDollar: Boolean, 
         notifyDataSetChanged()
     }
 
-    fun updateList(estates: List<EstateWithImages>) {
+    fun updateList(estates: List<EstateUI>) {
         this.estates = estates
         notifyDataSetChanged()
     }
