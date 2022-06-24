@@ -54,6 +54,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setListeners()
 
         checkAndAskPermission()
+
+        mainViewModel.getImages().observe(this) { images ->
+            mainViewModel.cleanImageFolder(this, images)
+        }
+
         mainViewModel.findCurrentLocation(this)
     }
 

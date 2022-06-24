@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ImageDao {
 
+    @Query("SELECT * FROM imagewithdescription")
+    fun getAllImages(): Flow<List<ImageWithDescription>>
+
     @Query("SELECT * FROM imagewithdescription WHERE estateId = :estateId")
     fun getImageByEstateId(estateId: Int): Flow<List<ImageWithDescription>>
 

@@ -242,14 +242,13 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
                 for(imageWithDescription in picturesListToDelete) {
                     if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
-                    File(imageWithDescription.imageUrl).delete()
                 }
-
-                imageRepository.deleteListOfImages(picturesListToDelete)
 
                 _pictures.value?.let {
                     imageRepository.addListOfImages(it)
                 }
+
+                imageRepository.deleteListOfImages(picturesListToDelete)
 
                 _mustClose.postValue(true)
             }

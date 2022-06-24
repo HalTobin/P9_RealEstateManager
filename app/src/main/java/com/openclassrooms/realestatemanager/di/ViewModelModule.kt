@@ -15,7 +15,7 @@ object ViewModelModule {
     val viewModelModule: Module = module {
 
         viewModel {
-            provideMainViewModel(get())
+            provideMainViewModel(estateRepository = get(), imageRepository = get())
         }
 
         viewModel {
@@ -24,8 +24,8 @@ object ViewModelModule {
 
     }
 
-    private fun provideMainViewModel(estateRepository: EstateRepository): MainViewModel =
-        MainViewModel(estateRepository)
+    private fun provideMainViewModel(estateRepository: EstateRepository, imageRepository: ImageRepository): MainViewModel =
+        MainViewModel(estateRepository, imageRepository)
 
     private fun provideAddEditEstateViewModel(
         estateRepository: EstateRepository,

@@ -7,6 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 class ImageRepositoryImpl(private val dao: ImageDao): ImageRepository {
 
+    override fun getImages(): Flow<List<ImageWithDescription>> {
+     return dao.getAllImages()
+    }
+
     override fun getImagesByEstateId(estateId: Int): Flow<List<ImageWithDescription>> {
         return dao.getImageByEstateId(estateId)
     }

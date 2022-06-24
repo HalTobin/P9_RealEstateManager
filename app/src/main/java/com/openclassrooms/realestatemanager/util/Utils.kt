@@ -54,6 +54,7 @@ object Utils {
 
     fun String.isValid(): Boolean = this != ""
 
+    // Create a file into the internal storage of the app from an Uri object
     fun Uri.copyToInternal(context: Context) : File{
         var fileName = "IMG_".plus(System.currentTimeMillis())
 
@@ -62,12 +63,7 @@ object Utils {
         }?.use { cursor ->
             val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             cursor.moveToFirst()
-            fileName = cursor.getString(nameIndex)
-        }
-
-        //  For extract file mimeType
-        val fileType: String? = this.let { returnUri ->
-            context.contentResolver.getType(returnUri)
+            fileName = fileName.plus(cursor.getString(nameIndex).getSuffix())
         }
 
         val iStream : InputStream = context.contentResolver.openInputStream(this)!!
@@ -76,7 +72,7 @@ object Utils {
         val outputFile = File(outputDir, fileName)
         copyStreamToFile(iStream, outputFile)
         iStream.close()
-        return  outputFile
+        return outputFile
     }
 
     private fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
@@ -94,10 +90,13 @@ object Utils {
         }
     }
 
+    // Check if the file name correspond to an image
     fun String.isAnImage(): Boolean = (this.getSuffix().lowercase() == ".jpg" || this.getSuffix().lowercase() == ".png")
 
+    // Check if the file name correspond to a video
     fun String.isAVideo(): Boolean = this.getSuffix().lowercase() == ".mp4"
 
+    // Return the file extension
     fun String.getSuffix(): String = this.removeRange(0, this.length-4)
 
     // Return a Bitmap from a Drawable object

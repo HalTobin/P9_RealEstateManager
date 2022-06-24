@@ -117,7 +117,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
                     )
                 )
             }
-
         }
 
         // TextField listener for the Estate's country
@@ -483,20 +482,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         binding?.addEditEstateType?.setAdapter(spinnerAdapter)
-        // When user select a List-Item.
-        binding?.addEditEstateType?.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    addEditEstateViewModel.setType(position)
-                }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
     }
 
     private fun initAgentSpinner(myAgents: List<Agent>) {
@@ -517,29 +503,14 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
         binding?.addEditEstateAgent?.setAdapter(spinnerAdapter)
         // When user select a List-Item.
-        binding?.addEditEstateAgent?.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    addEditEstateViewModel.setAgent(myAgents[position].id!!)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
-
-        // TextField listener for the Estate's agent
-        /*binding?.addEditEstateAgent?.doAfterTextChanged { text ->
+        // Textfield listener for the Estate's type
+        binding?.addEditEstateAgent?.doAfterTextChanged { text ->
             text?.let {
-                if (it.isNotEmpty())
-                    Agent.getAgentByFullName(myAgents, text.toString())?.id?.let { it1 ->
-                        addEditEstateViewModel.setAgent(it1)
-                    }
+                if (it.isNotEmpty()) addEditEstateViewModel.setAgent(
+                    Agent.getAgentByFullName(myAgents, it.toString())!!.id!!
+                )
             }
-        }*/
+        }
 
         // Observer for the Estate's agent
         addEditEstateViewModel.agent.observe(this) {
@@ -579,13 +550,19 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
         with(builder) {
             setView(dialogLayout)
+            setCancelable(false)
 
             // Set up the buttons
             setPositiveButton(getString(R.string.ok_button)) { dialog, _ ->
                 // Here you get get input text from the Edittext
                 addEditEstateViewModel.addPicture(imagePath, input.text.toString())
-                dialog.cancel()
+                dialog.dismiss()
             }
+
+            setNegativeButton(getString(R.string.cancel_button)) { dialog, _ ->
+
+            }
+
             show()
         }
     }
