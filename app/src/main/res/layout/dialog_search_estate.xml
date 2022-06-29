@@ -16,11 +16,13 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_estate_type_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/estate_type"
         android:layout_margin="8dp"
         android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_estate_check_sold"
         app:layout_constraintTop_toBottomOf="@id/search_estate_close_button"
         app:layout_constraintBottom_toTopOf="@id/search_estate_country_layout">
 
@@ -31,6 +33,16 @@
             android:inputType="none"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/search_estate_check_sold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/estate_sold"
+        app:layout_constraintStart_toEndOf="@id/search_estate_type_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_close_button"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_estate_country_layout"
@@ -89,19 +101,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_estate_area_layout"
+        android:id="@+id/search_estate_min_price_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/search_estate_price_layout"
+        app:layout_constraintEnd_toStartOf="@id/search_estate_max_price_layout"
         app:layout_constraintTop_toBottomOf="@id/search_estate_country_layout" >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_estate_area"
-            android:hint="@string/estate_area"
+            android:id="@+id/search_estate_min_price"
+            android:hint="@string/search_estate_budget_min"
             android:inputType="number"
             android:singleLine="true"
             android:layout_width="match_parent"
@@ -110,19 +122,60 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_estate_price_layout"
+        android:id="@+id/search_estate_max_price_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/search_estate_area_layout"
+        app:layout_constraintStart_toEndOf="@id/search_estate_min_price_layout"
         app:layout_constraintEnd_toStartOf="@id/search_estate_currency"
         app:layout_constraintTop_toBottomOf="@id/search_estate_country_layout" >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_estate_price"
-            android:hint="@string/search_estate_budget"
+            android:id="@+id/search_estate_max_price"
+            android:hint="@string/search_estate_budget_max"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_estate_min_area_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_estate_max_area_layout"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_min_price_layout" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_estate_min_area"
+            android:hint="@string/estate_min_area"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_estate_max_area_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/search_estate_min_area_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_min_price_layout" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_estate_max_area"
+            android:hint="@string/estate_max_area"
             android:inputType="number"
             android:singleLine="true"
             android:layout_width="match_parent"
@@ -139,8 +192,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/search_estate_zip_layout"
-        app:layout_constraintBottom_toTopOf="@id/search_estate_nbBathrooms_layout"
-        app:layout_constraintStart_toEndOf="@id/search_estate_price_layout"
+        app:layout_constraintBottom_toTopOf="@id/search_estate_min_area_layout"
+        app:layout_constraintStart_toEndOf="@id/search_estate_max_price_layout"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -150,7 +203,7 @@
         android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/search_estate_nbBedrooms_layout"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_area_layout" >
+        app:layout_constraintTop_toBottomOf="@id/search_estate_min_area_layout" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_estate_nbRooms"
@@ -169,7 +222,7 @@
         android:layout_margin="8dp"
         app:layout_constraintStart_toEndOf="@id/search_estate_nbRooms_layout"
         app:layout_constraintEnd_toStartOf="@id/search_estate_nbBathrooms_layout"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_area_layout" >
+        app:layout_constraintTop_toBottomOf="@id/search_estate_min_area_layout" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_estate_nbBedrooms"
@@ -188,7 +241,7 @@
         android:layout_margin="8dp"
         app:layout_constraintStart_toEndOf="@id/search_estate_nbBedrooms_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_area_layout">
+        app:layout_constraintTop_toBottomOf="@id/search_estate_min_area_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_estate_nbBathrooms"
@@ -232,21 +285,132 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_estate_agent_layout"
-        android:layout_width="match_parent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:hint="@string/estate_agent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_estate_pictures_layout"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_check_park" >
+
+        <AutoCompleteTextView
+            android:id="@+id/search_estate_agent"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_estate_pictures_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toEndOf="@id/search_estate_agent_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toBottomOf="@id/search_estate_check_park" >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_estate_agent"
-            android:hint="@string/estate_agent"
+            android:id="@+id/search_estate_pictures"
+            android:hint="@string/estate_pictures"
+            android:inputType="number"
             android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_estate_date_in_sale_since_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/background_grey"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_agent_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_estate_sold_since_card">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_estate_date_in_sale_since_card"
+                app:layout_constraintTop_toTopOf="@id/search_estate_date_in_sale_since_card"
+                app:layout_constraintBottom_toBottomOf="@id/search_estate_date_in_sale_since_card"
+                android:text="@string/in_sale_since"/>
+
+            <TextView
+                android:id="@+id/search_estate_date_in_sale_since_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:layout_margin="8dp"
+                android:drawablePadding="5dp"
+                android:text="@string/hint_date"
+                app:drawableRightCompat="@drawable/ic_chevron_right" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_estate_sold_since_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/background_grey"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_agent_layout"
+        app:layout_constraintStart_toEndOf="@id/search_estate_date_in_sale_since_card"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="end"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_estate_sold_since_card"
+                app:layout_constraintTop_toTopOf="@id/search_estate_sold_since_card"
+                app:layout_constraintBottom_toBottomOf="@id/search_estate_sold_since_card"
+                android:text="@string/sold_since"/>
+
+            <TextView
+                android:id="@+id/search_estate_date_sold_since_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:layout_margin="8dp"
+                android:drawablePadding="5dp"
+                android:text="@string/hint_date"
+                app:drawableRightCompat="@drawable/ic_chevron_right" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/search_estate_reset"
@@ -254,7 +418,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/search_dialog_reset"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_agent_layout"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_sold_since_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/search_estate_search"/>
 
@@ -264,7 +428,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/search_dialog_search"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_agent_layout"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_sold_since_card"
         app:layout_constraintStart_toEndOf="@id/search_estate_reset"
         app:layout_constraintEnd_toEndOf="parent"/>
 

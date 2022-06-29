@@ -60,7 +60,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
 
     private fun setUpListenersAndObservers() {
         mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
-            refreshRecycler(estate.images)
+            refreshList(estate.images)
             binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ").plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
@@ -119,7 +119,14 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         }
     }
 
-    private fun refreshRecycler(myList: List<ImageWithDescription>) {
+    private fun refreshList(myList: List<ImageWithDescription>) {
+
+        if(myList.isEmpty()) {
+            binding?.estateDetailsNoImagesImg?.load(R.drawable.img_no_photo)
+        } else {
+            binding?.estateDetailsNoImagesImg?.load(0x00000000)
+        }
+
         mAdapter!!.updateList(myList)
     }
 

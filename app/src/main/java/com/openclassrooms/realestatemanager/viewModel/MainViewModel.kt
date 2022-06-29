@@ -7,17 +7,19 @@ import android.os.Environment
 import androidx.lifecycle.*
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.openclassrooms.realestatemanager.model.Coordinates
-import com.openclassrooms.realestatemanager.model.Estate
-import com.openclassrooms.realestatemanager.model.EstateUI
-import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.model.*
+import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
 import kotlinx.coroutines.launch
 import java.io.File
 
 
-class MainViewModel(private val estateRepository: EstateRepository, private val imageRepository: ImageRepository) : ViewModel() {
+class MainViewModel(
+    private val estateRepository: EstateRepository,
+    private val imageRepository: ImageRepository,
+    private val agentRepository: AgentRepository
+) : ViewModel() {
 
     private var estateId: Int? = null
 
@@ -39,7 +41,8 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
     private val _isSearchInDollar = MutableLiveData(true)
     val isSearchInDollar = _isSearchInDollar
 
-    private val searchEstate = Estate()
+    private var searchEstate = EstateSearch()
+    val searchEstateLiveData = MutableLiveData<EstateSearch>()
     private var search = false
 
     init {
@@ -48,6 +51,10 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
                 value
             )
         }
+    }
+
+    fun getListOfAgent(): LiveData<List<Agent>> {
+        return agentRepository.getAgents().asLiveData()
     }
 
     fun getImages(): LiveData<List<ImageWithDescription>> {
@@ -64,10 +71,10 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
             var exist = false
 
             images.forEach { media ->
-                if(file.path.equals(media.imageUrl)) exist = true
+                if (file.path.equals(media.imageUrl)) exist = true
             }
 
-            if(!exist) file.delete()
+            if (!exist) file.delete()
 
         }
 
@@ -110,7 +117,6 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
         }
     }
 
-    //TODO - Add min price, date, and sold state
     fun startSearch() {
         search = true
         _estates.addSource(
@@ -120,6 +126,7 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
     }
 
     fun stopSearch() {
+        setSearchNull(EstateSearch.ALL)
         if (search) {
             search = false
             _estates.addSource(
@@ -133,30 +140,73 @@ class MainViewModel(private val estateRepository: EstateRepository, private val 
 
     fun setSearch(value: String, field: Int) {
         when (field) {
-            Estate.CITY -> searchEstate.city = value
-            Estate.ZIPCODE -> searchEstate.zipCode = value
-            Estate.COUNTRY -> searchEstate.country = value
+            EstateSearch.CITY -> searchEstate.city = value
+            EstateSearch.ZIPCODE -> searchEstate.zipCode = value
+            EstateSearch.COUNTRY -> searchEstate.country = value
         }
     }
 
     fun setSearch(value: Int, field: Int) {
         when (field) {
-            Estate.TYPE -> searchEstate.type = value
-            Estate.PRICE -> searchEstate.priceDollar = value
-            Estate.AREA -> searchEstate.area = value
-            Estate.ROOMS -> searchEstate.nbRooms = value
-            Estate.BEDROOMS -> searchEstate.nbBedrooms = value
-            Estate.BATHROOMS -> searchEstate.nbBathrooms = value
-            Estate.AGENT -> searchEstate.agentId = value
+            EstateSearch.TYPE -> searchEstate.type = value
+            EstateSearch.PRICE_MIN -> searchEstate.priceMinDollar = value
+            EstateSearch.PRICE_MAX -> searchEstate.priceMaxDollar = value
+            EstateSearch.AREA_MIN -> searchEstate.areaMin = value
+            EstateSearch.AREA_MAX -> searchEstate.areaMax = value
+            EstateSearch.ROOMS -> searchEstate.nbRooms = value
+            EstateSearch.BEDROOMS -> searchEstate.nbBedrooms = value
+            EstateSearch.BATHROOMS -> searchEstate.nbBathrooms = value
+            EstateSearch.AGENT -> searchEstate.agentId = value
+            EstateSearch.IMAGES -> searchEstate.nbImages = value
         }
+    }
+
+    fun setSearch(value: Long, field: Int) {
+        when (field) {
+            EstateSearch.IN_SALE_SINCE -> searchEstate.entryDate = value
+            EstateSearch.SOLD_SINCE -> searchEstate.soldDate = value
+        }
+        forceRefresh()
     }
 
     fun setSearch(value: Boolean, field: Int) {
         when (field) {
-            Estate.SCHOOL -> searchEstate.nearbySchool = value
-            Estate.SHOP -> searchEstate.nearbyShop = value
-            Estate.PARK -> searchEstate.nearbyPark = value
+            EstateSearch.SCHOOL -> searchEstate.nearbySchool = value
+            EstateSearch.SHOP -> searchEstate.nearbyShop = value
+            EstateSearch.PARK -> searchEstate.nearbyPark = value
+            EstateSearch.SOLD -> searchEstate.sold = value
         }
+    }
+
+    fun setSearchNull(field: Int) {
+        when (field) {
+            EstateSearch.SCHOOL -> searchEstate.nearbySchool = false
+            EstateSearch.SHOP -> searchEstate.nearbyShop = false
+            EstateSearch.PARK -> searchEstate.nearbyPark = false
+            EstateSearch.CITY -> searchEstate.city = null
+            EstateSearch.ZIPCODE -> searchEstate.zipCode = null
+            EstateSearch.COUNTRY -> searchEstate.country = null
+            EstateSearch.TYPE -> searchEstate.type = null
+            EstateSearch.PRICE_MIN -> searchEstate.priceMinDollar = null
+            EstateSearch.PRICE_MAX -> searchEstate.priceMaxDollar = null
+            EstateSearch.AREA_MIN -> searchEstate.areaMin = null
+            EstateSearch.AREA_MAX -> searchEstate.areaMax = null
+            EstateSearch.ROOMS -> searchEstate.nbRooms = null
+            EstateSearch.BEDROOMS -> searchEstate.nbBedrooms = null
+            EstateSearch.BATHROOMS -> searchEstate.nbBathrooms = null
+            EstateSearch.AGENT -> searchEstate.agentId = null
+            EstateSearch.IMAGES -> searchEstate.nbImages = null
+            EstateSearch.IN_SALE_SINCE -> searchEstate.entryDate = null
+            EstateSearch.SOLD_SINCE -> searchEstate.soldDate = null
+            EstateSearch.ALL -> {
+                searchEstate = EstateSearch()
+                forceRefresh()
+            }
+        }
+    }
+
+    fun forceRefresh() {
+        searchEstateLiveData.postValue(searchEstate)
     }
 
     fun invertCurrency() {

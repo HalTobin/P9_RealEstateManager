@@ -15,6 +15,8 @@
     <string name="estate_zip">Code</string>
     <string name="estate_address">Addresse</string>
     <string name="estate_area">m²</string>
+    <string name="estate_min_area">Surface Minimum</string>
+    <string name="estate_max_area">Surface Maximum</string>
     <string name="estate_price">Prix</string>
     <string name="estate_currency">€</string>
     <string name="estate_park">Parc</string>
@@ -57,7 +59,12 @@
 
     <string name="search">Chercher un bien immobilier</string>
 
-    <string name="search_estate_budget">Budget</string>
+    <string name="search_estate_budget_min">Prix Minimum</string>
+    <string name="search_estate_budget_max">Prix Maximum</string>
+
+    <string name="estate_search_in_sale_since">En vente depuis</string>
+    <string name="estate_search_sold_since">Vendu depuis</string>
+    <string name="estate_search_time_format">Durée</string>
 
     <string name="search_dialog_search">Chercher</string>
     <string name="search_dialog_reset">Annuler</string>
@@ -79,5 +86,10 @@
     <string name="estate_type_townhouse">Maison de ville</string>
 
     <string name="item_image_with_description_description_content">Image du bien immobilier</string>
+    <string name="hint_date">JJ/MM/AAAA</string>
+    <string name="in_sale_since">En vente depuis :</string>
+    <string name="sold_since">Vendu depuis :</string>
+    <string name="estate_pictures">Nombres d\'images</string>
+    <string name="estate_sold">Vendu</string>
 
 </resources>

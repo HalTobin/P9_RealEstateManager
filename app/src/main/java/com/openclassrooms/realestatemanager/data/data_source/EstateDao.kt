@@ -19,6 +19,12 @@ interface EstateDao {
     @RawQuery
     fun searchEstates(query: SupportSQLiteQuery): Flow<List<EstateUI>>
 
+    /*@Query("SELECT DISTINCT country as _id, country FROM estate")
+    fun getCountries(): Flow<List<String>>
+
+    @Query("SELECT DISTINCT city as _id, city FROM estate")
+    fun getCities(): Flow<List<String>>*/
+
     @Query("SELECT * FROM estate WHERE id = :id")
     fun getEstateById(id: Int): Flow<EstateUI>
 

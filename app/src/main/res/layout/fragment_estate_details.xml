@@ -37,6 +37,17 @@
         android:text="@string/estate_details_media_title"
         app:layout_constraintTop_toBottomOf="@id/estate_details_type_and_name" />
 
+    <ImageView
+        android:id="@+id/estate_details_no_images_img"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/img_no_photo"
+        app:layout_constraintTop_toTopOf="@id/estate_details_image_list"
+        app:layout_constraintBottom_toBottomOf="@id/estate_details_image_list"
+        app:layout_constraintStart_toStartOf="@id/estate_details_image_list"
+        app:layout_constraintEnd_toEndOf="@id/estate_details_image_list"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/estate_details_image_list"
         android:layout_width="match_parent"

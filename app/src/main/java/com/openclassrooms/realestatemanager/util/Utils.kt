@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.util
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -21,8 +20,6 @@ import coil.load
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
-import com.openclassrooms.realestatemanager.util.Utils.isAVideo
-import com.openclassrooms.realestatemanager.util.Utils.isAnImage
 import com.stfalcon.imageviewer.StfalconImageViewer
 import kotlinx.android.synthetic.main.overlay_imageview.view.*
 import java.io.File
@@ -111,6 +108,9 @@ object Utils {
         this.draw(canvas)
         return bitmap
     }
+
+    // Return a date as a String from a timestamp
+    fun Long.toDateString(): String = SimpleDateFormat("dd/MM/yyyy").format(this)
 
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié

@@ -11,7 +11,12 @@ import com.openclassrooms.realestatemanager.model.EstateUI
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import java.util.ArrayList
 
-class ListEstatePagerAdapter(items: List<EstateUI>?, isDollar: Boolean, context: Context, listener: OnItemClick) :
+class ListEstatePagerAdapter(
+    items: List<EstateUI>?,
+    isDollar: Boolean,
+    context: Context,
+    listener: OnItemClick
+) :
     RecyclerView.Adapter<ListEstatePagerAdapter.ViewHolder>() {
 
     private val context: Context
@@ -30,16 +35,15 @@ class ListEstatePagerAdapter(items: List<EstateUI>?, isDollar: Boolean, context:
         holder.binding.itemEstateName.text = myEstate.estate.title
         holder.binding.itemEstateLocation.text = myEstate.estate.city
         holder.binding.itemEstatePrice.text =
-            if(isDollar) myEstate.estate.priceDollar?.toString().plus("$")
+            if (isDollar) myEstate.estate.priceDollar?.toString().plus("$")
             else myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
 
-        if(myEstate.images.isNotEmpty()) {
-            holder.binding.itemEstateImage.load(myEstate.images[0].imageUrl)
-        }
+        if (myEstate.images.isNotEmpty()) holder.binding.itemEstateImage.load(myEstate.images[0].imageUrl)
+        else holder.binding.itemEstateImage.load(R.drawable.img_no_photo)
 
         // Set up the onClickListener to open the EstateDetailsActivity
         holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
-        if(myEstate.estate.sold == true) holder.binding.itemEstateSold.load(R.drawable.sold)
+        if (myEstate.estate.sold == true) holder.binding.itemEstateSold.load(R.drawable.sold)
         else holder.binding.itemEstateSold.load(0x00000000)
     }
 
