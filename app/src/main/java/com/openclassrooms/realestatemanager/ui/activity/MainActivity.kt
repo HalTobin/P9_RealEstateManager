@@ -11,10 +11,13 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import coil.load
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -29,9 +32,11 @@ import com.openclassrooms.realestatemanager.model.EstateSearch
 import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
+import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import com.openclassrooms.realestatemanager.util.Utils.toDateString
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.dialog_search_estate.view.*
+import kotlinx.android.synthetic.main.dialog_simple.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -43,6 +48,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
     private val listFragment: ListFragment by inject()
     private val mapFragment: MapFragment by inject()
     private val detailsFragment: DetailsFragment by inject()
+
+    private var isInDollar = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,12 +113,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
     }
 
     private fun setListeners() {
-        binding?.mainListBtAdd?.setOnClickListener { navigateToAddEditActivity(this) }
 
-        binding?.mainAppbar?.mainSearch?.setOnClickListener { showSearchDialog() }
+        binding?.apply {
+            mainListBtAdd.setOnClickListener { navigateToAddEditActivity(this@MainActivity) }
+            mainAppbar.mainSearch.setOnClickListener { showSearchDialog() }
+            mainAppbar.mainChangeCurrency.setOnClickListener { mainViewModel.invertCurrency() }
+        }
 
         mainViewModel.closeDetails.observe(this) {
             if (it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        }
+
+        mainViewModel.isInDollar.observe(this) {
+            if (it) binding?.mainAppbar?.mainChangeCurrency?.load(R.drawable.ic_currency_dollar)
+            else binding?.mainAppbar?.mainChangeCurrency?.load(R.drawable.ic_currency_euro)
+            isInDollar = it
         }
     }
 
@@ -182,17 +198,35 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
                     dialogLayout.search_estate_zip.setText(mySearchEstate.zipCode)
                     dialogLayout.search_estate_country.setText(mySearchEstate.country)
                     if (mySearchEstate.priceMinDollar != null)
-                        dialogLayout.search_estate_min_price.setText(mySearchEstate.priceMinDollar!!)
+                        if (isInDollar)
+                            dialogLayout.search_estate_min_price.setText(mySearchEstate.priceMinDollar!!.toString())
+                        else
+                            dialogLayout.search_estate_min_price.setText(
+                                mySearchEstate.priceMinDollar!!.fromDollarToEuro().toString()
+                            )
                     if (mySearchEstate.priceMaxDollar != null)
-                        dialogLayout.search_estate_max_price.setText(mySearchEstate.priceMaxDollar!!)
+                        if (isInDollar)
+                            dialogLayout.search_estate_max_price.setText(mySearchEstate.priceMaxDollar!!.toString())
+                        else
+                            dialogLayout.search_estate_max_price.setText(
+                                mySearchEstate.priceMaxDollar!!.fromDollarToEuro().toString()
+                            )
+                    if (mySearchEstate.areaMin != null)
+                        dialogLayout.search_estate_min_area.setText(mySearchEstate.areaMin!!.toString())
                     if (mySearchEstate.areaMax != null)
-                        dialogLayout.search_estate_min_area.setText(mySearchEstate.areaMax!!)
-                    if (mySearchEstate.areaMax != null)
-                        dialogLayout.search_estate_max_area.setText(mySearchEstate.areaMax!!)
+                        dialogLayout.search_estate_max_area.setText(mySearchEstate.areaMax!!.toString())
                     dialogLayout.search_estate_check_park.isChecked = mySearchEstate.nearbyPark!!
-                    dialogLayout.search_estate_check_school.isChecked = mySearchEstate.nearbySchool!!
+                    dialogLayout.search_estate_check_school.isChecked =
+                        mySearchEstate.nearbySchool!!
                     dialogLayout.search_estate_check_shop.isChecked = mySearchEstate.nearbyShop!!
                     dialogLayout.search_estate_check_sold.isChecked = mySearchEstate.sold!!
+                    if (!mySearchEstate.sold!!) {
+                        dialogLayout.search_estate_sold_since_card.isClickable = false
+                        dialogLayout.search_estate_sold_since_card.isVisible = false
+                    } else {
+                        dialogLayout.search_estate_sold_since_card.isClickable = true
+                        dialogLayout.search_estate_sold_since_card.isVisible = true
+                    }
                     if (mySearchEstate.agentId != null)
                         dialogLayout.search_estate_agent.setText(
                             Agent.getAgentById(
@@ -200,14 +234,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
                                 mySearchEstate.agentId!!
                             )?.getFullName()
                         )
+                    if (mySearchEstate.nbRooms != null)
+                        dialogLayout.search_estate_nbRooms.setText(mySearchEstate.nbRooms!!.toString())
+                    if (mySearchEstate.nbBedrooms != null)
+                        dialogLayout.search_estate_nbBedrooms.setText(mySearchEstate.nbBedrooms!!.toString())
+                    if (mySearchEstate.nbBathrooms != null)
+                        dialogLayout.search_estate_nbBathrooms.setText(mySearchEstate.nbBathrooms!!.toString())
                     if (mySearchEstate.nbImages != null)
-                        dialogLayout.search_estate_pictures.setText(mySearchEstate.nbImages!!)
+                        dialogLayout.search_estate_pictures.setText(mySearchEstate.nbImages!!.toString())
                     if (mySearchEstate.entryDate != null)
                         dialogLayout.search_estate_date_in_sale_since_text.text =
                             mySearchEstate.entryDate!!.toDateString()
+                    else dialogLayout.search_estate_date_in_sale_since_text.text =
+                        getString(R.string.hint_date)
                     if (mySearchEstate.soldDate != null)
                         dialogLayout.search_estate_date_sold_since_text.text =
                             mySearchEstate.soldDate!!.toDateString()
+                    else dialogLayout.search_estate_date_sold_since_text.text =
+                        getString(R.string.hint_date)
 
                     Log.i("SEARCH ESTATE", "Search parameters has been modified")
                 }
@@ -224,7 +268,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
 
             }
 
-            mainViewModel.forceRefresh()
+            mainViewModel.forceRefreshSearchEstate()
 
             // When user select an estate Type
             dialogLayout.search_estate_type.doAfterTextChanged { text ->
@@ -307,17 +351,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
                 }
             }
 
-            // Observe the used currency
-            dialogLayout.search_estate_currency.setOnClickListener() {
-                mainViewModel.invertCurrency()
-            }
-
-            // Observe the used currency
-            mainViewModel.isSearchInDollar.observe(this@MainActivity) { isDollar ->
-                if (isDollar) dialogLayout.search_estate_currency.text = "$"
-                else dialogLayout.search_estate_currency.text = "€"
-            }
-
             // TextInput listener to find an Estate by its number of rooms
             dialogLayout.search_estate_nbRooms.doAfterTextChanged { text ->
                 text?.let {
@@ -364,8 +397,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
             }
 
             // Checkbox listener to find a sold Estate
-            dialogLayout.search_estate_check_shop.setOnCheckedChangeListener { _, isChecked ->
+            dialogLayout.search_estate_check_sold.setOnCheckedChangeListener { _, isChecked ->
                 mainViewModel.setSearch(isChecked, EstateSearch.SOLD)
+                if (!isChecked) mainViewModel.setSearchNull(EstateSearch.SOLD_SINCE)
             }
 
             dialogLayout.search_estate_pictures.doAfterTextChanged { text ->
@@ -393,6 +427,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
                     cal[Calendar.DAY_OF_MONTH] = dayOfMonth
                     mainViewModel.setSearch(cal.timeInMillis, EstateSearch.IN_SALE_SINCE)
                 }
+            }
+
+            dialogLayout.search_estate_date_in_sale_since_card.setOnLongClickListener {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+                val dialogLayout = layoutInflater.inflate(R.layout.dialog_simple, null)
+                with(builder) {
+                    dialogLayout.dialog_simple_content.text =
+                        getString(R.string.dialog_search_reset_date)
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    setView(dialogLayout)
+                    setTitle(getString(R.string.reset))
+                    // Set up the buttons
+                    setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+                        // Here you get get input text from the Edittext
+                        mainViewModel.setSearchNull(EstateSearch.IN_SALE_SINCE)
+                        dialog.cancel()
+                    }
+                    setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    show()
+                }
+                return@setOnLongClickListener true
             }
 
             dialogLayout.search_estate_sold_since_card.setOnClickListener {

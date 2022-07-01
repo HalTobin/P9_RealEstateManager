@@ -11,6 +11,7 @@ import com.openclassrooms.realestatemanager.model.*
 import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
+import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -38,8 +39,8 @@ class MainViewModel(
     private val _closeDetails = MutableLiveData(false)
     val closeDetails = _closeDetails
 
-    private val _isSearchInDollar = MutableLiveData(true)
-    val isSearchInDollar = _isSearchInDollar
+    private val _isInDollar = MutableLiveData(true)
+    val isInDollar = _isInDollar
 
     private var searchEstate = EstateSearch()
     val searchEstateLiveData = MutableLiveData<EstateSearch>()
@@ -98,6 +99,7 @@ class MainViewModel(
         _selection.postValue(estateId)
     }
 
+    // Set the s
     fun setEstateId(estateId: Int) {
         this.estateId = estateId
         viewModelScope.launch {
@@ -107,6 +109,7 @@ class MainViewModel(
         }
     }
 
+    // If an estate is sold, then it is updated as un-sold and if it isn't sold, then it is updated as sold
     fun updateSoldState() {
         viewModelScope.launch {
             estateRepository.changeSoldState(
@@ -117,6 +120,7 @@ class MainViewModel(
         }
     }
 
+    // Start searching for corresponding estates
     fun startSearch() {
         search = true
         _estates.addSource(
@@ -125,6 +129,7 @@ class MainViewModel(
         _estates.removeSource(estateRepository.getEstates().asLiveData())
     }
 
+    // Stop searching for corresponding estates
     fun stopSearch() {
         setSearchNull(EstateSearch.ALL)
         if (search) {
@@ -138,6 +143,8 @@ class MainViewModel(
         }
     }
 
+    // This is used to define criteria to find specific estates
+    // It is reserved for String fields
     fun setSearch(value: String, field: Int) {
         when (field) {
             EstateSearch.CITY -> searchEstate.city = value
@@ -146,11 +153,20 @@ class MainViewModel(
         }
     }
 
+    // This is used to define criteria to find specific estates
+    // It is reserved for Int fields
     fun setSearch(value: Int, field: Int) {
         when (field) {
             EstateSearch.TYPE -> searchEstate.type = value
-            EstateSearch.PRICE_MIN -> searchEstate.priceMinDollar = value
-            EstateSearch.PRICE_MAX -> searchEstate.priceMaxDollar = value
+            EstateSearch.PRICE_MIN -> {
+                if (_isInDollar.value!!) searchEstate.priceMinDollar = value
+                else searchEstate.priceMinDollar = value.fromEuroToDollar()
+
+            }
+            EstateSearch.PRICE_MAX -> {
+                if (_isInDollar.value!!) searchEstate.priceMaxDollar = value
+                else searchEstate.priceMaxDollar = value.fromEuroToDollar()
+            }
             EstateSearch.AREA_MIN -> searchEstate.areaMin = value
             EstateSearch.AREA_MAX -> searchEstate.areaMax = value
             EstateSearch.ROOMS -> searchEstate.nbRooms = value
@@ -161,23 +177,31 @@ class MainViewModel(
         }
     }
 
+    // This is used to define criteria to find specific estates
+    // It is reserved for Long fields
     fun setSearch(value: Long, field: Int) {
         when (field) {
             EstateSearch.IN_SALE_SINCE -> searchEstate.entryDate = value
             EstateSearch.SOLD_SINCE -> searchEstate.soldDate = value
         }
-        forceRefresh()
+        forceRefreshSearchEstate()
     }
 
+    // This is used to define criteria to find specific estates
+    // It is reserved for Boolean fields
     fun setSearch(value: Boolean, field: Int) {
         when (field) {
             EstateSearch.SCHOOL -> searchEstate.nearbySchool = value
             EstateSearch.SHOP -> searchEstate.nearbyShop = value
             EstateSearch.PARK -> searchEstate.nearbyPark = value
-            EstateSearch.SOLD -> searchEstate.sold = value
+            EstateSearch.SOLD -> {
+                searchEstate.sold = value
+                forceRefreshSearchEstate()
+            }
         }
     }
 
+    // Can reset a specific or all search criteria
     fun setSearchNull(field: Int) {
         when (field) {
             EstateSearch.SCHOOL -> searchEstate.nearbySchool = false
@@ -196,21 +220,29 @@ class MainViewModel(
             EstateSearch.BATHROOMS -> searchEstate.nbBathrooms = null
             EstateSearch.AGENT -> searchEstate.agentId = null
             EstateSearch.IMAGES -> searchEstate.nbImages = null
-            EstateSearch.IN_SALE_SINCE -> searchEstate.entryDate = null
-            EstateSearch.SOLD_SINCE -> searchEstate.soldDate = null
+            EstateSearch.IN_SALE_SINCE -> {
+                searchEstate.entryDate = null
+                forceRefreshSearchEstate()
+            }
+            EstateSearch.SOLD_SINCE -> {
+                searchEstate.soldDate = null
+                forceRefreshSearchEstate()
+            }
             EstateSearch.ALL -> {
                 searchEstate = EstateSearch()
-                forceRefresh()
+                forceRefreshSearchEstate()
             }
         }
     }
 
-    fun forceRefresh() {
+    // Use post value to refresh the UI and fill all the necessary field in the search dialog
+    fun forceRefreshSearchEstate() {
         searchEstateLiveData.postValue(searchEstate)
     }
 
+    // Change the main currency (DOLLAR -> EURO or EURO -> DOLLAR)
     fun invertCurrency() {
-        _isSearchInDollar.value = !_isSearchInDollar.value!!
+        _isInDollar.value = !_isInDollar.value!!
     }
 
 }

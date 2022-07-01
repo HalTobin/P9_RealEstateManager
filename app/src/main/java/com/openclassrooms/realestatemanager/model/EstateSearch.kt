@@ -34,101 +34,101 @@ data class EstateSearch(
         var conditions = false
 
         if (type != null) {
-            queryString += " WHERE type = :$type"
+            queryString += if (conditions) " AND " else " WHERE "; conditions = true
+            queryString += "type = ?"
             args.add(type!!)
-            conditions = true
         }
 
         if (country != null)
             if (country!!.isValid()) {
-                queryString += " WHERE country = :$country"
+                queryString += if (conditions) " AND " else " WHERE "; conditions = true
+                queryString += "country = ?"
                 args.add(country!!)
-                conditions = true
             }
 
         if (city != null)
             if (city!!.isValid()) {
-                queryString += " WHERE city = :$city"
+                queryString += if (conditions) " AND " else " WHERE "; conditions = true
+                queryString += "city = ?"
                 args.add(city!!)
-                conditions = true
             }
 
         if (zipCode != null)
             if (zipCode!!.isValid()) {
                 queryString += if (conditions) " AND " else " WHERE "; conditions = true
-                queryString += "zipCode = :$zipCode"
+                queryString += "zipCode = ?"
                 args.add(zipCode!!)
             }
 
         if (priceMinDollar != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "priceDollar >= :${priceMinDollar}"
+            queryString += "priceDollar >= ?"
             args.add(priceMinDollar!!)
         }
 
         if (priceMaxDollar != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "priceDollar <= :${priceMaxDollar}"
+            queryString += "priceDollar <= ?"
             args.add(priceMaxDollar!!)
         }
 
         if (areaMin != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "area >= :$areaMin"
+            queryString += "area >= ?"
             args.add(areaMin!!)
         }
 
         if (areaMax != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "area <= :$areaMax"
+            queryString += "area <= ?"
             args.add(areaMax!!)
         }
 
         if (nbRooms != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbRooms >= :$nbRooms"
+            queryString += "nbRooms >= ?"
             args.add(nbRooms!!)
         }
 
         if (nbBedrooms != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbBedroom >= :$nbBedrooms"
+            queryString += "nbBedrooms >= ?"
             args.add(nbBedrooms!!)
         }
 
         if (nbBathrooms != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbBathrooms >= :$nbBathrooms"
+            queryString += "nbBathrooms >= ?"
             args.add(nbBathrooms!!)
         }
 
         if (nearbyPark != false) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbyPark = :$nearbyPark"
+            queryString += "nearbyPark = ?"
             args.add(nearbyPark!!)
         }
 
         if (nearbySchool != false) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbySchool = :$nearbySchool"
+            queryString += "nearbySchool = ?"
             args.add(nearbySchool!!)
         }
 
         if (nearbyShop != false) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbyShop = :$nearbyShop"
+            queryString += "nearbyShop = ?"
             args.add(nearbyShop!!)
         }
 
-        if (sold != null){
+        if (sold != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "sold = :$sold"
+            queryString += "sold = ?"
             args.add(sold!!)
         }
 
         if (agentId != null) {
             queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "agentId = :$agentId"
+            queryString += "agentId = ?"
             args.add(agentId!!)
         }
 

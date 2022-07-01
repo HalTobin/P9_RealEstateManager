@@ -5,7 +5,7 @@
     android:layout_margin="8dp">
 
     <TextView
-        android:id="@+id/add_edit_estate_add_image_dialog_delete_confirmation"
+        android:id="@+id/dialog_simple_content"
         android:text="@string/add_edit_estate_image_dialog_delete_image"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"

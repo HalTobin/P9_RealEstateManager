@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.CancellationSignal
 import android.provider.OpenableColumns
 import android.util.Size
@@ -40,7 +42,7 @@ object Utils {
      * @param dollars
      * @return
      */
-    fun convertDollarToEuro(dollars: Int): Int = (dollars * 0.95).roundToInt()
+    fun convertDollarToEuro(dollars: Int): Int = (dollars * 0.952381).roundToInt()
 
     fun convertEuroToDollar(euros: Int): Int = (euros * 1.05).roundToInt()
 
@@ -129,12 +131,23 @@ object Utils {
      * @param context
      * @return
      */
-    fun isInternetAvailable(context: Context): Boolean {
+    private fun isInternetAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting
-
-        /*val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        return wifi.isWifiEnabled*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            return connectivityManager.activeNetworkInfo?.isConnected ?: false
+        }
     }
 
     fun fullAddress(address: String, zipCode: String?, city: String, country: String): String {

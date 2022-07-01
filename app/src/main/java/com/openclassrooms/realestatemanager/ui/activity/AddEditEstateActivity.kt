@@ -5,10 +5,6 @@ import android.app.*
 import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,6 +34,7 @@ import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.util.Utils.copyToInternal
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
+import kotlinx.android.synthetic.main.dialog_simple.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -570,12 +567,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     @SuppressLint("InflateParams")
     private fun showDeleteImageDialog(imageWithDescription: ImageWithDescription) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        val dialogLayout = layoutInflater.inflate(R.layout.dialog_delete_confirmation, null)
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_simple, null)
 
         with(builder) {
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            dialogLayout.dialog_simple_content.text = getString(R.string.add_edit_estate_image_dialog_delete_image)
             setView(dialogLayout)
-
             setTitle(getString(R.string.are_you_sure))
 
             // Set up the buttons

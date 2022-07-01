@@ -57,6 +57,12 @@
     <string name="cancel_button">Retour</string>
     <string name="ok_button">Valider</string>
 
+    <string name="dialog_search_reset_date">Souhaitez-vous réinitialiser la date ?</string>
+
+    <string name="reset">Réinitialiser</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+
     <string name="search">Chercher un bien immobilier</string>
 
     <string name="search_estate_budget_min">Prix Minimum</string>
@@ -91,5 +97,6 @@
     <string name="sold_since">Vendu depuis :</string>
     <string name="estate_pictures">Nombres d\'images</string>
     <string name="estate_sold">Vendu</string>
+    <string name="estate_change_currency">Changer de monaie</string>
 
 </resources>

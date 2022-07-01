@@ -25,6 +25,14 @@
             android:layout_margin="8dp"
             android:src="@drawable/ic_search" />
 
+        <ImageView
+            android:id="@+id/main_change_currency"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_currency_dollar" />
+
     </androidx.appcompat.widget.Toolbar>
 
 </com.google.android.material.appbar.AppBarLayout>

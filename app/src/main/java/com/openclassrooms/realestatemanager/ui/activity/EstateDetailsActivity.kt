@@ -18,7 +18,7 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>() {
 
     private val detailsFragment: DetailsFragment by inject()
 
-    private var estateId:Int = -1
+    private var estateId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

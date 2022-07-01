@@ -16,13 +16,18 @@ import com.openclassrooms.realestatemanager.model.EstateUI
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.ArrayList
 
-class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePagerAdapter.OnItemClick {
+class ListFragment : BaseFragment<FragmentEstateListBinding?>(),
+    ListEstatePagerAdapter.OnItemClick {
 
     private var mAdapter: ListEstatePagerAdapter? = null
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentEstateListBinding.inflate(layoutInflater)
 
         setUpAdapter()
@@ -33,14 +38,17 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
 
     private fun setListenersAndObservers() {
         mainViewModel.estates.observe(viewLifecycleOwner) { estates: List<EstateUI> ->
-            refreshRecycler(estates)
-            if(estates.isEmpty()) {
+            mAdapter!!.updateList(estates)
+            if (estates.isEmpty()) {
                 binding?.listEstateNoEstateImage?.load(R.drawable.ic_estate)
                 binding?.listEstateNoEstateText?.text = getString(R.string.estate_list_no_estate)
             } else {
                 binding?.listEstateNoEstateImage?.load(0x00000000)
                 binding?.listEstateNoEstateText?.text = " "
             }
+        }
+        mainViewModel.isInDollar.observe(viewLifecycleOwner) {
+            mAdapter!!.updateCurrency(it)
         }
     }
 
@@ -58,10 +66,6 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(), ListEstatePager
 
     private fun initRecycler() {
         binding!!.listEstateRecycler.adapter = mAdapter
-    }
-
-    private fun refreshRecycler(myList: List<EstateUI>) {
-        mAdapter!!.updateList(myList)
     }
 
     override fun onResume() {

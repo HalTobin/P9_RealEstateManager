@@ -129,7 +129,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/search_estate_min_price_layout"
-        app:layout_constraintEnd_toStartOf="@id/search_estate_currency"
         app:layout_constraintTop_toBottomOf="@id/search_estate_country_layout" >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -182,19 +181,6 @@
             android:layout_height="match_parent"/>
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/search_estate_currency"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/estate_currency"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_zip_layout"
-        app:layout_constraintBottom_toTopOf="@id/search_estate_min_area_layout"
-        app:layout_constraintStart_toEndOf="@id/search_estate_max_price_layout"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_estate_nbRooms_layout"
@@ -418,7 +404,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/search_dialog_reset"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_sold_since_card"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_date_in_sale_since_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/search_estate_search"/>
 
@@ -428,7 +414,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/search_dialog_search"
-        app:layout_constraintTop_toBottomOf="@id/search_estate_sold_since_card"
+        app:layout_constraintTop_toBottomOf="@id/search_estate_date_in_sale_since_card"
         app:layout_constraintStart_toEndOf="@id/search_estate_reset"
         app:layout_constraintEnd_toEndOf="parent"/>
 
