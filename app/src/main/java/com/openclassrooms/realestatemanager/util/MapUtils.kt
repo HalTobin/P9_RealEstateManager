@@ -11,14 +11,17 @@ import com.openclassrooms.realestatemanager.model.Coordinates
 
 object MapUtils {
 
-    fun getMapStyle(context: Context): MapStyleOptions {
-        var myMapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_day)
+    fun isInDarkMode(context: Context): Boolean {
         val nightModeFlags = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) myMapStyleOptions =
-            MapStyleOptions.loadRawResourceStyle(
-                context, R.raw.map_style_night
-            )
-        return myMapStyleOptions
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    fun getMapStyle(context: Context): MapStyleOptions {
+        return if (isInDarkMode(context)) MapStyleOptions.loadRawResourceStyle(
+            context,
+            R.raw.map_style_night
+        )
+        else MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_day)
     }
 
     // Move the map's camera to a location

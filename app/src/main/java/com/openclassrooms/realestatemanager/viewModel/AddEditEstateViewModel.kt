@@ -255,7 +255,6 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
         }
         if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
-        else if(coordinates.value!!.isUndefined()) _warning.postValue(Estate.CANT_FIND_LOCATION)
         else _warning.postValue(Estate.UNCOMPLETED)
     }
 

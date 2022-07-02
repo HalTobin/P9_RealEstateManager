@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.model
 
 import android.util.Log
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.openclassrooms.realestatemanager.util.Utils.isValid
 
 data class EstateSearch(
     var type: Int? = null,
@@ -40,21 +39,21 @@ data class EstateSearch(
         }
 
         if (country != null)
-            if (country!!.isValid()) {
+            if (country!!.isNotEmpty()) {
                 queryString += if (conditions) " AND " else " WHERE "; conditions = true
                 queryString += "country = ?"
                 args.add(country!!)
             }
 
         if (city != null)
-            if (city!!.isValid()) {
+            if (city!!.isNotEmpty()) {
                 queryString += if (conditions) " AND " else " WHERE "; conditions = true
                 queryString += "city = ?"
                 args.add(city!!)
             }
 
         if (zipCode != null)
-            if (zipCode!!.isValid()) {
+            if (zipCode!!.isNotEmpty()) {
                 queryString += if (conditions) " AND " else " WHERE "; conditions = true
                 queryString += "zipCode = ?"
                 args.add(zipCode!!)
@@ -150,7 +149,7 @@ data class EstateSearch(
             args.add(nbImages!!)
         }
 
-        Log.i("SEARCH ESTATE", "REQUEST : $queryString")
+        //Log.i("SEARCH ESTATE", "REQUEST : $queryString")
         return SimpleSQLiteQuery(queryString, args.toArray())
     }
 

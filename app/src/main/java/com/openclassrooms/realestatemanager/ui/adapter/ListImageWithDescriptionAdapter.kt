@@ -16,14 +16,17 @@ import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListImagesWithDescriptionBinding
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
-import com.openclassrooms.realestatemanager.util.Utils.getSuffix
 import com.openclassrooms.realestatemanager.util.Utils.isAVideo
 import com.openclassrooms.realestatemanager.util.Utils.isAnImage
-import com.openclassrooms.realestatemanager.util.Utils.toBitmap
+import com.openclassrooms.realestatemanager.util.ImageUtils.toBitmap
 import java.io.File
 
 
-class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, context: Context, listener: OnItemClick) :
+class ListImageWithDescriptionAdapter(
+    items: List<ImageWithDescription>?,
+    context: Context,
+    listener: OnItemClick
+) :
     RecyclerView.Adapter<ListImageWithDescriptionAdapter.ViewHolder>() {
 
     private val context: Context
@@ -31,30 +34,38 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
     private val mCallback: OnItemClick?
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = ItemListImagesWithDescriptionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val view = ItemListImagesWithDescriptionBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ListImageWithDescriptionAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ListImageWithDescriptionAdapter.ViewHolder,
+        position: Int
+    ) {
         val myImage = images!![position]
 
         holder.binding.imageWithDescriptionDescription.text = myImage.description
 
-        if(myImage.imageUrl.isNotEmpty()) {
-            if(myImage.imageUrl.isAnImage()) holder.binding.imageWithDescriptionImage.load(myImage.imageUrl)
-            if(myImage.imageUrl.isAVideo()) {
+        if (myImage.imageUrl.isNotEmpty()) {
+            if (myImage.imageUrl.isAnImage()) holder.binding.imageWithDescriptionImage.load(myImage.imageUrl)
+            if (myImage.imageUrl.isAVideo()) {
                 val mSize = Size(192, 192)
                 val ca = CancellationSignal()
 
                 // Get a thumbnail from the video
-                val thumbnail = ThumbnailUtils.createVideoThumbnail(File(myImage.imageUrl), mSize, ca)
+                val thumbnail =
+                    ThumbnailUtils.createVideoThumbnail(File(myImage.imageUrl), mSize, ca)
 
                 // Load the drawable resource "ic_play"
                 val play: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_play)
 
                 val canvas = Canvas(thumbnail)
                 // Draw "ic_play" on top of the thumbnail
-                if(play != null) canvas.drawBitmap((play.toBitmap())!!, 20f, 50f, null)
+                if (play != null) canvas.drawBitmap((play.toBitmap())!!, 20f, 50f, null)
 
                 holder.binding.imageWithDescriptionImage.load(thumbnail)
             }
@@ -73,9 +84,10 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: ItemListImagesWithDescriptionBinding) : RecyclerView.ViewHolder(
-        binding.root
-    )
+    inner class ViewHolder(val binding: ItemListImagesWithDescriptionBinding) :
+        RecyclerView.ViewHolder(
+            binding.root
+        )
 
     init {
         images = items
@@ -84,6 +96,9 @@ class ListImageWithDescriptionAdapter(items: List<ImageWithDescription>?, contex
     }
 
     interface OnItemClick {
-        fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>)
+        fun onImageClick(
+            imageWithDescription: ImageWithDescription,
+            images: List<ImageWithDescription>
+        )
     }
 }

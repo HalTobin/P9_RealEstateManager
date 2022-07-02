@@ -32,7 +32,8 @@ import com.openclassrooms.realestatemanager.util.EstateNotification
 import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.util.Utils
-import com.openclassrooms.realestatemanager.util.Utils.copyToInternal
+import com.openclassrooms.realestatemanager.util.FileUtils.copyToInternal
+import com.openclassrooms.realestatemanager.util.ImageUtils.openImageViewer
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import kotlinx.android.synthetic.main.dialog_simple.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -596,7 +597,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
-            if (options[item] == getString(R.string.visualize)) Utils.openImageViewer(
+            if (options[item] == getString(R.string.visualize)) openImageViewer(
                 this,
                 images,
                 images.indexOf(imageWithDescription)

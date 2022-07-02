@@ -31,13 +31,15 @@ import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateType
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity.Companion.navigateToAddEditActivity
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
+import com.openclassrooms.realestatemanager.util.ImageUtils.openImageViewer
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
 import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReadyCallback, ListImageWithDescriptionAdapter.OnItemClick {
+class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReadyCallback,
+    ListImageWithDescriptionAdapter.OnItemClick {
 
     private var mAdapter: ListImageWithDescriptionAdapter? = null
 
@@ -48,7 +50,11 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
 
     private var options = arrayOf<CharSequence>("", "")
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentEstateDetailsBinding.inflate(layoutInflater)
 
         options[1] = getString(R.string.estate_details_edit_estate_button_edit)
@@ -61,32 +67,66 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private fun setUpListenersAndObservers() {
         mainViewModel.estate.observe(viewLifecycleOwner) { estate ->
             refreshList(estate.images)
-            binding?.estateDetailsTypeAndName?.text = getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ").plus(estate.estate.title)
+            binding?.estateDetailsTypeAndName?.text =
+                getEstateTypeFromInt(requireContext(), estate.estate.type!!).plus(" - ")
+                    .plus(estate.estate.title)
             binding?.estateDetailsDescriptionText?.text = estate.estate.description
             binding?.estateDetailsArea?.text = estate.estate.area.toString().plus("m²")
             binding?.estateDetailsRooms?.text = estate.estate.nbRooms.toString()
             binding?.estateDetailsBedrooms?.text = estate.estate.nbBedrooms.toString()
             binding?.estateDetailsBathrooms?.text = estate.estate.nbBathrooms.toString()
             binding?.estateDetailsLocationAddress?.text = estate.estate.getAddressInPresentation()
-            if(estate.estate.nearbyShop == true)
-                binding?.estateDetailsIsShop?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_done))
-            else binding?.estateDetailsIsShop?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_cross))
-            if(estate.estate.nearbySchool == true)
-                binding?.estateDetailsIsSchool?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_done))
-            else binding?.estateDetailsIsSchool?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_cross))
-            if(estate.estate.nearbyPark == true)
-                binding?.estateDetailsIsPark?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_done))
-            else binding?.estateDetailsIsPark?.setImageDrawable(getDrawable(requireContext(), R.drawable.ic_cross))
-            map!!.navigateTo(Coordinates(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!), 16f)
-            if(estate.estate.sold!!) {
+            if (estate.estate.nearbyShop == true)
+                binding?.estateDetailsIsShop?.setImageDrawable(
+                    getDrawable(
+                        requireContext(),
+                        R.drawable.ic_done
+                    )
+                )
+            else binding?.estateDetailsIsShop?.setImageDrawable(
+                getDrawable(
+                    requireContext(),
+                    R.drawable.ic_cross
+                )
+            )
+            if (estate.estate.nearbySchool == true)
+                binding?.estateDetailsIsSchool?.setImageDrawable(
+                    getDrawable(
+                        requireContext(),
+                        R.drawable.ic_done
+                    )
+                )
+            else binding?.estateDetailsIsSchool?.setImageDrawable(
+                getDrawable(
+                    requireContext(),
+                    R.drawable.ic_cross
+                )
+            )
+            if (estate.estate.nearbyPark == true)
+                binding?.estateDetailsIsPark?.setImageDrawable(
+                    getDrawable(
+                        requireContext(),
+                        R.drawable.ic_done
+                    )
+                )
+            else binding?.estateDetailsIsPark?.setImageDrawable(
+                getDrawable(
+                    requireContext(),
+                    R.drawable.ic_cross
+                )
+            )
+            map!!.navigateTo(
+                Coordinates(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!),
+                16f
+            )
+            if (estate.estate.sold!!) {
                 binding?.estateDetailsIsSoldImage?.load(R.drawable.sold)
                 options[0] = getString(R.string.estate_details_edit_estate_button_sold_to_unsold)
-            }
-            else {
+            } else {
                 binding?.estateDetailsIsSoldImage?.load(0x00000000)
                 options[0] = getString(R.string.estate_details_edit_estate_button_sold_to_sold)
             }
-            if(marker != null) marker!!.remove()
+            if (marker != null) marker!!.remove()
             map!!.addMarker(
                 MarkerOptions()
                     .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
@@ -103,7 +143,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
-            when(item) {
+            when (item) {
                 UPDATE_SOLD_STATE -> mainViewModel.updateSoldState()
                 EDIT_ESTATE -> navigateToAddEditActivity(requireActivity(), id)
             }
@@ -114,14 +154,15 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
     private fun initRecycler() {
         mAdapter = ListImageWithDescriptionAdapter(ArrayList(), requireContext(), this)
         binding!!.estateDetailsImageList.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = mAdapter
         }
     }
 
     private fun refreshList(myList: List<ImageWithDescription>) {
 
-        if(myList.isEmpty()) {
+        if (myList.isEmpty()) {
             binding?.estateDetailsNoImagesImg?.load(R.drawable.img_no_photo)
         } else {
             binding?.estateDetailsNoImagesImg?.load(0x00000000)
@@ -145,8 +186,11 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         setUpListenersAndObservers()
     }
 
-    override fun onImageClick(imageWithDescription: ImageWithDescription, images: List<ImageWithDescription>) {
-        Utils.openImageViewer(requireContext(), images, images.indexOf(imageWithDescription))
+    override fun onImageClick(
+        imageWithDescription: ImageWithDescription,
+        images: List<ImageWithDescription>
+    ) {
+        openImageViewer(requireContext(), images, images.indexOf(imageWithDescription))
     }
 
     companion object {

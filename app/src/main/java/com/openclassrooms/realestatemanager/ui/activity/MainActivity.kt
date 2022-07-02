@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -33,6 +34,7 @@ import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
+import com.openclassrooms.realestatemanager.util.Utils.isInternetAvailable
 import com.openclassrooms.realestatemanager.util.Utils.toDateString
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.dialog_search_estate.view.*
@@ -63,6 +65,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
         setListeners()
 
         checkAndAskPermission()
+
+        Log.i(
+            "IS INTERNET AVAILABLE ", isInternetAvailable(
+                this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            ).toString()
+        )
 
         mainViewModel.getImages().observe(this) { images ->
             mainViewModel.cleanImageFolder(this, images)
