@@ -240,7 +240,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
                             Agent.getAgentById(
                                 agents,
                                 mySearchEstate.agentId!!
-                            )?.getFullName()
+                            )?.getFullName(),
+                            false
                         )
                     if (mySearchEstate.nbRooms != null)
                         dialogLayout.search_estate_nbRooms.setText(mySearchEstate.nbRooms!!.toString())

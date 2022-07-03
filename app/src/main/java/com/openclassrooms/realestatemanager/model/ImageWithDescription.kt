@@ -13,6 +13,4 @@ data class ImageWithDescription(
     var estateId: Int,
     val description: String = "",
     val imageUrl: String
-) {
-
-}
+)

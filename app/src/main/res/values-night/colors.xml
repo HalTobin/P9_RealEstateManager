@@ -3,4 +3,6 @@
 
     <color name="background">#FF000000</color>
 
+    <color name="background_grey">#FF2E2E2E</color>
+
 </resources>

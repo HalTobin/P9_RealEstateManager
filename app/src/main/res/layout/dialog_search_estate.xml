@@ -381,7 +381,7 @@
                 app:layout_constraintEnd_toStartOf="@id/search_estate_sold_since_card"
                 app:layout_constraintTop_toTopOf="@id/search_estate_sold_since_card"
                 app:layout_constraintBottom_toBottomOf="@id/search_estate_sold_since_card"
-                android:text="@string/sold_since"/>
+                android:text="@string/sold_since" />
 
             <TextView
                 android:id="@+id/search_estate_date_sold_since_text"

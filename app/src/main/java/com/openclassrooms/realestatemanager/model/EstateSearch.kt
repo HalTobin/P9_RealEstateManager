@@ -30,126 +30,106 @@ data class EstateSearch(
     fun getRequest(): SimpleSQLiteQuery {
         var queryString = BASE_QUERY
         val args = arrayListOf<Any>()
-        var conditions = false
+
+        if (sold != null) {
+            queryString += " WHERE sold = ?"
+            args.add(sold!!)
+        }
 
         if (type != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "type = ?"
+            queryString += " AND type = ?"
             args.add(type!!)
         }
 
         if (country != null)
             if (country!!.isNotEmpty()) {
-                queryString += if (conditions) " AND " else " WHERE "; conditions = true
-                queryString += "country = ?"
+                queryString += " AND country = ?"
                 args.add(country!!)
             }
 
         if (city != null)
             if (city!!.isNotEmpty()) {
-                queryString += if (conditions) " AND " else " WHERE "; conditions = true
-                queryString += "city = ?"
+                queryString += " AND city = ?"
                 args.add(city!!)
             }
 
         if (zipCode != null)
             if (zipCode!!.isNotEmpty()) {
-                queryString += if (conditions) " AND " else " WHERE "; conditions = true
-                queryString += "zipCode = ?"
+                queryString += " AND zipCode = ?"
                 args.add(zipCode!!)
             }
 
         if (priceMinDollar != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "priceDollar >= ?"
+            queryString += " AND priceDollar >= ?"
             args.add(priceMinDollar!!)
         }
 
         if (priceMaxDollar != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "priceDollar <= ?"
+            queryString += " AND priceDollar <= ?"
             args.add(priceMaxDollar!!)
         }
 
         if (areaMin != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "area >= ?"
+            queryString += " AND area >= ?"
             args.add(areaMin!!)
         }
 
         if (areaMax != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "area <= ?"
+            queryString += " AND area <= ?"
             args.add(areaMax!!)
         }
 
         if (nbRooms != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbRooms >= ?"
+            queryString += " AND nbRooms >= ?"
             args.add(nbRooms!!)
         }
 
         if (nbBedrooms != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbBedrooms >= ?"
+            queryString += " AND nbBedrooms >= ?"
             args.add(nbBedrooms!!)
         }
 
         if (nbBathrooms != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nbBathrooms >= ?"
+            queryString += " AND nbBathrooms >= ?"
             args.add(nbBathrooms!!)
         }
 
         if (nearbyPark != false) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbyPark = ?"
+            queryString += " AND nearbyPark = ?"
             args.add(nearbyPark!!)
         }
 
         if (nearbySchool != false) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbySchool = ?"
+            queryString += " AND nearbySchool = ?"
             args.add(nearbySchool!!)
         }
 
         if (nearbyShop != false) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "nearbyShop = ?"
+            queryString += " AND nearbyShop = ?"
             args.add(nearbyShop!!)
         }
 
-        if (sold != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "sold = ?"
-            args.add(sold!!)
-        }
-
         if (agentId != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "agentId = ?"
+            queryString += " AND agentId = ?"
             args.add(agentId!!)
         }
 
         if (soldDate != null) {
-            queryString += if (conditions) " AND " else " WHERE "; conditions = true
-            queryString += "soldDate >= ?"
+            queryString += " AND soldDate >= ?"
             args.add(soldDate!!)
         }
 
         if (entryDate != null) {
-            queryString += if (conditions) " AND " else " WHERE "
-            queryString += "entryDate >= ?"
+            queryString += " AND entryDate >= ?"
             args.add(entryDate!!)
         }
 
         if (nbImages != null) {
-            queryString += if (conditions) " AND " else " WHERE "
-            queryString += "images >= ?"
+            queryString += " AND images >= ?"
             args.add(nbImages!!)
         }
 
-        //Log.i("SEARCH ESTATE", "REQUEST : $queryString")
+        Log.i("SEARCH ESTATE", "REQUEST : $queryString")
         return SimpleSQLiteQuery(queryString, args.toArray())
     }
 
