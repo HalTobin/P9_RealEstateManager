@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.repository
 
+import android.util.Log
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.api.PositionStackApi
 import com.openclassrooms.realestatemanager.model.Coordinates
@@ -27,13 +28,13 @@ class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRep
                 when (result.status) {
                     Result.Status.SUCCESS -> {
                         result.data?.let { coordinates ->
-                            println("GET COORDINATES - " + coordinates.toString())
+                            Log.i("COORDINATES", coordinates.toString())
                             emit(coordinates)
                         }
                     }
                     Result.Status.ERROR -> {
                         result.message?.let {
-                            println("GET COOORDINATES ERROR - " + it)
+                            Log.i("COOORDINATES", "ERROR $it")
                         }
                     }
                     else -> {}

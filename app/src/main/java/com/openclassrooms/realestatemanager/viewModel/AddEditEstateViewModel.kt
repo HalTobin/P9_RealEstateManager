@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.viewModel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Coordinates
@@ -11,10 +12,7 @@ import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.io.File
-import java.util.*
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                              private val imageRepository: ImageRepository,
@@ -171,7 +169,6 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
     fun setArea(area: String) { _area.value = area.toInt() }
 
-    //TODO - Fix bug
     fun setPrice(price: String) {
         _price.value = price.toInt()
         refreshPriceAsDollar()
@@ -179,7 +176,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
     private fun refreshPriceAsDollar() {
         priceAsDollar = if(!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
-        println("PRICE AS DOLLAR : ".plus(priceAsDollar))
+        Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
     }
 
     fun setRooms(rooms: String) { _nbRooms.value = rooms.toInt() }
@@ -253,9 +250,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _mustClose.postValue(true)
             }
 
-        }
+        } else _warning.postValue(Estate.UNCOMPLETED)
         if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
-        else _warning.postValue(Estate.UNCOMPLETED)
     }
 
 }

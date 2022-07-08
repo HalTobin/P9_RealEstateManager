@@ -120,6 +120,11 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.4.2"
 
+    implementation "androidx.arch.core:core-testing:2.1.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2"
+    implementation "com.squareup.moshi:moshi:1.11.0"
+    implementation "com.squareup.okhttp3:mockwebserver:4.9.3"
+
     // Mock for testing
     testImplementation "io.mockk:mockk:$mockk_version"
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"

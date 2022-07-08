@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "latitude": 48.863845,
+      "longitude": 2.38283,
+      "type": "address",
+      "name": "95 Avenue De La République",
+      "number": "95",
+      "postal_code": "75011",
+      "street": "Avenue De La République",
+      "confidence": 1,
+      "region": "Paris",
+      "region_code": "VP",
+      "county": null,
+      "locality": "Paris",
+      "administrative_area": "Paris",
+      "neighbourhood": "Saint-Ambroise",
+      "country": "France",
+      "country_code": "FRA",
+      "continent": "Europe",
+      "label": "95 Avenue De La République, Paris, France"
+    }
+  ]
+}

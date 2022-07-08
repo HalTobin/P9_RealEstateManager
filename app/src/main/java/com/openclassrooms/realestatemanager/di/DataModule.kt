@@ -102,7 +102,7 @@ object DataModule {
         AgentRepositoryImpl(agentDao)
 
     // This allow the use of a custom deserializer (GetCoordinatesDeserializer)
-    private fun createGsonConverter(): Converter.Factory {
+    fun createGsonConverter(): Converter.Factory {
         val gsonBuilder = GsonBuilder()
         gsonBuilder.registerTypeAdapter(object : TypeToken<Coordinates>() {}.type, GetCoordinatesDeserializer())
         val gson: Gson = gsonBuilder.create()
