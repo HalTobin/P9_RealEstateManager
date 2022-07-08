@@ -42,7 +42,7 @@ class MainViewModel(
     private val _isInDollar = MutableLiveData(true)
     val isInDollar = _isInDollar
 
-    private var searchEstate = EstateSearch()
+    var searchEstate = EstateSearch()
     val searchEstateLiveData = MutableLiveData<EstateSearch>()
     private var search = false
 
@@ -81,7 +81,7 @@ class MainViewModel(
 
     }
 
-    private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
+    fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
         _coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
     }
 
@@ -95,11 +95,12 @@ class MainViewModel(
             }
     }
 
+    // Set the selected estate's id
     fun selectEstate(estateId: Int) {
         _selection.postValue(estateId)
     }
 
-    // Set the s
+    // Set the selected estate's id and get the corresponding estate
     fun setEstateId(estateId: Int) {
         this.estateId = estateId
         viewModelScope.launch {
@@ -110,14 +111,16 @@ class MainViewModel(
     }
 
     // If an estate is sold, then it is updated as un-sold and if it isn't sold, then it is updated as sold
-    fun updateSoldState() {
+    fun updateSoldState(): Long {
+        val systemTime = System.currentTimeMillis()
         viewModelScope.launch {
             estateRepository.changeSoldState(
                 _estate.value!!.estate.id!!,
                 !_estate.value!!.estate.sold!!
             )
-            estateRepository.changeSoldDate(_estate.value!!.estate.id!!, System.currentTimeMillis())
+            estateRepository.changeSoldDate(_estate.value!!.estate.id!!, systemTime)
         }
+        return systemTime
     }
 
     // Start searching for corresponding estates

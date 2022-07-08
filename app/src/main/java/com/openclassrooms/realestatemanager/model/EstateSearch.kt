@@ -8,8 +8,6 @@ data class EstateSearch(
     var city: String? = "",
     var zipCode: String? = "",
     var country: String? = "",
-    var xCoordinate: Double? = null,
-    var yCoordinate: Double? = null,
     var priceMinDollar: Int? = null,
     var priceMaxDollar: Int? = null,
     var areaMin: Int? = null,
