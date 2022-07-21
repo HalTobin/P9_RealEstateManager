@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import com.openclassrooms.realestatemanager.di.DataModule
 import com.openclassrooms.realestatemanager.model.Coordinates
+import com.openclassrooms.realestatemanager.util.FileUtils.getStringFromFile
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit
 class CoordinatesRepositoryImplTest {
 
     private val responseFile =
-        "src/test/java/com/openclassrooms/realestatemanager/util/CoordinatesApiPlaceholder.json"
+        "src/test/resources/CoordinatesApiPlaceholder.json"
 
     private val mockWebServer = MockWebServer()
 
@@ -72,30 +73,6 @@ class CoordinatesRepositoryImplTest {
                 assertThat(actual).isEqualTo(expected)
             }
 
-    }
-
-    // Load a file as a String from local resources
-    @Throws(Exception::class)
-    fun getStringFromFile(filePath: String): String {
-        val fl = File(filePath)
-        val fin = FileInputStream(fl)
-        val ret = convertStreamToString(fin)
-        //Make sure you close all streams.
-        fin.close()
-        return ret
-    }
-
-    // Convert InputStream to String
-    @Throws(Exception::class)
-    private fun convertStreamToString(`is`: InputStream?): String {
-        val reader = BufferedReader(InputStreamReader(`is`))
-        val sb = StringBuilder()
-        var line: String? = null
-        while (reader.readLine().also { line = it } != null) {
-            sb.append(line).append("\n")
-        }
-        reader.close()
-        return sb.toString()
     }
 
 }

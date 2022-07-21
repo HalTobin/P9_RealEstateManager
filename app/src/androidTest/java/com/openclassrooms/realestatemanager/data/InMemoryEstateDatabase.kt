@@ -60,10 +60,22 @@ object InMemoryEstateDatabase {
         ),
     )
 
+    val images1: List<ImageWithDescription> = listOf(
+        ImageWithDescription(id = 1, estateId = 1, description = "Living Room", imageUrl = "nothing.jpg"),
+        ImageWithDescription(id = 6, estateId = 1, description = "Bedroom", imageUrl = "nothing.jpg"),
+    )
+
+    val images2: List<ImageWithDescription> = listOf(
+        ImageWithDescription(id = 2, estateId = 2, description = "Entry", imageUrl = "nothing.jpg"),
+        ImageWithDescription(id = 3, estateId = 2, description = "Kitchen", imageUrl = "nothing.jpg"),
+        ImageWithDescription(id = 4, estateId = 2, description = "Bathroom", imageUrl = "nothing.jpg"),
+        ImageWithDescription(id = 5, estateId = 2, description = "Living Room", imageUrl = "nothing.jpg"),
+    )
+
     val estatesUi: List<EstateUI> = mutableListOf(
         EstateUI(
             estate = estates[0],
-            images = listOf()
+            images = images1
         ),
         EstateUI(
             estate = estates[1],
@@ -79,18 +91,6 @@ object InMemoryEstateDatabase {
         Agent(id = 5, firstName = "Robert", lastName = "Roche"),
         Agent(id = 6, firstName = "Lucy", lastName = "Guillot"),
         Agent(id = 7, firstName = "Joseph", lastName = "Boutin")
-    )
-
-    val images1: List<ImageWithDescription> = listOf(
-        ImageWithDescription(id = 1, estateId = 1, description = "Living Room", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 6, estateId = 1, description = "Bedroom", imageUrl = "nothing.jpg"),
-    )
-
-    val images2: List<ImageWithDescription> = listOf(
-        ImageWithDescription(id = 2, estateId = 2, description = "Entry", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 3, estateId = 2, description = "Kitchen", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 4, estateId = 2, description = "Bathroom", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 5, estateId = 2, description = "Living Room", imageUrl = "nothing.jpg"),
     )
 
     fun getInMemoryDatabase(context: Context): EstateDatabase =

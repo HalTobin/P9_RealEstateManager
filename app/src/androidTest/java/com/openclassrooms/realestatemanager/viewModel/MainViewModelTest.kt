@@ -1,25 +1,31 @@
 package com.openclassrooms.realestatemanager.viewModel
 
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
-import com.openclassrooms.realestatemanager.data.LiveDataUtil.getOrAwaitValue
+import com.openclassrooms.realestatemanager.data.MainCoroutineRule
 import com.openclassrooms.realestatemanager.data.data_source.AgentDao
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
 import com.openclassrooms.realestatemanager.data.data_source.ImageDao
+import com.openclassrooms.realestatemanager.data.getOrAwaitValue
 import com.openclassrooms.realestatemanager.data.repository.AgentRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.ImageRepositoryImpl
+import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateSearch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
@@ -33,6 +39,14 @@ class MainViewModelTest {
     private lateinit var estateDao: EstateDao
     private lateinit var imageDao: ImageDao
     private lateinit var database: EstateDatabase
+
+    // Run tasks synchronously
+    @Rule
+    @JvmField
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun init() {
@@ -50,11 +64,7 @@ class MainViewModelTest {
 
         estateDao.insert(InMemoryEstateDatabase.estates[0])
         estateDao.insert(InMemoryEstateDatabase.estates[1])
-
-        mainViewModel.viewModelScope.launch {
-            imageDao.insertImages(InMemoryEstateDatabase.images1)
-            imageDao.insertImages(InMemoryEstateDatabase.images2)
-        }
+        mainViewModel.estates.postValue(InMemoryEstateDatabase.estatesUi)
     }
 
     @After
@@ -65,79 +75,56 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testGetEstates() {
-        mainViewModel.viewModelScope.launch {
-            assertEquals(mainViewModel.estates.getOrAwaitValue().size, 2)
-        }
+    fun testGetEstates() = runTest {
+        advanceUntilIdle()
+        assertEquals(2, mainViewModel.estates.getOrAwaitValue().size)
     }
 
     @Test
     @Throws(Exception::class)
-    fun testGetAgents() {
-        mainViewModel.viewModelScope.launch {
-            assertEquals(mainViewModel.getListOfAgent().getOrAwaitValue().size, 7)
-        }
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun testGetImages() {
-        mainViewModel.viewModelScope.launch {
-            assertEquals(mainViewModel.getListOfAgent().getOrAwaitValue().size, 6)
-        }
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun testSetLocation() {
+    fun testSetLocation() = runTest {
         val xCoordinate = 46.048336
         val yCoordinate = 14.504161
         mainViewModel.setLocation(xCoordinate, yCoordinate)
-        mainViewModel.viewModelScope.launch {
-            assertEquals(
-                mainViewModel.coordinates.getOrAwaitValue(),
-                Coordinates(xCoordinate, yCoordinate)
-            )
-        }
+        advanceUntilIdle()
+        assertEquals(Coordinates(xCoordinate, yCoordinate), mainViewModel.coordinates.getOrAwaitValue())
     }
 
     @Test
     @Throws(Exception::class)
-    fun testSelectEstate() {
+    fun testSelectEstate() = runTest {
         val selection = InMemoryEstateDatabase.estates[1].id!!
         mainViewModel.selectEstate(selection)
-        mainViewModel.viewModelScope.launch {
-            assertEquals(mainViewModel.selection.getOrAwaitValue(), selection)
-        }
+        advanceUntilIdle()
+        assertEquals(selection, mainViewModel.selection.getOrAwaitValue())
     }
 
     @Test
     @Throws(Exception::class)
-    fun testSetEstateId() {
+    fun testSetEstateId() = runTest {
         val selection = InMemoryEstateDatabase.estatesUi[1]
         mainViewModel.setEstateId(selection.estate.id!!)
-        mainViewModel.viewModelScope.launch {
-            assertEquals(mainViewModel.estate.getOrAwaitValue(), selection)
-        }
+        advanceUntilIdle()
+        assertEquals(selection, mainViewModel.estate.getOrAwaitValue())
     }
 
     @Test
     @Throws(Exception::class)
-    fun testUpdateSoldState() {
+    fun testUpdateSoldState() = runTest {
         val selection = InMemoryEstateDatabase.estates[0]
         mainViewModel.setEstateId(selection.id!!)
 
-        mainViewModel.viewModelScope.launch {
-            val expectedTime = mainViewModel.updateSoldState()
+        val expectedTime = mainViewModel.updateSoldState()
+        advanceUntilIdle()
 
-            assertTrue(mainViewModel.estate.getOrAwaitValue().estate.sold!!)
-            assertEquals(mainViewModel.estate.getOrAwaitValue().estate.soldDate, expectedTime)
-        }
+        val res = mainViewModel.estate.getOrAwaitValue()
+        assertTrue(res.estate.sold!!)
+        assertEquals(expectedTime, res.estate.soldDate)
     }
 
     @Test
     @Throws(Exception::class)
-    fun testSetSearch() {
+    fun testSetSearch() = runTest {
         val expected = EstateSearch(
             type = Estate.TYPE_APPARTMENT,
             city = "Paris",
@@ -160,57 +147,80 @@ class MainViewModelTest {
             nbImages = 3
         )
         mainViewModel.setSearch(expected.type!!, EstateSearch.TYPE)
-        assertEquals(mainViewModel.searchEstate.type, expected.type)
+        assertEquals(expected.type, mainViewModel.searchEstate.type)
 
         mainViewModel.setSearch(expected.city!!, EstateSearch.CITY)
-        assertEquals(mainViewModel.searchEstate.city, expected.city)
+        assertEquals(expected.city, mainViewModel.searchEstate.city)
 
         mainViewModel.setSearch(expected.zipCode!!, EstateSearch.ZIPCODE)
-        assertEquals(mainViewModel.searchEstate.zipCode, expected.zipCode)
+        assertEquals(expected.zipCode, mainViewModel.searchEstate.zipCode)
 
         mainViewModel.setSearch(expected.country!!, EstateSearch.COUNTRY)
-        assertEquals(mainViewModel.searchEstate.country, expected.country)
+        assertEquals(expected.country, mainViewModel.searchEstate.country)
 
         mainViewModel.setSearch(expected.priceMinDollar!!, EstateSearch.PRICE_MIN)
-        assertEquals(mainViewModel.searchEstate.priceMinDollar, expected.priceMinDollar)
+        assertEquals(expected.priceMinDollar, mainViewModel.searchEstate.priceMinDollar)
 
         mainViewModel.setSearch(expected.priceMaxDollar!!, EstateSearch.PRICE_MAX)
-        assertEquals(mainViewModel.searchEstate.priceMaxDollar, expected.priceMaxDollar)
+        assertEquals(expected.priceMaxDollar, mainViewModel.searchEstate.priceMaxDollar)
 
         mainViewModel.setSearch(expected.nbRooms!!, EstateSearch.ROOMS)
-        assertEquals(mainViewModel.searchEstate.nbRooms, expected.nbRooms)
+        assertEquals(expected.nbRooms, mainViewModel.searchEstate.nbRooms)
 
         mainViewModel.setSearch(expected.nbBedrooms!!, EstateSearch.BEDROOMS)
-        assertEquals(mainViewModel.searchEstate.nbBedrooms, expected.nbBedrooms)
+        assertEquals(expected.nbBedrooms, mainViewModel.searchEstate.nbBedrooms)
 
         mainViewModel.setSearch(expected.nbBathrooms!!, EstateSearch.BATHROOMS)
-        assertEquals(mainViewModel.searchEstate.nbBathrooms, expected.nbBathrooms)
+        assertEquals(expected.nbBathrooms, mainViewModel.searchEstate.nbBathrooms)
 
         mainViewModel.setSearch(expected.nearbySchool!!, EstateSearch.SCHOOL)
-        assertEquals(mainViewModel.searchEstate.nearbySchool, expected.nearbySchool)
+        assertEquals(expected.nearbySchool, mainViewModel.searchEstate.nearbySchool)
 
         mainViewModel.setSearch(expected.nearbyShop!!, EstateSearch.SHOP)
-        assertEquals(mainViewModel.searchEstate.nearbyShop, expected.nearbyShop)
+        assertEquals(expected.nearbyShop, mainViewModel.searchEstate.nearbyShop)
 
         mainViewModel.setSearch(expected.nearbyPark!!, EstateSearch.PARK)
-        assertEquals(mainViewModel.searchEstate.nearbyPark, expected.nearbyPark)
+        assertEquals(expected.nearbyPark, mainViewModel.searchEstate.nearbyPark)
 
         mainViewModel.setSearch(expected.agentId!!, EstateSearch.AGENT)
-        assertEquals(mainViewModel.searchEstate.agentId, expected.agentId)
+        assertEquals(expected.agentId, mainViewModel.searchEstate.agentId)
 
         mainViewModel.setSearch(expected.entryDate!!, EstateSearch.IN_SALE_SINCE)
-        assertEquals(mainViewModel.searchEstate.entryDate, expected.entryDate)
+        assertEquals(expected.entryDate, mainViewModel.searchEstate.entryDate)
 
         mainViewModel.setSearch(expected.soldDate!!, EstateSearch.SOLD_SINCE)
-        assertEquals(mainViewModel.searchEstate.soldDate, expected.soldDate)
+        assertEquals(expected.soldDate, mainViewModel.searchEstate.soldDate)
 
         mainViewModel.setSearch(expected.nbImages!!, EstateSearch.IMAGES)
-        assertEquals(mainViewModel.searchEstate.nbImages, expected.nbImages)
+        assertEquals(expected.nbImages, mainViewModel.searchEstate.nbImages)
 
         mainViewModel.setSearch(expected.sold!!, EstateSearch.SOLD)
-        assertEquals(mainViewModel.searchEstate.sold, expected.sold)
+        assertEquals(expected.sold, mainViewModel.searchEstate.sold)
     }
 
+    @Test
+    @Throws(Exception::class)
+    fun testSetSearchToNull() = runTest {
+        testSetSearch()
 
+        mainViewModel.setSearchNull(EstateSearch.ALL)
 
+        assertEquals(null, mainViewModel.searchEstate.type)
+        assertEquals("", mainViewModel.searchEstate.city)
+        assertEquals("", mainViewModel.searchEstate.zipCode)
+        assertEquals("", mainViewModel.searchEstate.country)
+        assertEquals(null, mainViewModel.searchEstate.priceMinDollar)
+        assertEquals(null, mainViewModel.searchEstate.priceMaxDollar)
+        assertEquals(null, mainViewModel.searchEstate.nbRooms)
+        assertEquals(null, mainViewModel.searchEstate.nbBedrooms)
+        assertEquals(null, mainViewModel.searchEstate.nbBathrooms)
+        assertEquals(false, mainViewModel.searchEstate.nearbySchool)
+        assertEquals(false, mainViewModel.searchEstate.nearbyShop)
+        assertEquals(false, mainViewModel.searchEstate.nearbyPark)
+        assertEquals(null, mainViewModel.searchEstate.agentId)
+        assertEquals(null, mainViewModel.searchEstate.entryDate)
+        assertEquals(null, mainViewModel.searchEstate.soldDate)
+        assertEquals(null, mainViewModel.searchEstate.nbImages)
+        assertEquals(false, mainViewModel.searchEstate.sold)
+    }
 }

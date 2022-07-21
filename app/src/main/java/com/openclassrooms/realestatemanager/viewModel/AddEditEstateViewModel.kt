@@ -10,6 +10,7 @@ import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
+import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import kotlinx.coroutines.launch
@@ -79,12 +80,13 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
     private val _nbBedrooms = MutableLiveData<Int>()
     val nbBedrooms = _nbBedrooms
 
-    private val _entryDate = MutableLiveData(System.currentTimeMillis())
+    private val _entryDate = MutableLiveData<Long>()
+    val entryDate = _entryDate
 
     private val _soldDate = MutableLiveData<Long>()
 
     private val _sold = MutableLiveData(false)
-    val status = _sold
+    val sold = _sold
 
     private val _warning = MutableLiveData<Int>()
     val warning = _warning
@@ -92,7 +94,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
     private val _mustClose = MutableLiveData<Boolean>()
     val mustClose = _mustClose
 
-    private var currentEstateId: Int? = null
+    var currentEstateId: Int? = null
 
     fun getListOfAgent(): LiveData<List<Agent>> {
         return agentRepository.getAgents().asLiveData()
@@ -101,7 +103,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
     fun searchLocation() {
         viewModelScope.launch {
             if(getCurrentFullAddress() != null) {
-                println("SEARCH LOCATION : " + getCurrentFullAddress())
+                Log.i("SEARCH LOCATION", getCurrentFullAddress().toString())
                 coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).collect { coordinates ->
                     if(coordinates != null) setLocation(coordinates.xCoordinate, coordinates.yCoordinate)
                 }
@@ -121,6 +123,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _address.postValue(it.estate.address)
                 _area.postValue(it.estate.area!!)
                 _price.postValue(it.estate.priceDollar!!)
+                priceAsDollar = _price.value!!
                 _isDollar.postValue(true)
                 _coordinates.postValue(Coordinates(it.estate.xCoordinate!!, it.estate.yCoordinate!!))
                 pictureList = it.images as MutableList<ImageWithDescription>
@@ -133,8 +136,8 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _nbRooms.postValue(it.estate.nbRooms!!)
                 _nbBathrooms.postValue(it.estate.nbBathrooms!!)
                 _nbBedrooms.postValue(it.estate.nbBedrooms!!)
-                _entryDate.value = it.estate.entryDate
-                _sold.value = it.estate.sold
+                _entryDate.postValue(it.estate.entryDate)
+                _sold.postValue(it.estate.sold)
                 if(it.estate.soldDate != null) _soldDate.value = it.estate.soldDate!! else _soldDate.value = 0
             }
         }
@@ -146,7 +149,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
     fun changeCurrency() {
         _isDollar.postValue(!_isDollar.value!!)
-        if(_price.value != null) refreshPriceAsDollar()
+        refreshPriceAsDollar()
     }
 
     private fun getCurrentFullAddress(): String? {
@@ -175,8 +178,10 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
     }
 
     private fun refreshPriceAsDollar() {
-        priceAsDollar = if(!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
-        Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
+        if(_price.value != null) {
+            priceAsDollar = if(!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
+            Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
+        }
     }
 
     fun setRooms(rooms: String) { _nbRooms.value = rooms.toInt() }
@@ -209,6 +214,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
     fun saveEstate() {
         if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
+            if (_entryDate.value == null) _entryDate.value = System.currentTimeMillis()
             viewModelScope.launch {
                 currentEstateId = estateRepository.addEstate(Estate(id = currentEstateId,
                     type = _type.value!!,

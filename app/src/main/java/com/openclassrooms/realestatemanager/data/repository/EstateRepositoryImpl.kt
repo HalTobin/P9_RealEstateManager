@@ -2,8 +2,10 @@ package com.openclassrooms.realestatemanager.data.repository
 
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
+import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateUI
+import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import kotlinx.coroutines.flow.Flow
 

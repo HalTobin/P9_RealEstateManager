@@ -37,7 +37,8 @@
     <string name="add_edit_estate_save_choose_image_title">Intégrer un média</string>
     <string name="add_edit_estate_save_capture_video_item">Enregistrer une vidéo</string>
     <string name="add_edit_estate_save_take_picture_item">Prendre une photo</string>
-    <string name="add_edit_estate_save_from_gallery_item">Choisir depuis la galerie</string>
+    <string name="add_edit_estate_save_image_from_gallery_item">Choisir une image depuis la galerie</string>
+    <string name="add_edit_estate_save_video_from_gallery_item">Choisir une vidéo depuis la galerie</string>
     <string name="add_edit_estate_image_dialog_text">Description</string>
 
     <string name="add_edit_estate_image_dialog_delete_image">Souhaitez-vous supprimer l\'image ?</string>

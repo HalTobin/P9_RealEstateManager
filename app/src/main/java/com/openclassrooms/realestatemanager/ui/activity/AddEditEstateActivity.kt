@@ -3,8 +3,10 @@ package com.openclassrooms.realestatemanager.ui.activity
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -409,14 +411,16 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         val options = arrayOf<CharSequence>(
             getString(R.string.add_edit_estate_save_capture_video_item),
             getString(R.string.add_edit_estate_save_take_picture_item),
-            getString(R.string.add_edit_estate_save_from_gallery_item)
+            getString(R.string.add_edit_estate_save_image_from_gallery_item),
+            getString(R.string.add_edit_estate_save_video_from_gallery_item)
         )
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
             if (options[item] == getString(R.string.add_edit_estate_save_capture_video_item)) captureVideo()
             if (options[item] == getString(R.string.add_edit_estate_save_take_picture_item)) takePicture()
-            if (options[item] == getString(R.string.add_edit_estate_save_from_gallery_item)) selectImageFromGallery()
+            if (options[item] == getString(R.string.add_edit_estate_save_image_from_gallery_item)) selectImageFromGallery()
+            if (options[item] == getString(R.string.add_edit_estate_save_video_from_gallery_item)) selectVideoFromGallery()
         }
         builder.show()
     }
@@ -439,8 +443,9 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
-    //TODO - Videos doesn't appear
-    private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/* video/*")
+    private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/*")
+
+    private fun selectVideoFromGallery() = selectImageFromGalleryResult.launch("video/mp4")
 
     private fun getTmpFileUri(suffix: String): Uri {
         val tmpFile = File.createTempFile("tmp_image_file", suffix, cacheDir).apply {
