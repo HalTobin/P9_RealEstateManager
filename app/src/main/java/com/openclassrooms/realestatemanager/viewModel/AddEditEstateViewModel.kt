@@ -13,6 +13,7 @@ import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AddEditEstateViewModel(private val estateRepository: EstateRepository,
@@ -104,9 +105,9 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
         viewModelScope.launch {
             if(getCurrentFullAddress() != null) {
                 Log.i("SEARCH LOCATION", getCurrentFullAddress().toString())
-                coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).collect { coordinates ->
-                    if(coordinates != null) setLocation(coordinates.xCoordinate, coordinates.yCoordinate)
-                }
+                var myCoordinates = coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).first()
+                myCoordinates = myCoordinates
+                if(myCoordinates != null) setLocation(myCoordinates.xCoordinate, myCoordinates.yCoordinate)
             }
         }
     }
@@ -123,7 +124,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _address.postValue(it.estate.address)
                 _area.postValue(it.estate.area!!)
                 _price.postValue(it.estate.priceDollar!!)
-                priceAsDollar = _price.value!!
+                //priceAsDollar = it.estate.priceDollar!!
                 _isDollar.postValue(true)
                 _coordinates.postValue(Coordinates(it.estate.xCoordinate!!, it.estate.yCoordinate!!))
                 pictureList = it.images as MutableList<ImageWithDescription>
@@ -140,6 +141,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _sold.postValue(it.estate.sold)
                 if(it.estate.soldDate != null) _soldDate.value = it.estate.soldDate!! else _soldDate.value = 0
             }
+            refreshPriceAsDollar()
         }
     }
 

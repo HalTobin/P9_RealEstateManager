@@ -111,7 +111,7 @@ data class Estate(
                 sold = values.getAsBoolean("sold"),
                 entryDate = values.getAsLong("entryDate"),
                 soldDate = values.getAsLong("soldDate"),
-                agentId = values.getAsInteger("agent"),
+                agentId = values.getAsInteger("agentId"),
                 description = values.getAsString("description")
             )
         }

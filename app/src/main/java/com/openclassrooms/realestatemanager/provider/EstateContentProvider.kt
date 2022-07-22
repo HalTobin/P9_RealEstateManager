@@ -14,9 +14,11 @@ class EstateContentProvider :ContentProvider() {
 
     private val database: EstateDatabase by inject()
 
-    val AUTHORITY = "com.openclassrooms.realestatemanager.provider"
-    val TABLE_NAME = Estate::class.simpleName
-    val URI_ITEM = Uri.parse("content://".plus(AUTHORITY).plus("/").plus(TABLE_NAME))
+    companion object {
+        const val AUTHORITY = "com.openclassrooms.realestatemanager.provider"
+        val TABLE_NAME = Estate::class.simpleName
+        val URI_ITEM = Uri.parse("content://".plus(AUTHORITY).plus("/").plus(TABLE_NAME))
+    }
 
     override fun onCreate(): Boolean {
         return true

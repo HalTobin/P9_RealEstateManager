@@ -1,8 +1,10 @@
 package com.openclassrooms.realestatemanager.viewModel
 
+import com.openclassrooms.realestatemanager.test.R
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
 import com.openclassrooms.realestatemanager.data.MainCoroutineRule
@@ -18,12 +20,16 @@ import com.openclassrooms.realestatemanager.di.DataModule
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.util.FileUtils.getStringFromFile
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -41,7 +47,7 @@ import java.util.concurrent.TimeUnit
 class AddEditViewModelTest {
 
     private val responseFile =
-        "src/androidTest/resources/CoordinatesApiPlaceholder.json"
+        "/CoordinatesApiPlaceholder.json"
 
     private val mockWebServer = MockWebServer()
 
@@ -103,24 +109,32 @@ class AddEditViewModelTest {
         database.close()
     }
 
-    /*@Test
+    private fun getJson(): String {
+        val inputStream = AddEditViewModelTest::class.java.getResourceAsStream("/CoordinatesApiPlaceholder.json")
+        //val inputStream = InstrumentationRegistry.getInstrumentation().targetContext.resources.openRawResource(fileName)
+        val s = Scanner(inputStream).useDelimiter("\\A")
+        return if (s.hasNext()) s.next() else ""
+    }
+
+    @Test
     @Throws
     fun testSearchLocation() = runTest {
         val expected = Coordinates(48.863845, 2.38283)
-        mockWebServer.enqueue(
-            MockResponse().setResponseCode(200).setBody()
-        )
+
+        mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(getJson()))
 
         testSetCountry()
         testSetCity()
         testSetZip()
         testSetAddress()
-        advanceUntilIdle()
-        addEditViewModel.searchLocation()
-        advanceUntilIdle()
 
-        assertEquals(expected, addEditViewModel.coordinates.value)
-    }*/
+        withContext(Dispatchers.IO) {
+            addEditViewModel.searchLocation()
+            advanceUntilIdle()
+            assertEquals(expected, addEditViewModel.coordinates.getOrAwaitValue())
+        }
+
+    }
 
     @Test
     @Throws(Exception::class)

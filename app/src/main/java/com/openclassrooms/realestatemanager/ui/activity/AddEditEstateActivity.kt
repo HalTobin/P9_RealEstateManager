@@ -51,7 +51,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
     private var map: GoogleMap? = null
     private var marker: Marker? = null
-    var options = GoogleMapOptions().liteMode(true)
 
     private var latestTmpUri: Uri? = null
 
@@ -98,7 +97,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         exitConfirmationDialog()
     }
 
-    //TODO - Change addTextChangedListener with .doAfterTextChanged
     private fun setUpListeners() {
 
         // Textfield listener for the Estate's title
