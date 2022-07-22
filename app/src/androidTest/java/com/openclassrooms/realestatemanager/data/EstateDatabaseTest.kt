@@ -42,7 +42,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testWriteAndReadEstate() = runTest {
+    fun test_write_and_read_estate() = runTest {
         val indexOfExpected = 1
         estateDao.insert(InMemoryEstateDatabase.estates[indexOfExpected])
 
@@ -53,7 +53,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testWriteAndReadEstateById() = runTest {
+    fun test_write_and_read_estate_by_id() = runTest {
         val indexOfExpected = 1
         estateDao.insert(InMemoryEstateDatabase.estates[indexOfExpected])
 
@@ -64,7 +64,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSearch() = runTest {
+    fun test_search() = runTest {
         val search = EstateSearch(type = Estate.TYPE_APPARTMENT)
         estateDao.insert(InMemoryEstateDatabase.estates[1])
 
@@ -76,7 +76,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testChangeSoldState() = runTest {
+    fun test_change_sold_state() = runTest {
         val estateIndex = 0
         estateDao.changeSoldState(InMemoryEstateDatabase.estates[estateIndex].id!!, true)
 
@@ -87,7 +87,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testChangeSoldDate() = runTest {
+    fun test_change_sold_date() = runTest {
         val estateIndex = 0
         estateDao.changeSoldDate(InMemoryEstateDatabase.estates[estateIndex].id!!, 1657283786000)
 
@@ -98,7 +98,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testGetAgents() = runTest {
+    fun test_get_agents() = runTest {
         agentDao.getAgents().take(1).collect {
             assertEquals(InMemoryEstateDatabase.agents, it)
         }
@@ -106,7 +106,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testWriteAndReadImage() = runTest {
+    fun test_write_and_read_image() = runTest {
         val expected = InMemoryEstateDatabase.images1[0]
 
         imageDao.insertImage(expected)
@@ -118,7 +118,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testWriteAndReadImages() = runTest {
+    fun test_write_and_read_images() = runTest {
         imageDao.insertImages(InMemoryEstateDatabase.images1)
 
         imageDao.getAllImages().take(1).collect {
@@ -128,7 +128,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testWriteAndReadImagesByEstateId() = runTest {
+    fun test_write_and_read_images_by_estate_id() = runTest {
         val expected = InMemoryEstateDatabase.estates[0].id!!
 
         estateDao.insert(InMemoryEstateDatabase.estates[1])
@@ -144,7 +144,7 @@ class EstateDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun testDeleteImage() = runTest {
+    fun test_delete_image() = runTest {
         imageDao.insertImages(InMemoryEstateDatabase.images1)
         imageDao.deleteImage(InMemoryEstateDatabase.images1[0])
 

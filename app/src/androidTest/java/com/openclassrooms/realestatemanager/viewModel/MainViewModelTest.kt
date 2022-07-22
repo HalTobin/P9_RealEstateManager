@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.viewModel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
@@ -14,12 +13,9 @@ import com.openclassrooms.realestatemanager.data.getOrAwaitValue
 import com.openclassrooms.realestatemanager.data.repository.AgentRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.EstateRepositoryImpl
 import com.openclassrooms.realestatemanager.data.repository.ImageRepositoryImpl
-import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateSearch
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -75,14 +71,14 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testGetEstates() = runTest {
+    fun test_get_estates() = runTest {
         advanceUntilIdle()
         assertEquals(2, mainViewModel.estates.getOrAwaitValue().size)
     }
 
     @Test
     @Throws(Exception::class)
-    fun testSetLocation() = runTest {
+    fun test_set_location() = runTest {
         val xCoordinate = 46.048336
         val yCoordinate = 14.504161
         mainViewModel.setLocation(xCoordinate, yCoordinate)
@@ -92,7 +88,7 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSelectEstate() = runTest {
+    fun test_select_estate() = runTest {
         val selection = InMemoryEstateDatabase.estates[1].id!!
         mainViewModel.selectEstate(selection)
         advanceUntilIdle()
@@ -101,7 +97,7 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSetEstateId() = runTest {
+    fun test_set_estate_id() = runTest {
         val selection = InMemoryEstateDatabase.estatesUi[1]
         mainViewModel.setEstateId(selection.estate.id!!)
         advanceUntilIdle()
@@ -110,7 +106,7 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testUpdateSoldState() = runTest {
+    fun test_update_sold_state() = runTest {
         val selection = InMemoryEstateDatabase.estates[0]
         mainViewModel.setEstateId(selection.id!!)
 
@@ -124,7 +120,7 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSetSearch() = runTest {
+    fun test_set_search() = runTest {
         val expected = EstateSearch(
             type = Estate.TYPE_APPARTMENT,
             city = "Paris",
@@ -200,8 +196,8 @@ class MainViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testSetSearchToNull() = runTest {
-        testSetSearch()
+    fun test_set_search_to_null() = runTest {
+        test_set_search()
 
         mainViewModel.setSearchNull(EstateSearch.ALL)
 

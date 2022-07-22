@@ -124,7 +124,7 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _address.postValue(it.estate.address)
                 _area.postValue(it.estate.area!!)
                 _price.postValue(it.estate.priceDollar!!)
-                //priceAsDollar = it.estate.priceDollar!!
+                priceAsDollar = it.estate.priceDollar!!
                 _isDollar.postValue(true)
                 _coordinates.postValue(Coordinates(it.estate.xCoordinate!!, it.estate.yCoordinate!!))
                 pictureList = it.images as MutableList<ImageWithDescription>

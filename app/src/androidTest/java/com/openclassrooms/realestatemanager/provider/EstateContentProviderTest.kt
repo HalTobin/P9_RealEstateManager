@@ -17,11 +17,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.loadKoinModules
-import java.security.Provider
-import java.security.Security.getProvider
 
-
-//TODO - See how to test the content provider
 class EstateContentProviderTest {
 
     lateinit var mProviderRule: ProviderTestRule
@@ -38,7 +34,7 @@ class EstateContentProviderTest {
     }
 
     @Test
-    fun testUpdate() {
+    fun test_update() {
         // Insert an item
         insert()
 
@@ -68,7 +64,7 @@ class EstateContentProviderTest {
     }
 
     @Test
-    fun insertAndGetItem() {
+    fun insert_and_get_item() {
         // Add an item
         insert()
         // Test if the item has been correctly added
@@ -88,7 +84,7 @@ class EstateContentProviderTest {
     }
 
     @Test
-    fun verifyContentProviderContractWorks() {
+    fun verify_content_provider_contract_works() {
         val resolver: ContentResolver = mProviderRule.resolver
 
         val testContentValues = ContentValues(22)

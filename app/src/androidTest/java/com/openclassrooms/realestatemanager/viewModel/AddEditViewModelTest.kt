@@ -1,10 +1,8 @@
 package com.openclassrooms.realestatemanager.viewModel
 
-import com.openclassrooms.realestatemanager.test.R
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.platform.app.InstrumentationRegistry
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
 import com.openclassrooms.realestatemanager.data.MainCoroutineRule
@@ -20,11 +18,8 @@ import com.openclassrooms.realestatemanager.di.DataModule
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
-import com.openclassrooms.realestatemanager.util.FileUtils.getStringFromFile
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -39,15 +34,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Retrofit
-import java.io.File
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AddEditViewModelTest {
-
-    private val responseFile =
-        "/CoordinatesApiPlaceholder.json"
 
     private val mockWebServer = MockWebServer()
 
@@ -111,22 +102,21 @@ class AddEditViewModelTest {
 
     private fun getJson(): String {
         val inputStream = AddEditViewModelTest::class.java.getResourceAsStream("/CoordinatesApiPlaceholder.json")
-        //val inputStream = InstrumentationRegistry.getInstrumentation().targetContext.resources.openRawResource(fileName)
         val s = Scanner(inputStream).useDelimiter("\\A")
         return if (s.hasNext()) s.next() else ""
     }
 
     @Test
     @Throws
-    fun testSearchLocation() = runTest {
+    fun test_search_location() = runTest {
         val expected = Coordinates(48.863845, 2.38283)
 
         mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(getJson()))
 
-        testSetCountry()
-        testSetCity()
-        testSetZip()
-        testSetAddress()
+        test_set_country()
+        test_set_city()
+        test_set_zip()
+        test_set_address()
 
         withContext(Dispatchers.IO) {
             addEditViewModel.searchLocation()
@@ -138,7 +128,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws(Exception::class)
-    fun testLoadEstate() = runTest {
+    fun test_load_estate() = runTest {
         val selection = InMemoryEstateDatabase.estatesUi[0]
         addEditViewModel.loadEstate(selection.estate.id!!)
         advanceUntilIdle()
@@ -175,7 +165,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testChangeCurrency() = runTest {
+    fun test_change_currency() = runTest {
         addEditViewModel.changeCurrency()
         advanceUntilIdle()
         assertFalse(addEditViewModel.isDollar.value!!)
@@ -183,7 +173,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetTitle() = runTest {
+    fun test_set_title() = runTest {
         val expected = "Test"
         addEditViewModel.setTitle(expected)
         advanceUntilIdle()
@@ -192,7 +182,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetType() = runTest {
+    fun test_set_type() = runTest {
         val expected = Estate.TYPE_APPARTMENT
         addEditViewModel.setType(expected)
         advanceUntilIdle()
@@ -201,7 +191,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetCountry() = runTest {
+    fun test_set_country() = runTest {
         val expected = "France"
         addEditViewModel.setCountry(expected)
         advanceUntilIdle()
@@ -210,7 +200,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetCity() = runTest {
+    fun test_set_city() = runTest {
         val expected = "Paris"
         addEditViewModel.setCity(expected)
         advanceUntilIdle()
@@ -219,7 +209,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetZip() = runTest {
+    fun test_set_zip() = runTest {
         val expected = "75011"
         addEditViewModel.setZip(expected)
         advanceUntilIdle()
@@ -228,7 +218,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetAddress() = runTest {
+    fun test_set_address() = runTest {
         val expected = "95 Avenue De La République"
         addEditViewModel.setAddress(expected)
         advanceUntilIdle()
@@ -237,7 +227,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetArea() = runTest {
+    fun test_set_area() = runTest {
         val expected = 50
         addEditViewModel.setArea(expected.toString())
         advanceUntilIdle()
@@ -246,7 +236,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetPrice() = runTest {
+    fun test_set_price() = runTest {
         val expected = 100000
         addEditViewModel.setPrice(expected.toString())
         advanceUntilIdle()
@@ -255,7 +245,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testRefreshPriceAsDollar() = runTest {
+    fun test_refresh_price_as_dollar() = runTest {
         val given = 100
         val expected = given.fromEuroToDollar()
         addEditViewModel.setPrice(given.toString())
@@ -266,7 +256,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetRooms() = runTest {
+    fun test_set_rooms() = runTest {
         val expected = 5
         addEditViewModel.setRooms(expected.toString())
         advanceUntilIdle()
@@ -275,7 +265,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetBedrooms() = runTest {
+    fun test_set_bedrooms() = runTest {
         val expected = 3
         addEditViewModel.setBedrooms(expected.toString())
         advanceUntilIdle()
@@ -284,7 +274,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetBathrooms() = runTest {
+    fun test_set_bathrooms() = runTest {
         val expected = 1
         addEditViewModel.setBathrooms(expected.toString())
         advanceUntilIdle()
@@ -293,7 +283,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetPark() = runTest {
+    fun test_set_park() = runTest {
         val expected = true
         addEditViewModel.setPark(expected)
         advanceUntilIdle()
@@ -302,7 +292,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetSchool() = runTest {
+    fun test_set_school() = runTest {
         val expected = true
         addEditViewModel.setSchool(expected)
         advanceUntilIdle()
@@ -311,7 +301,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetShop() = runTest {
+    fun test_set_shop() = runTest {
         val expected = true
         addEditViewModel.setShop(expected)
         advanceUntilIdle()
@@ -320,7 +310,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetAgent() = runTest {
+    fun test_set_agent() = runTest {
         val expected = 1
         addEditViewModel.setAgent(expected)
         advanceUntilIdle()
@@ -329,7 +319,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSetDescription() = runTest {
+    fun test_set_description() = runTest {
         val expected = "This is a description"
         addEditViewModel.setDescription(expected)
         advanceUntilIdle()
@@ -338,7 +328,7 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testAddPictureWhenAddingAnEstate() = runTest {
+    fun test_add_picture_when_adding_an_estate() = runTest {
         val givenFile = "folder/file.jpg"
         val givenText = "Room"
         val expected = listOf(
@@ -355,8 +345,8 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testAddPictureWhenEditingAnEstate() = runTest {
-        testLoadEstate()
+    fun test_add_picture_when_editing_an_estate() = runTest {
+        test_load_estate()
         val givenFile = "folder/file.jpg"
         val givenText = "Room"
         val expected =
@@ -368,8 +358,8 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testRemovePicture() = runTest {
-        testLoadEstate()
+    fun test_remove_picture() = runTest {
+        test_load_estate()
         val expected = listOf(InMemoryEstateDatabase.images1[0])
         val removed = InMemoryEstateDatabase.images1[1]
         addEditViewModel.removePicture(removed)
@@ -380,10 +370,10 @@ class AddEditViewModelTest {
 
     @Test
     @Throws
-    fun testSaveEstate() = runTest {
+    fun test_save_estate() = runTest {
         val expected = InMemoryEstateDatabase.estatesUi[0]
 
-        testLoadEstate()
+        test_load_estate()
         addEditViewModel.saveEstate()
         advanceUntilIdle()
 
