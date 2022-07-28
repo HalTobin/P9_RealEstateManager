@@ -154,7 +154,6 @@ class AddEditEstateViewModel(
                 if (it.estate.soldDate != null) _soldDate.value =
                     it.estate.soldDate!! else _soldDate.value = 0
             }
-            refreshPriceAsDollar()
         }
     }
 
@@ -165,8 +164,10 @@ class AddEditEstateViewModel(
 
     // Allows the user to change currency from EURO to DOLLAR or from DOLLAR to EURO
     fun changeCurrency() {
+        priceAsDollar =
+            if (isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
         _isDollar.postValue(!_isDollar.value!!)
-        refreshPriceAsDollar()
+        Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
     }
 
     // Get the full address of an estate
@@ -206,15 +207,9 @@ class AddEditEstateViewModel(
 
     fun setPrice(price: String) {
         _price.value = price.toInt()
-        refreshPriceAsDollar()
-    }
-
-    private fun refreshPriceAsDollar() {
-        if (_price.value != null) {
-            priceAsDollar =
-                if (!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
-            Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
-        }
+        priceAsDollar =
+            if (!isDollar.value!!) price.toInt().fromEuroToDollar() else price.toInt()
+        Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
     }
 
     fun setRooms(rooms: String) {
