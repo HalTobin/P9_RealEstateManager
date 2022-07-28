@@ -24,7 +24,13 @@ class EstateContentProviderTest {
 
     @Before
     fun setUp() {
-        loadKoinModules(listOf(ViewModelModule.viewModelModule, FakeDataModule.fakeDataModule, FragmentModule.fragmentsModule))
+        loadKoinModules(
+            listOf(
+                ViewModelModule.viewModelModule,
+                FakeDataModule.fakeDataModule,
+                FragmentModule.fragmentsModule
+            )
+        )
 
         mProviderRule =
             ProviderTestRule.Builder(
@@ -44,7 +50,11 @@ class EstateContentProviderTest {
 
         // Update an item
         val affectedRows: Int =
-            mProviderRule.resolver.update(EstateContentProvider.URI_ITEM, contentValuesToUpdate, null)
+            mProviderRule.resolver.update(
+                EstateContentProvider.URI_ITEM,
+                contentValuesToUpdate,
+                null
+            )
         // Check how many items were affected
         assertEquals(1, affectedRows)
 

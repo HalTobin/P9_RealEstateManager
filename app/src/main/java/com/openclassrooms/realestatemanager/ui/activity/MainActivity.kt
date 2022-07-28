@@ -12,7 +12,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -34,6 +33,7 @@ import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragment.ListFragment
 import com.openclassrooms.realestatemanager.ui.fragment.MapFragment
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
+import com.openclassrooms.realestatemanager.util.Utils.isAnAndroidTest
 import com.openclassrooms.realestatemanager.util.Utils.isInternetAvailable
 import com.openclassrooms.realestatemanager.util.Utils.toDateString
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
@@ -53,14 +53,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
 
     private var isInDollar = true
 
+    private var isFragmentDetailsOpen = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding!!.root)
 
+        // Loads the layout that correspond to the user's device
         if (isLarge()) {
-            setUpClassicLayout()
-        } else {
             setUpForLargeLayout()
+        } else {
+            setUpClassicLayout()
         }
         setListeners()
 
@@ -73,16 +76,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
         )
 
         mainViewModel.getImages().observe(this) { images ->
-            mainViewModel.cleanImageFolder(this, images)
+            if (!isAnAndroidTest()) mainViewModel.cleanImageFolder(this, images)
         }
 
         mainViewModel.findCurrentLocation(this)
     }
 
+    // If the app runs on a large device,
     override fun onBackPressed() {
-        if (!isLarge()) {
-            removeDetailsFragment()
-            //setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
+        if (isLarge()) {
+            if (isFragmentDetailsOpen) removeDetailsFragment()
+            else super.onBackPressed()
         } else {
             super.onBackPressed()
         }
@@ -111,25 +115,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
         }
     }
 
+    // Load the fragments and the observer that correspond to the large layout
     private fun setUpForLargeLayout() {
         setFragment(supportFragmentManager, R.id.main_fragment_list, listFragment)
         setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
         mainViewModel.selection.observe(this) { id ->
             mainViewModel.setEstateId(id)
-            addDetailsFragment()
+            if(!isFragmentDetailsOpen) addDetailsFragment()
         }
     }
 
     private fun setListeners() {
-
         binding?.apply {
             mainListBtAdd.setOnClickListener { navigateToAddEditActivity(this@MainActivity) }
             mainAppbar.mainSearch.setOnClickListener { showSearchDialog() }
             mainAppbar.mainChangeCurrency.setOnClickListener { mainViewModel.invertCurrency() }
-        }
-
-        mainViewModel.closeDetails.observe(this) {
-            if (it) setFragment(supportFragmentManager, R.id.main_fragment_map_details, mapFragment)
         }
 
         mainViewModel.isInDollar.observe(this) {
@@ -162,7 +162,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
 
     // Check if the user's device is large or not
     private fun isLarge(): Boolean {
-        return (binding?.mainFrameLayout != null)
+        return binding?.mainFrameLayout == null
     }
 
     @SuppressLint("InflateParams")
@@ -495,6 +495,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
 
     // Setup fragment
     private fun addDetailsFragment() {
+        isFragmentDetailsOpen = true
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.main_fragment_map_details, detailsFragment)
         fragmentTransaction.commit()
@@ -502,6 +503,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
 
     // Setup fragment
     private fun removeDetailsFragment() {
+        isFragmentDetailsOpen = false
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.remove(detailsFragment)
         fragmentTransaction.commit()
@@ -515,17 +517,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), DatePickerDialog.OnDat
             fragmentTransaction.commit()
         }
 
+        // Open the AddEditActivity
         fun navigateToAddEditActivity(context: Context) {
             val intent = Intent(context, AddEditEstateActivity::class.java)
             ActivityCompat.startActivity(context, intent, null)
         }
 
+        // Open the AddEditActivity with a given id
         fun navigateToAddEditActivity(activity: FragmentActivity, estateId: Int) {
             val intent = Intent(activity, AddEditEstateActivity::class.java)
             intent.putExtra("estate_id", estateId)
             ActivityCompat.startActivity(activity, intent, null)
         }
 
+        // Open the EstateDetailsActivity with a given id
         fun navigateToEstateDetailsActivity(activity: FragmentActivity, estateId: Int) {
             val intent = Intent(activity, EstateDetailsActivity::class.java)
             intent.putExtra("estate_id", estateId)

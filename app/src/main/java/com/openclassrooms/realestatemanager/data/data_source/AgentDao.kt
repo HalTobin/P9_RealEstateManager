@@ -14,7 +14,7 @@ interface AgentDao {
     fun getAgentById(id: Int): Flow<Agent>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAgent(agent: Agent) : Long
+    suspend fun insertAgent(agent: Agent): Long
 
     @Delete
     suspend fun deleteAgent(agent: Agent)

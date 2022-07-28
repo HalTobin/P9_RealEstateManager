@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.data
 
 import android.content.Context
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.openclassrooms.realestatemanager.data.data_source.AgentDao
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
@@ -65,12 +64,12 @@ class EstateDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun test_search() = runTest {
-        val search = EstateSearch(type = Estate.TYPE_APPARTMENT)
+        val search = EstateSearch(type = Estate.TYPE_APARTMENT)
         estateDao.insert(InMemoryEstateDatabase.estates[1])
 
         estateDao.searchEstates(search.getRequest()).take(1).collect {
             assertEquals(it.size, 1)
-            assertEquals(it[0].estate.type, Estate.TYPE_APPARTMENT)
+            assertEquals(it[0].estate.type, Estate.TYPE_APARTMENT)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
-import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +9,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateMapBinding
 import com.openclassrooms.realestatemanager.model.EstateUI
@@ -28,11 +22,14 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
     private val mainViewModel: MainViewModel by sharedViewModel()
 
     private var myGoogleMap: GoogleMap? = null
-    private var isPermissionGranted: Boolean = false
 
     private val markers: MutableList<Marker> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentEstateMapBinding.inflate(layoutInflater)
 
         return binding!!.root
@@ -40,7 +37,7 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         initMapView(savedInstanceState)
+        initMapView(savedInstanceState)
     }
 
     private fun initMapView(savedInstanceState: Bundle?) {
@@ -57,55 +54,43 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
         googleMap.setMapStyle(getMapStyle(requireContext()))
 
         // Refresh the location used by the MainViewModel when camera is idle
-        myGoogleMap?.apply { setOnCameraIdleListener {
-            /*restaurantViewModel.setLocation(
-                cameraPosition.target.latitude,
-                .cameraPosition.target.longitude
-            )*/
-        } }
+        myGoogleMap?.apply {
+            setOnCameraIdleListener {
+                /*restaurantViewModel.setLocation(
+                    cameraPosition.target.latitude,
+                    .cameraPosition.target.longitude
+                )*/
+            }
+        }
 
         setUpListenersAndObservers()
     }
 
+    // Refresh the list of markers displayed on the map
     private fun refreshMarkers(estates: List<EstateUI>?) {
         // Delete old markers
         for (marker in markers) {
             marker.remove()
         }
         if (estates != null) {
-            // Create new markers
+            // Create a new marker for each estate
             for (estate in estates) {
-                if((estate.estate.xCoordinate != null) && (estate.estate.yCoordinate != null)) {
+                if ((estate.estate.xCoordinate != null) && (estate.estate.yCoordinate != null)) {
                     myGoogleMap!!.addMarker(
                         MarkerOptions()
-                            .position(LatLng(estate.estate.xCoordinate!!, estate.estate.yCoordinate!!))
+                            .position(
+                                LatLng(
+                                    estate.estate.xCoordinate!!,
+                                    estate.estate.yCoordinate!!
+                                )
+                            )
                             .title(estate.estate.title)
-                    )?.let { markers.add(it) }
+                    )?.let {
+                        markers.add(it)
+                    }
                 }
             }
         }
-    }
-
-    // Check if the user have allow the app to access his location
-    fun checkPermission() {
-        Dexter.withContext(context).withPermissions(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ).withListener(object : MultiplePermissionsListener {
-            override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
-                println("Permission granted")
-                isPermissionGranted = true
-                //TODO - Search user location
-                //restaurantViewModel.searchUserLocation(context)
-            }
-            override fun onPermissionRationaleShouldBeShown(
-                list: List<PermissionRequest>,
-                permissionToken: PermissionToken
-            ) {
-                isPermissionGranted = false
-                permissionToken.continuePermissionRequest()
-            }
-        }).check()
     }
 
     // Setup listeners and observers of MapFragment
@@ -114,10 +99,6 @@ class MapFragment : BaseFragment<FragmentEstateMapBinding?>(), OnMapReadyCallbac
         mainViewModel.estates.observe(this) { estates: List<EstateUI> ->
             refreshMarkers(estates)
         }
-        /*getEstatesJob?.cancel()
-        getEstatesJob = mainViewModel.getEstates().onEach {
-            refreshMarkers(it)
-        }.launchIn(mainViewModel.viewModelScope)*/
 
         // Set an observer to get current location
         mainViewModel.coordinates.observe(this) { coordinates ->

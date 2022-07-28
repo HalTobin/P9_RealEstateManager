@@ -5,10 +5,10 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.repository.ImageRepository
 import kotlinx.coroutines.flow.Flow
 
-class ImageRepositoryImpl(private val dao: ImageDao): ImageRepository {
+class ImageRepositoryImpl(private val dao: ImageDao) : ImageRepository {
 
     override fun getImages(): Flow<List<ImageWithDescription>> {
-     return dao.getAllImages()
+        return dao.getAllImages()
     }
 
     override fun getImagesByEstateId(estateId: Int): Flow<List<ImageWithDescription>> {

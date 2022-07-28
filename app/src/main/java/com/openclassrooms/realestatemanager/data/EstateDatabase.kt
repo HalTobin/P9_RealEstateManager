@@ -16,7 +16,7 @@ import com.openclassrooms.realestatemanager.model.ImageWithDescription
     entities = [Estate::class, ImageWithDescription::class, Agent::class],
     version = 1
 )
-abstract class EstateDatabase: RoomDatabase() {
+abstract class EstateDatabase : RoomDatabase() {
 
     abstract val estateDao: EstateDao
     abstract val imageDao: ImageDao
@@ -26,6 +26,7 @@ abstract class EstateDatabase: RoomDatabase() {
 
         const val DATABASE_NAME = "estate_db"
 
+        // Prepopulate the database with a list of agents
         fun prepopulateDatabase(): Callback {
             return object : Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {

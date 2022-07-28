@@ -16,9 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
-import java.io.*
 import java.util.concurrent.TimeUnit
-
 
 class CoordinatesRepositoryImplTest {
 

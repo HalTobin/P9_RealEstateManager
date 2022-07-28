@@ -9,28 +9,8 @@ import org.junit.Test
 
 class EstateSearchTest {
 
-    private val dummyEstate = Estate(
-        id = 1,
-        title = "Maison Bagnolet",
-        type = Estate.TYPE_APPARTMENT,
-        address = "2bis rue de Bagnolet",
-        city = "Bagnolet",
-        zipCode = "93170",
-        country = "France",
-        xCoordinate = 48.868627,
-        yCoordinate = 2.421451,
-        priceDollar = 450000,
-        area = 25,
-        nbRooms = 3,
-        nbBathrooms = 1,
-        nbBedrooms = 1,
-        nearbyShop = false,
-        nearbySchool = false,
-        nearbyPark = false,
-        description = "This is a description"
-    )
-
-    private val baseQuery = "SELECT *,(SELECT COUNT(*) FROM imagewithdescription WHERE imagewithdescription.estateId = Estate.id) AS images FROM Estate "
+    private val baseQuery =
+        "SELECT *,(SELECT COUNT(*) FROM imagewithdescription WHERE imagewithdescription.estateId = Estate.id) AS images FROM Estate "
 
     @Before
     fun setUp() {
@@ -47,13 +27,14 @@ class EstateSearchTest {
     @Test
     fun `check search when the estate's type is given`() {
         // Given
-        val estateSearch = EstateSearch(type = Estate.TYPE_APPARTMENT)
+        val estateSearch = EstateSearch(type = Estate.TYPE_APARTMENT)
 
         // When
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND type = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND type = ?"))
     }
 
     @Test
@@ -65,7 +46,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND country = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND country = ?"))
     }
 
     @Test
@@ -77,7 +59,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND city = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND city = ?"))
     }
 
     @Test
@@ -89,7 +72,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND zipCode = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND zipCode = ?"))
     }
 
     @Test
@@ -101,7 +85,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND priceDollar >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND priceDollar >= ?"))
     }
 
     @Test
@@ -113,7 +98,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND priceDollar <= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND priceDollar <= ?"))
     }
 
     @Test
@@ -125,7 +111,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND area >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND area >= ?"))
     }
 
     @Test
@@ -137,7 +124,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND area <= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND area <= ?"))
     }
 
     @Test
@@ -149,7 +137,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nbRooms >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nbRooms >= ?"))
     }
 
     @Test
@@ -161,7 +150,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nbBedrooms >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nbBedrooms >= ?"))
     }
 
     @Test
@@ -173,7 +163,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nbBathrooms >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nbBathrooms >= ?"))
     }
 
     @Test
@@ -185,7 +176,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbyPark = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbyPark = ?"))
     }
 
     @Test
@@ -197,7 +189,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbySchool = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbySchool = ?"))
     }
 
     @Test
@@ -209,7 +202,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbyShop = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND nearbyShop = ?"))
     }
 
     @Test
@@ -221,7 +215,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND agentId = ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND agentId = ?"))
     }
 
     @Test
@@ -233,7 +228,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND entryDate >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND entryDate >= ?"))
     }
 
     @Test
@@ -245,7 +241,8 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND soldDate >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND soldDate >= ?"))
     }
 
     @Test
@@ -257,6 +254,7 @@ class EstateSearchTest {
         val query = estateSearch.getRequest()
 
         // Then
-        Truth.assertThat(query.sql.toString()).isEqualTo(baseQuery.plus("WHERE sold = ? AND images >= ?"))
+        Truth.assertThat(query.sql.toString())
+            .isEqualTo(baseQuery.plus("WHERE sold = ? AND images >= ?"))
     }
 }

@@ -38,8 +38,13 @@ object ImageUtils {
         return bitmap
     }
 
-    fun openImageViewer(context: Context, previewList: List<ImageWithDescription>, startPosition: Int): Int {
-        val overlayView: View = LayoutInflater.from(context).inflate(R.layout.overlay_imageview, null, false)
+    fun openImageViewer(
+        context: Context,
+        previewList: List<ImageWithDescription>,
+        startPosition: Int
+    ): Int {
+        val overlayView: View =
+            LayoutInflater.from(context).inflate(R.layout.overlay_imageview, null, false)
 
         return StfalconImageViewer.Builder(context, previewList) { view, image ->
             // If this is an picture, then it is directly displayed
@@ -68,7 +73,7 @@ object ImageUtils {
             .withOverlayView(overlayView)
             .withImageChangeListener { position ->
                 val myImage = previewList[position]
-                if(myImage.imageUrl.isAVideo()) {
+                if (myImage.imageUrl.isAVideo()) {
                     // Display an specific icon if the media is a video
                     // Set a clicklistener to open an intent that'll play the video
                     overlayView.overlay_imageview_is_a_video.load(R.drawable.ic_play)

@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseActivity
 import com.openclassrooms.realestatemanager.databinding.ActivityEstateDetailsBinding
@@ -10,7 +9,6 @@ import com.openclassrooms.realestatemanager.ui.fragment.DetailsFragment
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>() {
 
@@ -25,19 +23,10 @@ class EstateDetailsActivity : BaseActivity<ActivityEstateDetailsBinding>() {
         binding = ActivityEstateDetailsBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
-        //setUpListenersAndObservers()
-
         estateId = intent.getIntExtra("estate_id", -1)
         mainViewModel.setEstateId(estateId)
 
         setFragment(supportFragmentManager, R.id.fragment_estate_details, detailsFragment)
-    }
-
-    private fun setUpListenersAndObservers() {
-        mainViewModel.closeDetails.observe(this) {
-            //mainViewModel.resetCloseDetails()
-            super.onBackPressed()
-        }
     }
 
 }

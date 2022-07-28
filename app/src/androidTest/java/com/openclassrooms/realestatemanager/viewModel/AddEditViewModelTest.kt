@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
-import com.openclassrooms.realestatemanager.data.MainCoroutineRule
+import com.openclassrooms.realestatemanager.util.MainCoroutineRule
 import com.openclassrooms.realestatemanager.data.data_source.AgentDao
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
 import com.openclassrooms.realestatemanager.data.data_source.ImageDao
@@ -18,6 +18,7 @@ import com.openclassrooms.realestatemanager.di.DataModule
 import com.openclassrooms.realestatemanager.model.Coordinates
 import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
+import com.openclassrooms.realestatemanager.util.ApiPlaceholderLoader.getApiPlaceholder
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.take
@@ -35,7 +36,6 @@ import org.junit.Rule
 import org.junit.Test
 import retrofit2.Retrofit
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AddEditViewModelTest {
@@ -98,12 +98,7 @@ class AddEditViewModelTest {
     @Throws(IOException::class)
     fun clear() {
         database.close()
-    }
-
-    private fun getJson(): String {
-        val inputStream = AddEditViewModelTest::class.java.getResourceAsStream("/CoordinatesApiPlaceholder.json")
-        val s = Scanner(inputStream).useDelimiter("\\A")
-        return if (s.hasNext()) s.next() else ""
+        mockWebServer.shutdown()
     }
 
     @Test
@@ -111,7 +106,7 @@ class AddEditViewModelTest {
     fun test_search_location() = runTest {
         val expected = Coordinates(48.863845, 2.38283)
 
-        mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(getJson()))
+        mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(getApiPlaceholder()))
 
         test_set_country()
         test_set_city()
@@ -183,7 +178,7 @@ class AddEditViewModelTest {
     @Test
     @Throws
     fun test_set_type() = runTest {
-        val expected = Estate.TYPE_APPARTMENT
+        val expected = Estate.TYPE_APARTMENT
         addEditViewModel.setType(expected)
         advanceUntilIdle()
         assertEquals(expected, addEditViewModel.type.value)

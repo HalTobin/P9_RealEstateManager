@@ -34,6 +34,8 @@ class ListEstatePagerAdapter(
 
         holder.binding.itemEstateName.text = myEstate.estate.title
         holder.binding.itemEstateLocation.text = myEstate.estate.city
+
+        // Displays the price of the estate as EURO or as DOLLAR depending on the value 'isDollar'
         holder.binding.itemEstatePrice.text =
             if (isDollar) myEstate.estate.priceDollar?.toString().plus("$")
             else myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
@@ -43,6 +45,8 @@ class ListEstatePagerAdapter(
 
         // Set up the onClickListener to open the EstateDetailsActivity
         holder.itemView.setOnClickListener { mCallback!!.onClick(myEstate.estate.id!!) }
+
+        // Displayed a "SOLD" image only if the estate has been sold
         if (myEstate.estate.sold == true) holder.binding.itemEstateSold.load(R.drawable.sold)
         else holder.binding.itemEstateSold.load(0x00000000)
     }
@@ -51,6 +55,7 @@ class ListEstatePagerAdapter(
         return if (estates != null) estates!!.size else 0
     }
 
+    // Invert the displayed currency
     fun updateCurrency(isDollar: Boolean) {
         this.isDollar = isDollar
         notifyDataSetChanged()
@@ -72,6 +77,7 @@ class ListEstatePagerAdapter(
         this.isDollar = isDollar
     }
 
+    // Interface used to notify the parent of a click
     interface OnItemClick {
         fun onClick(estateId: Int)
     }

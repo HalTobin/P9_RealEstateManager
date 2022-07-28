@@ -8,108 +8,10 @@ import org.junit.Test
 
 class EstateTest {
 
-    private val dummmyEstateList = listOf(
-        Estate(
-            id = 1,
-            title = "Maison Bagnolet",
-            type = Estate.TYPE_APPARTMENT,
-            address = "2bis rue de Bagnolet",
-            city = "Bagnolet",
-            zipCode = "93170",
-            country = "France",
-            xCoordinate = 48.868627,
-            yCoordinate = 2.421451,
-            priceDollar = 450000,
-            area = 25,
-            nbRooms = 3,
-            nbBathrooms = 1,
-            nbBedrooms = 1,
-            nearbyShop = false,
-            nearbySchool = false,
-            nearbyPark = false
-        ),
-        Estate(
-            id = 2,
-            title = "Appartement Gambetta",
-            type = Estate.TYPE_APPARTMENT,
-            address = "40 avenue Gambetta",
-            city = "Paris",
-            zipCode = "75020",
-            country = "France",
-            xCoordinate = 48.86484,
-            yCoordinate = 2.397598,
-            priceDollar = 700000,
-            area = 35,
-            nbRooms = 4,
-            nbBathrooms = 1,
-            nbBedrooms = 2,
-            nearbyShop = true,
-            nearbySchool = true,
-            nearbyPark = true
-        ),
-        Estate(
-            id = 3,
-            title = "Studio Nation",
-            type = Estate.TYPE_APPARTMENT,
-            address = "11 rue des Immeubles Industriels",
-            city = "Paris",
-            zipCode = "75011",
-            country = "France",
-            xCoordinate = 48.849752,
-            yCoordinate = 2.392566,
-            priceDollar = 450000,
-            area = 20,
-            nbRooms = 1,
-            nbBathrooms = 1,
-            nbBedrooms = 0,
-            nearbyShop = false,
-            nearbySchool = true,
-            nearbyPark = false
-        ),
-        Estate(
-            id = 4,
-            title = "Appartement Villette",
-            type = Estate.TYPE_APPARTMENT,
-            address = "10 rue Delesseux",
-            city = "Paris",
-            zipCode = "75019",
-            country = "France",
-            xCoordinate = 48.888535,
-            yCoordinate = 2.38737,
-            priceDollar = 750000,
-            area = 45,
-            nbRooms = 5,
-            nbBathrooms = 1,
-            nbBedrooms = 3,
-            nearbyShop = true,
-            nearbySchool = false,
-            nearbyPark = true
-        ),
-        Estate(
-            id = 5,
-            title = "Studio Barbès",
-            type = Estate.TYPE_APPARTMENT,
-            address = "13 rue de Sofia",
-            city = "Paris",
-            zipCode = "75018",
-            country = "France",
-            xCoordinate = 48.884719,
-            yCoordinate = 2.348279,
-            priceDollar = 250000,
-            area = 20,
-            nbRooms = 1,
-            nbBathrooms = 1,
-            nbBedrooms = 0,
-            nearbyShop = false,
-            nearbySchool = true,
-            nearbyPark = true
-        ),
-    )
-
     private val dummyEstate = Estate(
         id = 1,
         title = "Maison Bagnolet",
-        type = Estate.TYPE_APPARTMENT,
+        type = Estate.TYPE_APARTMENT,
         address = "2bis rue de Bagnolet",
         city = "Bagnolet",
         zipCode = "93170",
@@ -160,7 +62,8 @@ class EstateTest {
         val description = ""
 
         // When
-        val isFilled = isFilled(title = title,
+        val isFilled = isFilled(
+            title = title,
             address = address,
             city = city,
             country = country,
@@ -171,7 +74,8 @@ class EstateTest {
             nbBathrooms = nbBathrooms,
             nbBedrooms = nbBedrooms,
             agentId = agentId,
-            description = description)
+            description = description
+        )
 
         // Then
         Truth.assertThat(isFilled).isFalse()
@@ -194,7 +98,8 @@ class EstateTest {
         val description = dummyEstate.description
 
         // When
-        val isFilled = isFilled(title = title,
+        val isFilled = isFilled(
+            title = title,
             address = address,
             city = city,
             country = country,
@@ -205,7 +110,8 @@ class EstateTest {
             nbBathrooms = nbBathrooms,
             nbBedrooms = nbBedrooms,
             agentId = agentId,
-            description = description)
+            description = description
+        )
 
         // Then
         Truth.assertThat(isFilled).isFalse()
@@ -228,7 +134,8 @@ class EstateTest {
         val description = dummyEstate.description
 
         // When
-        val isFilled = isFilled(title = title,
+        val isFilled = isFilled(
+            title = title,
             address = address,
             city = city,
             country = country,
@@ -239,7 +146,8 @@ class EstateTest {
             nbBathrooms = nbBathrooms,
             nbBedrooms = nbBedrooms,
             agentId = agentId,
-            description = description)
+            description = description
+        )
 
         // Then
         Truth.assertThat(isFilled).isFalse()

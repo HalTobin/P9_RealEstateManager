@@ -4,10 +4,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = arrayOf(ForeignKey(entity = Estate::class,
+@Entity(foreignKeys = [ForeignKey(entity = Estate::class,
     parentColumns = arrayOf("id"),
     childColumns = arrayOf("estateId"),
-    onDelete = ForeignKey.CASCADE)))
+    onDelete = ForeignKey.CASCADE)]
+)
 data class ImageWithDescription(
     @PrimaryKey val id: Int? = null,
     var estateId: Int,

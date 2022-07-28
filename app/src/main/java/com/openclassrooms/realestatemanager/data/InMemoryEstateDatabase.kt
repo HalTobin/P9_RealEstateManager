@@ -7,13 +7,14 @@ import com.openclassrooms.realestatemanager.model.Estate
 import com.openclassrooms.realestatemanager.model.EstateUI
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 
+// Provide a fake database, estates, images, agents and estatesUi object's used for testing the app
 object InMemoryEstateDatabase {
 
     val estates: List<Estate> = mutableListOf(
         Estate(
             id = 1,
             title = "Title 1",
-            type = Estate.TYPE_APPARTMENT,
+            type = Estate.TYPE_APARTMENT,
             address = "95 Avenue de la République",
             city = "Paris",
             zipCode = "75011",
@@ -61,15 +62,40 @@ object InMemoryEstateDatabase {
     )
 
     val images1: List<ImageWithDescription> = listOf(
-        ImageWithDescription(id = 1, estateId = 1, description = "Living Room", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 6, estateId = 1, description = "Bedroom", imageUrl = "nothing.jpg"),
+        ImageWithDescription(
+            id = 1,
+            estateId = 1,
+            description = "Living Room",
+            imageUrl = "nothing.jpg"
+        ),
+        ImageWithDescription(
+            id = 6,
+            estateId = 1,
+            description = "Bedroom",
+            imageUrl = "nothing.jpg"
+        ),
     )
 
     val images2: List<ImageWithDescription> = listOf(
         ImageWithDescription(id = 2, estateId = 2, description = "Entry", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 3, estateId = 2, description = "Kitchen", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 4, estateId = 2, description = "Bathroom", imageUrl = "nothing.jpg"),
-        ImageWithDescription(id = 5, estateId = 2, description = "Living Room", imageUrl = "nothing.jpg"),
+        ImageWithDescription(
+            id = 3,
+            estateId = 2,
+            description = "Kitchen",
+            imageUrl = "nothing.jpg"
+        ),
+        ImageWithDescription(
+            id = 4,
+            estateId = 2,
+            description = "Bathroom",
+            imageUrl = "nothing.jpg"
+        ),
+        ImageWithDescription(
+            id = 5,
+            estateId = 2,
+            description = "Living Room",
+            imageUrl = "nothing.jpg"
+        ),
     )
 
     val estatesUi: List<EstateUI> = mutableListOf(
@@ -93,6 +119,7 @@ object InMemoryEstateDatabase {
         Agent(id = 7, firstName = "Joseph", lastName = "Boutin")
     )
 
+    // Provide an fake database that runs in the devices memory, used for testing
     fun getInMemoryDatabase(context: Context): EstateDatabase =
         Room.inMemoryDatabaseBuilder(context, EstateDatabase::class.java)
             .addCallback(EstateDatabase.prepopulateDatabase())

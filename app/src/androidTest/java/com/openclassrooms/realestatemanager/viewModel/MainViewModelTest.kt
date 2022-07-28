@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.data.InMemoryEstateDatabase
-import com.openclassrooms.realestatemanager.data.MainCoroutineRule
+import com.openclassrooms.realestatemanager.util.MainCoroutineRule
 import com.openclassrooms.realestatemanager.data.data_source.AgentDao
 import com.openclassrooms.realestatemanager.data.data_source.EstateDao
 import com.openclassrooms.realestatemanager.data.data_source.ImageDao
@@ -83,7 +83,10 @@ class MainViewModelTest {
         val yCoordinate = 14.504161
         mainViewModel.setLocation(xCoordinate, yCoordinate)
         advanceUntilIdle()
-        assertEquals(Coordinates(xCoordinate, yCoordinate), mainViewModel.coordinates.getOrAwaitValue())
+        assertEquals(
+            Coordinates(xCoordinate, yCoordinate),
+            mainViewModel.coordinates.getOrAwaitValue()
+        )
     }
 
     @Test
@@ -122,7 +125,7 @@ class MainViewModelTest {
     @Throws(Exception::class)
     fun test_set_search() = runTest {
         val expected = EstateSearch(
-            type = Estate.TYPE_APPARTMENT,
+            type = Estate.TYPE_APARTMENT,
             city = "Paris",
             zipCode = "75020",
             country = "France",

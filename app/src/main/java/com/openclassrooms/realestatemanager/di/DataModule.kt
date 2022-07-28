@@ -28,6 +28,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+// Module dedicated to the app's data sources
 object DataModule {
 
     private const val POSITION_STACK_BASE_URL = "http://api.positionstack.com/v1/"
@@ -52,18 +53,24 @@ object DataModule {
         single {
             Retrofit
                 .Builder()
-                .client(OkHttpClient.Builder()
-                    .addInterceptor(HttpLoggingInterceptor())
-                    .readTimeout(60, TimeUnit.SECONDS)
-                    .connectTimeout(60, TimeUnit.SECONDS)
-                    .build())
+                .client(
+                    OkHttpClient.Builder()
+                        .addInterceptor(HttpLoggingInterceptor())
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .build()
+                )
                 .baseUrl(POSITION_STACK_BASE_URL)
                 .addConverterFactory(createGsonConverter())
                 .build()
         }
 
         single {
-            Room.databaseBuilder(androidApplication(), EstateDatabase::class.java, EstateDatabase.DATABASE_NAME)
+            Room.databaseBuilder(
+                androidApplication(),
+                EstateDatabase::class.java,
+                EstateDatabase.DATABASE_NAME
+            )
                 .fallbackToDestructiveMigration()
                 .addCallback(EstateDatabase.prepopulateDatabase())
                 .build()
@@ -104,7 +111,10 @@ object DataModule {
     // This allow the use of a custom deserializer (GetCoordinatesDeserializer)
     fun createGsonConverter(): Converter.Factory {
         val gsonBuilder = GsonBuilder()
-        gsonBuilder.registerTypeAdapter(object : TypeToken<Coordinates>() {}.type, GetCoordinatesDeserializer())
+        gsonBuilder.registerTypeAdapter(
+            object : TypeToken<Coordinates>() {}.type,
+            GetCoordinatesDeserializer()
+        )
         val gson: Gson = gsonBuilder.create()
         return GsonConverterFactory.create(gson)
     }

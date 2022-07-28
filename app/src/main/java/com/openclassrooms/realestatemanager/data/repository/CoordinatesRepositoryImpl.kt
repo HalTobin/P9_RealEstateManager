@@ -19,30 +19,39 @@ class CoordinatesRepositoryImpl(private val retrofit: Retrofit) : CoordinatesRep
 
     override suspend fun getCoordinates(address: String): Flow<Coordinates?> {
 
-            return flow {
-                val result = getResponse(
-                    request = { positionStackApi.getCoordinates(BuildConfig.POSITIONSTACK_API_KEY, address, 1) },
-                    defaultErrorMessage = "Error fetching Coordinates"
-                )
+        return flow {
+            val result = getResponse(
+                request = {
+                    positionStackApi.getCoordinates(
+                        BuildConfig.POSITIONSTACK_API_KEY,
+                        address,
+                        1
+                    )
+                },
+                defaultErrorMessage = "Error fetching Coordinates"
+            )
 
-                when (result.status) {
-                    Result.Status.SUCCESS -> {
-                        result.data?.let { coordinates ->
-                            Log.i("COORDINATES", coordinates.toString())
-                            emit(coordinates)
-                        }
+            when (result.status) {
+                Result.Status.SUCCESS -> {
+                    result.data?.let { coordinates ->
+                        Log.i("COORDINATES", coordinates.toString())
+                        emit(coordinates)
                     }
-                    Result.Status.ERROR -> {
-                        result.message?.let {
-                            Log.i("COOORDINATES", "ERROR $it")
-                        }
-                    }
-                    else -> {}
                 }
-            }.flowOn(Dispatchers.IO)
+                Result.Status.ERROR -> {
+                    result.message?.let {
+                        Log.i("COOORDINATES", "ERROR $it")
+                    }
+                }
+                else -> {}
+            }
+        }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun <T> getResponse(request: suspend () -> Response<T>, defaultErrorMessage: String): Result<T?> {
+    private suspend fun <T> getResponse(
+        request: suspend () -> Response<T>,
+        defaultErrorMessage: String
+    ): Result<T?> {
         return try {
             val result = request.invoke()
             if (result.isSuccessful) return Result.success(result.body())

@@ -3,7 +3,7 @@ package com.openclassrooms.realestatemanager.model
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class EstateUI (
+data class EstateUI(
     @Embedded
     val estate: Estate,
     @Relation(
@@ -11,9 +11,4 @@ data class EstateUI (
         entityColumn = "estateId"
     )
     val images: List<ImageWithDescription>,
-    /*@Relation(
-        parentColumn = "agentId",
-        entityColumn = "id"
-    )
-    val agent: Agent*/
 )

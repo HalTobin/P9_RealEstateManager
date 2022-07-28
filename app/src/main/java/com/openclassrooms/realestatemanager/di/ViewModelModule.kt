@@ -10,6 +10,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+// Module dedicated to the ViewModels
 object ViewModelModule {
 
     val viewModelModule: Module = module {

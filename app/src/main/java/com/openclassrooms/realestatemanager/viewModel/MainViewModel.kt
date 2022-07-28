@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.viewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import android.os.Environment
 import androidx.lifecycle.*
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -14,7 +13,6 @@ import com.openclassrooms.realestatemanager.repository.ImageRepository
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import kotlinx.coroutines.launch
 import java.io.File
-
 
 class MainViewModel(
     private val estateRepository: EstateRepository,
@@ -36,9 +34,6 @@ class MainViewModel(
     private val _selection = MutableLiveData<Int>()
     val selection = _selection
 
-    private val _closeDetails = MutableLiveData(false)
-    val closeDetails = _closeDetails
-
     private val _isInDollar = MutableLiveData(true)
     val isInDollar = _isInDollar
 
@@ -47,6 +42,7 @@ class MainViewModel(
     private var search = false
 
     init {
+        // Get estates from the function that returns every estate
         _estates.addSource(estateRepository.getEstates().asLiveData()) { value ->
             _estates.setValue(
                 value
@@ -54,20 +50,23 @@ class MainViewModel(
         }
     }
 
+    // Get the list of agent from the database
     fun getListOfAgent(): LiveData<List<Agent>> {
         return agentRepository.getAgents().asLiveData()
     }
 
+    // Get the list of ImageWithDescription from the database
     fun getImages(): LiveData<List<ImageWithDescription>> {
         return imageRepository.getImages().asLiveData()
     }
 
-    // Check if images and videos are used in the database, if they aren't the file is deleted
+    // Clean non-necessary images and videos from the internal storage of the app
     fun cleanImageFolder(context: Context, images: List<ImageWithDescription>) {
         val path = context.filesDir.toPath().toString() + "/Images"
         val directory = File(path)
         val files = directory.listFiles()
 
+        // Check for each file in the internal storage if it correspond to an ImageWithDescription's url from the database
         files?.forEach { file ->
             var exist = false
 
@@ -75,16 +74,18 @@ class MainViewModel(
                 if (file.path.equals(media.imageUrl)) exist = true
             }
 
+            // If the file doesn't correspond to an ImageWithDescription's url, then it's deleted
             if (!exist) file.delete()
-
         }
 
     }
 
+    // Define the location of the user
     fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
         _coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
     }
 
+    // Search the location of the user
     @SuppressLint("MissingPermission")
     fun findCurrentLocation(context: Context) {
         val myLocationClient = LocationServices.getFusedLocationProviderClient(context)

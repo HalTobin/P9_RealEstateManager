@@ -1,20 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.fragment
 
 import android.app.AlertDialog
-import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
-import android.net.Uri
 import android.os.Bundle
-import android.os.CancellationSignal
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.gms.maps.GoogleMap
@@ -22,7 +13,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.base.BaseFragment
 import com.openclassrooms.realestatemanager.databinding.FragmentEstateDetailsBinding
@@ -34,7 +24,6 @@ import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionA
 import com.openclassrooms.realestatemanager.util.ImageUtils.openImageViewer
 import com.openclassrooms.realestatemanager.util.MapUtils
 import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
-import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.viewModel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -139,6 +128,8 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
 
     }
 
+    // Show a pop-up menu that asks to the user if he wants to edit the estate
+    // or invert its 'soldState' value
     private fun editDialog(id: Int) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
@@ -151,6 +142,7 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         builder.show()
     }
 
+    // Initialize the recycler that displays the list of ImageWithDescription associated to the estate
     private fun initRecycler() {
         mAdapter = ListImageWithDescriptionAdapter(ArrayList(), requireContext(), this)
         binding!!.estateDetailsImageList.apply {
@@ -160,8 +152,8 @@ class DetailsFragment : BaseFragment<FragmentEstateDetailsBinding>(), OnMapReady
         }
     }
 
+    // Refresh the list of ImageWithDescription
     private fun refreshList(myList: List<ImageWithDescription>) {
-
         if (myList.isEmpty()) {
             binding?.estateDetailsNoImagesImg?.load(R.drawable.img_no_photo)
         } else {

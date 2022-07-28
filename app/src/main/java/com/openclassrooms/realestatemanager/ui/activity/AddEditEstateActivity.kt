@@ -3,10 +3,8 @@ package com.openclassrooms.realestatemanager.ui.activity
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.DialogInterface
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,7 +13,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -31,11 +28,11 @@ import com.openclassrooms.realestatemanager.model.Estate.Companion.getEstateType
 import com.openclassrooms.realestatemanager.model.ImageWithDescription
 import com.openclassrooms.realestatemanager.ui.adapter.ListImageWithDescriptionAdapter
 import com.openclassrooms.realestatemanager.util.EstateNotification
-import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
-import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
-import com.openclassrooms.realestatemanager.util.Utils
 import com.openclassrooms.realestatemanager.util.FileUtils.copyToInternal
 import com.openclassrooms.realestatemanager.util.ImageUtils.openImageViewer
+import com.openclassrooms.realestatemanager.util.MapUtils.getMapStyle
+import com.openclassrooms.realestatemanager.util.MapUtils.navigateTo
+import com.openclassrooms.realestatemanager.util.Utils.isAnAndroidTest
 import com.openclassrooms.realestatemanager.viewModel.AddEditEstateViewModel
 import kotlinx.android.synthetic.main.dialog_simple.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -88,6 +85,11 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         initMapView(savedInstanceState)
         initRecycler()
         initEstateTypeSpinner()
+
+        if (isAnAndroidTest()) {
+            addEditEstateViewModel.setAgent(1)
+            addEditEstateViewModel.setLocation(48.863845, 2.38283)
+        }
 
         val estateToLoadId = this.intent.getIntExtra("estate_id", -1)
         if (estateToLoadId != -1) addEditEstateViewModel.loadEstate(estateToLoadId)
@@ -382,7 +384,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Depending on the phone's settings, dark mode is used for the map
+        // Load the style of the map that matches the phone's theme
         googleMap.setMapStyle(getMapStyle(this))
     }
 
@@ -405,6 +407,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
             .show()
     }
 
+    // Opens a dialog that allow the user to chose a type and a source of the media that he wants to add
     private fun selectImage() {
         val options = arrayOf<CharSequence>(
             getString(R.string.add_edit_estate_save_capture_video_item),
@@ -445,6 +448,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
     private fun selectVideoFromGallery() = selectImageFromGalleryResult.launch("video/mp4")
 
+    // Get the temporary uri of a taken image/video
     private fun getTmpFileUri(suffix: String): Uri {
         val tmpFile = File.createTempFile("tmp_image_file", suffix, cacheDir).apply {
             createNewFile()
@@ -457,6 +461,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         )
     }
 
+    // Initialize the recycler that displays the images
     private fun initRecycler() {
         mAdapter = ListImageWithDescriptionAdapter(ArrayList(), this, this)
         binding!!.addEditEstateListImages.apply {
@@ -469,6 +474,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
+    // Refresh the list of images
     private fun refreshRecycler(myList: List<ImageWithDescription>) {
         mAdapter!!.updateList(myList)
     }
@@ -487,7 +493,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
     }
 
     private fun initAgentSpinner(myAgents: List<Agent>) {
-
         val agentsFullName = mutableListOf<String>()
         //agents = myAgents
         myAgents.forEach {
@@ -560,8 +565,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
                 dialog.dismiss()
             }
 
-            setNegativeButton(getString(R.string.cancel_button)) { dialog, _ ->
-
+            setNegativeButton(getString(R.string.cancel_button)) { _, _ ->
             }
 
             show()
@@ -574,7 +578,8 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         val dialogLayout = layoutInflater.inflate(R.layout.dialog_simple, null)
 
         with(builder) {
-            dialogLayout.dialog_simple_content.text = getString(R.string.add_edit_estate_image_dialog_delete_image)
+            dialogLayout.dialog_simple_content.text =
+                getString(R.string.add_edit_estate_image_dialog_delete_image)
             setView(dialogLayout)
             setTitle(getString(R.string.are_you_sure))
 
@@ -591,6 +596,7 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         }
     }
 
+    // Is called when the user have click on a image from the RecyclerView
     override fun onImageClick(
         imageWithDescription: ImageWithDescription,
         images: List<ImageWithDescription>

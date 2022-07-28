@@ -64,6 +64,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(),
         initRecycler()
     }
 
+    // Initialize the recycler that displays the list of estate
     private fun initRecycler() {
         binding!!.listEstateRecycler.adapter = mAdapter
     }
@@ -73,6 +74,7 @@ class ListFragment : BaseFragment<FragmentEstateListBinding?>(),
         initRecycler()
     }
 
+    // Called when the user click on an estate of the list
     override fun onClick(estateId: Int) {
         mainViewModel.selectEstate(estateId)
     }

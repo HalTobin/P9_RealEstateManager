@@ -25,6 +25,7 @@ data class EstateSearch(
     var nbImages: Int? = null
 ) {
 
+    // Generate an sql query to search estates that matches the given parameters
     fun getRequest(): SimpleSQLiteQuery {
         var queryString = BASE_QUERY
         val args = arrayListOf<Any>()

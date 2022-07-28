@@ -5,7 +5,7 @@ import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.repository.AgentRepository
 import kotlinx.coroutines.flow.Flow
 
-class AgentRepositoryImpl(private val dao: AgentDao): AgentRepository {
+class AgentRepositoryImpl(private val dao: AgentDao) : AgentRepository {
 
     override fun getAgents(): Flow<List<Agent>> {
         return dao.getAgents()

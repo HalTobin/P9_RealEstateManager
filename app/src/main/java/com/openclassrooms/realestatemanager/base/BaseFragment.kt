@@ -6,10 +6,6 @@ import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.openclassrooms.realestatemanager.RealEstateManagerApp.Companion.modules
-import com.openclassrooms.realestatemanager.di.ViewModelModule
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.ParameterizedType
 

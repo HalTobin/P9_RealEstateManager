@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 
 @Entity
 data class Estate(
@@ -39,12 +38,11 @@ data class Estate(
 
     companion object {
 
-        const val TYPE_ALL = 0
-        const val TYPE_APPARTMENT = 1
+        const val TYPE_APARTMENT = 1
         const val TYPE_HOUSE = 2
-        const val TYPE_LOFT = 3
-        const val TYPE_MANOR = 4
-        const val TYPE_TOWNHOUSE = 5
+        //const val TYPE_LOFT = 3
+        //const val TYPE_MANOR = 4
+        //const val TYPE_TOWNHOUSE = 5
 
         const val UNCOMPLETED: Int = 10
         const val CANT_FIND_LOCATION: Int = 11

@@ -13,7 +13,8 @@ class AgentTest {
         Agent(id = 1, firstName = "Jim", lastName = "Hopper"),
         Agent(id = 2, firstName = "Dustin", lastName = "Henderson"),
         Agent(id = 3, firstName = "Joyce", lastName = "Byers"),
-        Agent(id = 4, firstName = "Murray", lastName = "Bauman"))
+        Agent(id = 4, firstName = "Murray", lastName = "Bauman")
+    )
 
     private val dummyAgent = Agent(id = 1, firstName = "Jim", lastName = "Hopper")
 

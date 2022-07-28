@@ -10,16 +10,17 @@ import com.openclassrooms.realestatemanager.repository.AgentRepository
 import com.openclassrooms.realestatemanager.repository.CoordinatesRepository
 import com.openclassrooms.realestatemanager.repository.EstateRepository
 import com.openclassrooms.realestatemanager.repository.ImageRepository
-import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
 import com.openclassrooms.realestatemanager.util.Utils.fromEuroToDollar
 import com.openclassrooms.realestatemanager.util.Utils.fullAddress
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class AddEditEstateViewModel(private val estateRepository: EstateRepository,
-                             private val imageRepository: ImageRepository,
-                             private val coordinatesRepository: CoordinatesRepository,
-                             private val agentRepository: AgentRepository) : ViewModel() {
+class AddEditEstateViewModel(
+    private val estateRepository: EstateRepository,
+    private val imageRepository: ImageRepository,
+    private val coordinatesRepository: CoordinatesRepository,
+    private val agentRepository: AgentRepository
+) : ViewModel() {
 
     private val _title = MutableLiveData("")
     val title = _title
@@ -97,21 +98,27 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
 
     var currentEstateId: Int? = null
 
+    // Return the list of agents
     fun getListOfAgent(): LiveData<List<Agent>> {
         return agentRepository.getAgents().asLiveData()
     }
 
+    // Search the location of the estate
     fun searchLocation() {
         viewModelScope.launch {
-            if(getCurrentFullAddress() != null) {
+            if (getCurrentFullAddress() != null) {
                 Log.i("SEARCH LOCATION", getCurrentFullAddress().toString())
-                var myCoordinates = coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).first()
-                myCoordinates = myCoordinates
-                if(myCoordinates != null) setLocation(myCoordinates.xCoordinate, myCoordinates.yCoordinate)
+                val myCoordinates =
+                    coordinatesRepository.getCoordinates(getCurrentFullAddress()!!).first()
+                if (myCoordinates != null) setLocation(
+                    myCoordinates.xCoordinate,
+                    myCoordinates.yCoordinate
+                )
             }
         }
     }
 
+    // Load an estate if an estateId has been provided
     fun loadEstate(estateId: Int) {
         viewModelScope.launch {
             estateRepository.getEstate(estateId).collect {
@@ -126,7 +133,12 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _price.postValue(it.estate.priceDollar!!)
                 priceAsDollar = it.estate.priceDollar!!
                 _isDollar.postValue(true)
-                _coordinates.postValue(Coordinates(it.estate.xCoordinate!!, it.estate.yCoordinate!!))
+                _coordinates.postValue(
+                    Coordinates(
+                        it.estate.xCoordinate!!,
+                        it.estate.yCoordinate!!
+                    )
+                )
                 pictureList = it.images as MutableList<ImageWithDescription>
                 _pictures.postValue(pictureList)
                 _nearbyPark.postValue(it.estate.nearbyPark!!)
@@ -139,40 +151,58 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
                 _nbBedrooms.postValue(it.estate.nbBedrooms!!)
                 _entryDate.postValue(it.estate.entryDate)
                 _sold.postValue(it.estate.sold)
-                if(it.estate.soldDate != null) _soldDate.value = it.estate.soldDate!! else _soldDate.value = 0
+                if (it.estate.soldDate != null) _soldDate.value =
+                    it.estate.soldDate!! else _soldDate.value = 0
             }
             refreshPriceAsDollar()
         }
     }
 
-    private fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
+    // Define the coordinates of the estate
+    fun setLocation(xNewCoordinate: Double, yNewCoordinate: Double) {
         _coordinates.postValue(Coordinates(xNewCoordinate, yNewCoordinate))
     }
 
+    // Allows the user to change currency from EURO to DOLLAR or from DOLLAR to EURO
     fun changeCurrency() {
         _isDollar.postValue(!_isDollar.value!!)
         refreshPriceAsDollar()
     }
 
+    // Get the full address of an estate
     private fun getCurrentFullAddress(): String? {
-        return if(_address.value != null && _city.value != null && _country.value != null) {
+        return if (_address.value != null && _city.value != null && _country.value != null) {
             fullAddress(_address.value!!, _zip.value, _city.value!!, _country.value!!)
         } else null
     }
 
-    fun setTitle(title: String) { _title.value = title }
+    fun setTitle(title: String) {
+        _title.value = title
+    }
 
-    fun setType(type: Int) { _type.value = type }
+    fun setType(type: Int) {
+        _type.value = type
+    }
 
-    fun setCountry(country: String) { _country.value = country }
+    fun setCountry(country: String) {
+        _country.value = country
+    }
 
-    fun setCity(city: String) { _city.value = city }
+    fun setCity(city: String) {
+        _city.value = city
+    }
 
-    fun setZip(zip: String) { _zip.value = zip }
+    fun setZip(zip: String) {
+        _zip.value = zip
+    }
 
-    fun setAddress(address: String) { _address.value = address }
+    fun setAddress(address: String) {
+        _address.value = address
+    }
 
-    fun setArea(area: String) { _area.value = area.toInt() }
+    fun setArea(area: String) {
+        _area.value = area.toInt()
+    }
 
     fun setPrice(price: String) {
         _price.value = price.toInt()
@@ -180,86 +210,146 @@ class AddEditEstateViewModel(private val estateRepository: EstateRepository,
     }
 
     private fun refreshPriceAsDollar() {
-        if(_price.value != null) {
-            priceAsDollar = if(!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
+        if (_price.value != null) {
+            priceAsDollar =
+                if (!isDollar.value!!) _price.value?.fromEuroToDollar()!! else _price.value!!
             Log.i("PRICE AS DOLLAR", priceAsDollar.toString())
         }
     }
 
-    fun setRooms(rooms: String) { _nbRooms.value = rooms.toInt() }
+    fun setRooms(rooms: String) {
+        _nbRooms.value = rooms.toInt()
+    }
 
-    fun setBedrooms(bedrooms: String) { _nbBedrooms.value = bedrooms.toInt() }
+    fun setBedrooms(bedrooms: String) {
+        _nbBedrooms.value = bedrooms.toInt()
+    }
 
-    fun setBathrooms(bathrooms: String) { _nbBathrooms.value = bathrooms.toInt() }
+    fun setBathrooms(bathrooms: String) {
+        _nbBathrooms.value = bathrooms.toInt()
+    }
 
-    fun setPark(park: Boolean) { _nearbyPark.value = park }
+    fun setPark(park: Boolean) {
+        _nearbyPark.value = park
+    }
 
-    fun setSchool(school: Boolean) { _nearbySchool.value = school }
+    fun setSchool(school: Boolean) {
+        _nearbySchool.value = school
+    }
 
-    fun setShop(shop: Boolean) { _nearbyShop.value = shop }
+    fun setShop(shop: Boolean) {
+        _nearbyShop.value = shop
+    }
 
-    fun setAgent(agentId: Int) { _agent.value = agentId }
+    fun setAgent(agentId: Int) {
+        _agent.value = agentId
+    }
 
-    fun setDescription(description: String) { _description.value = description }
+    fun setDescription(description: String) {
+        _description.value = description
+    }
 
+    // Add a picture to the list of ImageWithDescription associated to the estate
     fun addPicture(image: String, text: String) {
-        if(currentEstateId == null) pictureList.add(ImageWithDescription(estateId = -1, description = text, imageUrl = image))
-        else pictureList.add(ImageWithDescription(estateId = currentEstateId!!, description = text, imageUrl = image))
+        if (currentEstateId == null) pictureList.add(
+            ImageWithDescription(
+                estateId = -1,
+                description = text,
+                imageUrl = image
+            )
+        )
+        else pictureList.add(
+            ImageWithDescription(
+                estateId = currentEstateId!!,
+                description = text,
+                imageUrl = image
+            )
+        )
         _pictures.postValue(pictureList)
     }
 
+    // Remove a picture to the list of ImageWithDescription associated to the estate
     fun removePicture(imageWithDescription: ImageWithDescription) {
         picturesListToDelete.add(imageWithDescription)
         pictureList.remove(imageWithDescription)
         _pictures.postValue(pictureList)
     }
 
+    // Save the estate to the database
     fun saveEstate() {
-        if(Estate.isFilled(_title.value, _address.value, _city.value, _country.value, _coordinates.value, priceAsDollar, _area.value, _nbRooms.value, _nbBathrooms.value, _nbBedrooms.value, _agent.value, _description.value)) {
+        // Check if all necessary fields are correctly filled
+        if (Estate.isFilled(
+                _title.value,
+                _address.value,
+                _city.value,
+                _country.value,
+                _coordinates.value,
+                priceAsDollar,
+                _area.value,
+                _nbRooms.value,
+                _nbBathrooms.value,
+                _nbBedrooms.value,
+                _agent.value,
+                _description.value
+            )
+        ) {
+            // The value '_entryDate' is set only if this is a new estate
+            // If this is an edited estate, then the value doesn't change
             if (_entryDate.value == null) _entryDate.value = System.currentTimeMillis()
             viewModelScope.launch {
-                currentEstateId = estateRepository.addEstate(Estate(id = currentEstateId,
-                    type = _type.value!!,
-                    title = _title.value!!,
-                    address = _address.value!!,
-                    city = _city.value!!,
-                    country = _country.value!!,
-                    zipCode = _zip.value!!,
-                    xCoordinate = _coordinates.value!!.xCoordinate,
-                    yCoordinate = _coordinates.value!!.yCoordinate,
-                    priceDollar = priceAsDollar,
-                    area = _area.value!!,
-                    nbRooms = _nbRooms.value!!,
-                    nbBathrooms = _nbBathrooms.value!!,
-                    nbBedrooms = _nbBedrooms.value!!,
-                    nearbySchool = _nearbySchool.value,
-                    nearbyShop = _nearbyShop.value,
-                    nearbyPark = _nearbyPark.value,
-                    sold = _sold.value!!,
-                    entryDate = _entryDate.value,
-                    soldDate = _soldDate.value,
-                    agentId = _agent.value!!,
-                    description = _description.value!!)).toInt()
+                currentEstateId = estateRepository.addEstate(
+                    Estate(
+                        id = currentEstateId,
+                        type = _type.value!!,
+                        title = _title.value!!,
+                        address = _address.value!!,
+                        city = _city.value!!,
+                        country = _country.value!!,
+                        zipCode = _zip.value!!,
+                        xCoordinate = _coordinates.value!!.xCoordinate,
+                        yCoordinate = _coordinates.value!!.yCoordinate,
+                        priceDollar = priceAsDollar,
+                        area = _area.value!!,
+                        nbRooms = _nbRooms.value!!,
+                        nbBathrooms = _nbBathrooms.value!!,
+                        nbBedrooms = _nbBedrooms.value!!,
+                        nearbySchool = _nearbySchool.value,
+                        nearbyShop = _nearbyShop.value,
+                        nearbyPark = _nearbyPark.value,
+                        sold = _sold.value!!,
+                        entryDate = _entryDate.value,
+                        soldDate = _soldDate.value,
+                        agentId = _agent.value!!,
+                        description = _description.value!!
+                    )
+                ).toInt()
 
-                for(imageWithDescription in pictureList) {
-                    if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
+                // Assigned the non-assigned ImageWithDescription from picturesList object to the current estate
+                for (imageWithDescription in pictureList) {
+                    if (imageWithDescription.estateId == -1) imageWithDescription.estateId =
+                        currentEstateId!!
                 }
 
-                for(imageWithDescription in picturesListToDelete) {
-                    if(imageWithDescription.estateId == -1) imageWithDescription.estateId = currentEstateId!!
+                // Assigned the non-assigned ImageWithDescription from picturesListToDelete object to the current estate
+                for (imageWithDescription in picturesListToDelete) {
+                    if (imageWithDescription.estateId == -1) imageWithDescription.estateId =
+                        currentEstateId!!
                 }
 
+                // Save the ImageWithDescription list into the database
                 _pictures.value?.let {
                     imageRepository.addListOfImages(it)
                 }
 
+                // Delete the ImageWithDescription in the picturesListToDelete from the database
                 imageRepository.deleteListOfImages(picturesListToDelete)
 
+                // Indicate to the UI that the activity should closed
                 _mustClose.postValue(true)
             }
 
         } else _warning.postValue(Estate.UNCOMPLETED)
-        if(_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
+        if (_coordinates.value == null) _warning.postValue(Estate.CANT_FIND_LOCATION)
     }
 
 }

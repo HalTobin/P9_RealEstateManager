@@ -1,32 +1,9 @@
 package com.openclassrooms.realestatemanager.util
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
-import android.os.Build
-import android.os.CancellationSignal
-import android.provider.OpenableColumns
-import android.util.Size
-import android.view.LayoutInflater
-import android.view.View
-import androidx.core.content.FileProvider
-import coil.load
-import com.openclassrooms.realestatemanager.BuildConfig
-import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.model.ImageWithDescription
-import com.stfalcon.imageviewer.StfalconImageViewer
+import android.util.Log
 import kotlinx.android.synthetic.main.overlay_imageview.view.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,16 +62,28 @@ object Utils {
         return when {
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            //for other device how are able to connect with Ethernet
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            //for check internet over Bluetooth
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
             else -> false
         }
     }
 
+    // Get the address of an estate as Following "Number Street, ZIPCODE, City, Country"
     fun fullAddress(address: String, zipCode: String?, city: String, country: String): String {
         return address.plus(", ").plus(zipCode).plus(" ").plus(city).plus(", ").plus(country)
+    }
+
+    // Check if the app is running tests
+    fun isAnAndroidTest(): Boolean {
+        return try {
+            // If the app is running in Test Mode, then we set an agent and a location
+            Class.forName("androidx.test.espresso.Espresso")
+            Log.i("RUNNING", "TEST")
+            true
+        } catch (e: ClassNotFoundException) {
+            Log.i("RUNNING", "DEBUG / RELEASE")
+            false
+        }
     }
 
 }

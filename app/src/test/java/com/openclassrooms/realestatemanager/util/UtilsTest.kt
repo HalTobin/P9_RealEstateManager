@@ -14,7 +14,6 @@ import com.openclassrooms.realestatemanager.util.Utils.toDateString
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-
 import org.junit.After
 import org.junit.Test
 import java.util.*
@@ -105,7 +104,7 @@ class UtilsTest {
         val suffix = path.getSuffix()
 
         // Then
-        assertThat(suffix).isEqualTo("mp3")
+        assertThat(suffix).isEqualTo(".mp3")
     }
 
     @Test

@@ -9,7 +9,6 @@ import com.openclassrooms.realestatemanager.data.EstateDatabase
 import com.openclassrooms.realestatemanager.model.Estate
 import org.koin.android.ext.android.inject
 
-
 class EstateContentProvider :ContentProvider() {
 
     private val database: EstateDatabase by inject()

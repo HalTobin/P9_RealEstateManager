@@ -17,13 +17,19 @@ import java.util.*
 
 object EstateNotification {
 
+    // Push a notification when an estate has been saved
     fun createNotification(context: Context) {
         val channelId = "real_estate_manager_new_estate"
-        val manager: NotificationManager = context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val manager: NotificationManager =
+            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             var channel = manager.getNotificationChannel(channelId)
-            if(channel == null) {
-                channel = NotificationChannel(channelId, "New Estate", NotificationManager.IMPORTANCE_HIGH)
+            if (channel == null) {
+                channel = NotificationChannel(
+                    channelId,
+                    "New Estate",
+                    NotificationManager.IMPORTANCE_HIGH
+                )
                 channel.description = ""
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 manager.createNotificationChannel(channel)
@@ -31,7 +37,12 @@ object EstateNotification {
         }
         val notificationIntent = Intent(context, MainActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val contentIntent = PendingIntent.getActivity(
+            context,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_home)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_home))
