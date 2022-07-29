@@ -402,8 +402,8 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.add_edit_estate_exit_text))
-            .setPositiveButton(getString(R.string.add_edit_estate_exit_yes), dialogClickListener)
-            .setNegativeButton(getString(R.string.add_edit_estate_exit_no), dialogClickListener)
+            .setPositiveButton(getString(R.string.yes), dialogClickListener)
+            .setNegativeButton(getString(R.string.no), dialogClickListener)
             .show()
     }
 
