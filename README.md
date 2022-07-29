@@ -30,15 +30,15 @@ POSITIONSTACK_API_KEY=YOUR_POSITION_STACK_API_KEY
 
 ## App Overview
 
-![Main Screen (List) - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_List)
-![Main Screen (Map) - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_Map)
-![Details Screen - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Details)
-![Add Or Edit An Real Estate Screen - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_AddEdit)
-![Search An Real Estate Dialog - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_Search)  
+![Main Screen (List) - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_List.png)
+![Main Screen (Map) - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_Map.png)
+![Details Screen - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Details.png)
+![Add Or Edit An Real Estate Screen - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_AddEdit.png)
+![Search An Real Estate Dialog - Smartphone](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/SP_Home_Search.png)  
 
-![Main Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Home)
-![Details Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Details)
-![Add Or Edit An Real Estate Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_AddEdit)
-![Search An Real Estate Dialog - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Home_Search)   
+![Main Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Home.png)
+![Details Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Details.png)
+![Add Or Edit An Real Estate Screen - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_AddEdit.png)
+![Search An Real Estate Dialog - Tablet](https://github.com/HalTobin/P9_RealEstateManager/blob/main/README_res/T_Home_Search.png)   
 
 
