@@ -265,7 +265,7 @@ class AddEditEstateViewModel(
 
     // Remove a picture to the list of ImageWithDescription associated to the estate
     fun removePicture(imageWithDescription: ImageWithDescription) {
-        picturesListToDelete.add(imageWithDescription)
+        if(imageWithDescription.id != null) picturesListToDelete.add(imageWithDescription)
         pictureList.remove(imageWithDescription)
         _pictures.postValue(pictureList)
     }
@@ -331,13 +331,13 @@ class AddEditEstateViewModel(
                         currentEstateId!!
                 }
 
+                // Delete the ImageWithDescription in the picturesListToDelete from the database
+                imageRepository.deleteListOfImages(picturesListToDelete)
+
                 // Save the ImageWithDescription list into the database
                 _pictures.value?.let {
                     imageRepository.addListOfImages(it)
                 }
-
-                // Delete the ImageWithDescription in the picturesListToDelete from the database
-                imageRepository.deleteListOfImages(picturesListToDelete)
 
                 // Indicate to the UI that the activity should closed
                 _mustClose.postValue(true)

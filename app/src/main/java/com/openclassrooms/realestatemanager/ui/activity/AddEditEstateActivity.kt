@@ -604,7 +604,6 @@ class AddEditEstateActivity : BaseActivity<ActivityAddEditEstateBinding>(),
         val options =
             arrayOf<CharSequence>(getString(R.string.visualize), getString(R.string.delete))
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.add_edit_estate_save_choose_image_title))
         builder.setItems(options) { _, item ->
             if (options[item] == getString(R.string.visualize)) openImageViewer(
                 this,
