@@ -23,7 +23,6 @@ The app can be used on a smartphone and a tablet.
 ```
 MAPS_API_KEY=YOUR_MAP_API_KEY
 POSITIONSTACK_API_KEY=YOUR_POSITION_STACK_API_KEY
-
 ```
 
 4. The app is now ready to run !  
