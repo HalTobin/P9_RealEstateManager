@@ -1,6 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.adapter
 
 import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
+import android.os.CancellationSignal
+import android.util.Size
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
@@ -8,7 +12,10 @@ import coil.load
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemListEstateBinding
 import com.openclassrooms.realestatemanager.model.EstateUI
+import com.openclassrooms.realestatemanager.util.ImageUtils.getThumbnailFromVideoUrl
 import com.openclassrooms.realestatemanager.util.Utils.fromDollarToEuro
+import com.openclassrooms.realestatemanager.util.Utils.isAnImage
+import java.io.File
 import java.util.ArrayList
 
 class ListEstatePagerAdapter(
@@ -40,7 +47,11 @@ class ListEstatePagerAdapter(
             if (isDollar) myEstate.estate.priceDollar?.toString().plus("$")
             else myEstate.estate.priceDollar?.fromDollarToEuro().toString().plus("€")
 
-        if (myEstate.images.isNotEmpty()) holder.binding.itemEstateImage.load(myEstate.images[0].imageUrl)
+        if (myEstate.images.isNotEmpty()) {
+            val myResUrl = myEstate.images[0].imageUrl
+            if (myResUrl.isAnImage()) holder.binding.itemEstateImage.load(myResUrl)
+            else holder.binding.itemEstateImage.load(getThumbnailFromVideoUrl(myResUrl))
+        }
         else holder.binding.itemEstateImage.load(R.drawable.img_no_photo)
 
         // Set up the onClickListener to open the EstateDetailsActivity

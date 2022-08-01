@@ -38,6 +38,24 @@ object ImageUtils {
         return bitmap
     }
 
+    fun getThumbnailFromVideoUrl(path: String): Bitmap {
+        val metaRetriever = MediaMetadataRetriever()
+        metaRetriever.setDataSource(path)
+        val height =
+            metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                ?.toInt()
+        val width =
+            metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                ?.toInt()
+
+        lateinit var mSize: Size
+        if ((width != null) && (height != null)) mSize = Size(width, height)
+        val ca = CancellationSignal()
+
+        // Get a thumbnail from the video
+        return ThumbnailUtils.createVideoThumbnail(File(path), mSize, ca)
+    }
+
     fun openImageViewer(
         context: Context,
         previewList: List<ImageWithDescription>,
@@ -50,25 +68,7 @@ object ImageUtils {
             // If this is an picture, then it is directly displayed
             // Else, it means that this is a video, and we generate a thumbnail to display
             if (image.imageUrl.isAnImage()) view.load(image.imageUrl)
-            else {
-                val metaRetriever = MediaMetadataRetriever()
-                metaRetriever.setDataSource(image.imageUrl)
-                val height =
-                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                        ?.toInt()
-                val width =
-                    metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                        ?.toInt()
-
-                lateinit var mSize: Size
-                if ((width != null) && (height != null)) mSize = Size(width, height)
-                val ca = CancellationSignal()
-
-                // Get a thumbnail from the video
-                val thumbnail = ThumbnailUtils.createVideoThumbnail(File(image.imageUrl), mSize, ca)
-
-                view.load(thumbnail)
-            }
+            else view.load(getThumbnailFromVideoUrl(image.imageUrl))
         }.allowZooming(false)
             .withOverlayView(overlayView)
             .withImageChangeListener { position ->
