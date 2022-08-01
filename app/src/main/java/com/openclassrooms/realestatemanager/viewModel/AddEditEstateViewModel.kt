@@ -43,7 +43,7 @@ class AddEditEstateViewModel(
     private val _area = MutableLiveData<Int>()
     val area = _area
 
-    private val _price = MutableLiveData<Int>()
+    private val _price = MutableLiveData(0)
     val price = _price
     var priceAsDollar: Int = 0
 
